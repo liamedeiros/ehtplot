@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with EHTplot.  If not, see <http://www.gnu.org/licenses/>.
 
-import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm, colors, rcParams
@@ -26,22 +25,41 @@ import pkg_resources as pr
 
 
 class Figure:
+    """The main class of EHTplot that enhances matplotlib's Figure.
+
+    ... long description ...
+
+    Attributes:
+        fig: matplotlib Figure class
+        axs: matplotlib axes
+        font: font size
+        count: number of subplots
+        size: size is in (x, y)
+
+    """
+
     def __init__(self, subplots=(1,1), size=None, font=10):
-        '''
-        subplots is (row, column) but size is (x,y)
-        '''
-        textwidth   = 7.1
-        columnwidth = 3.39375
+        """Construct the EHTplot Figure class.
+
+        ... long description ...
+
+        Args:
+            subplots: subplots is (row, column)
+            size: size is in (x, y)
+            font: font size
+
+        """
+        textwidth   = 7.1     # in inch; for full width figure in ApJ
+        columnwidth = 3.39375 # in inch; for half width figure in ApJ
+
         if size is None:
             w    = columnwidth if subplots[1] == 1 else textwidth
             size = (w, w / subplots[1] * subplots[0])
         self.fig, axs = plt.subplots(subplots[0], subplots[1], figsize=size)
-        # print(axs)
         if subplots[0] == 1 and subplots[1] == 1:
             axs = np.array([axs])
-        # print(axs.shape)
         self.axs   = axs.reshape(subplots)
-        # print(axs.shape)
+
         self.font  = font
         self.count = 0
         self.size  = size
@@ -50,13 +68,30 @@ class Figure:
                    array, pixsize, axis=None, norm=True, scale='lin',
                    colorbar=True, limits=(0, 1), colormap='gnuplot2',
                    zoom=False, labelx='auto', labely='auto', lim_log=False):
-        '''
-        labelx,labely can be 'auto' which will let the code choose
-        whether to include the label, 'force' which will force it to
-        have a label, None which will force it to not have a label, or
-        you can set it equal to another string which will force it to
-        have a label equal to that string.
-        '''
+        """Plot a two-dimensional numpy array as an image.
+
+        ... long description ...
+
+        Args:
+            array:
+            pixsize:
+            axis:
+            norm:
+            scale:
+            colorbar:
+            limits:
+            colormap:
+            zoom:
+            labelx,
+            labely: can be 'auto' which will let the code choose
+                    whether to include the label.  'force' which will
+                    force it to have a label, None which will force it
+                    to not have a label, or you can set it equal to
+                    another string which will force it to have a label
+                    equal to that string.
+            lim_log:
+
+        """
         n_row = self.axs.shape[0]
         n_col = self.axs.shape[1]
         if axis is None:
@@ -132,6 +167,26 @@ class Figure:
                 array, pixsize, axis=None, norm=True, scale='lin',
                 colorbar=True, limits=(0, 1), colormap='gnuplot2', zoom=False,
                 labelx='auto', labely='auto', btracks=False, lim_log=False):
+        """Plot a two-dimensional numpy array.
+
+        ... long description ...
+
+        Args:
+            array:
+            piaxsize:
+            axis:
+            norm:
+            scale:
+            colorbar:
+            limits:
+            colormap:
+            zoom:
+            labelx:
+            labely:
+            btracks:
+            lim_log:
+
+        """
         n_row = self.axs.shape[0]
         n_col = self.axs.shape[1]
         if axis is None:
@@ -223,6 +278,25 @@ class Figure:
                 colorbar=True, limits=(0, 1), colormap='hsv', zoom=False,
                 labelx='auto', labely='auto', btracks=False, lim_log=False,
                 units='rad'):
+        """Plot a two-dimensional numpy array.
+
+        ... long description ...
+
+        Args:
+            array:
+            piaxsize:
+            axis:
+            colorbar:
+            limits:
+            colormap:
+            zoom:
+            labelx:
+            labely:
+            btracks:
+            lim_log:
+            units:
+
+        """
         if units == 'deg':
             array = array / 360. * 2 * np.pi
 
