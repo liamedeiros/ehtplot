@@ -32,13 +32,13 @@ class Figure:
     Attributes:
         fig: matplotlib Figure class
         axs: matplotlib axes
-        font: font size
+        fontsz: font size
         count: number of subplots
         size: size is in (x, y)
 
     """
 
-    def __init__(self, subplots=(1,1), size=None, font=10):
+    def __init__(self, subplots=(1,1), size=None, fontsz=10):
         """Construct the EHTplot Figure class.
 
         ... long description ...
@@ -46,7 +46,7 @@ class Figure:
         Args:
             subplots: subplots is (row, column)
             size: size is in (x, y)
-            font: font size
+            fontsz: font size
 
         """
         textwidth   = 7.1     # in inch; for full width figure in ApJ
@@ -58,11 +58,11 @@ class Figure:
         self.fig, axs = plt.subplots(subplots[0], subplots[1], figsize=size)
         if subplots[0] == 1 and subplots[1] == 1:
             axs = np.array([axs])
-        self.axs   = axs.reshape(subplots)
+        self.axs = axs.reshape(subplots)
 
-        self.font  = font
-        self.count = 0
-        self.size  = size
+        self.fontsz = fontsz
+        self.count  = 0
+        self.size   = size
 
     def plot_image(self,
                    array, pixsize, axis=None, norm=True, scale='lin',
@@ -101,7 +101,7 @@ class Figure:
             self.count = self.count + 1
         else:
             ax1 = axis
-        font = self.font
+        fontsz = self.fontsz
         x = array.shape[0]
         if norm == True:
             array = array / np.max(array)
@@ -117,7 +117,7 @@ class Figure:
                 cax1     = divider1.append_axes("right", size="7%", pad=0.05)
                 cbar1    = plt.colorbar(im1, cax=cax1,
                                         ticks=[0, 0.2, 0.4, 0.6, 0.8, 1])
-                cbar1.ax.tick_params(labelsize=font)
+                cbar1.ax.tick_params(labelsize=fontsz)
                 self.fig.set_size_inches(self.size[0], self.size[1] * .8)
 
         if scale == 'log':
@@ -130,30 +130,30 @@ class Figure:
                 divider1 = make_axes_locatable(ax1)
                 cax1     = divider1.append_axes("right", size="7%", pad=0.05)
                 cbar1    = plt.colorbar(im1, cax=cax1)
-                cbar1.ax.tick_params(labelsize=font)
+                cbar1.ax.tick_params(labelsize=fontsz)
                 self.fig.set_size_inches(self.size[0], self.size[1] * .8)
         if labelx is None:
             pass
         elif labelx == 'force':
-            ax1.set_xlabel('X ($GMc^{-2}$)', fontsize=font, labelpad=0)
+            ax1.set_xlabel('X ($GMc^{-2}$)', fontsize=fontsz, labelpad=0)
         elif labelx == 'auto':
             if j == (n_row - 1):
-                ax1.set_xlabel('X ($GMc^{-2}$)', fontsize=font, labelpad=0)
+                ax1.set_xlabel('X ($GMc^{-2}$)', fontsize=fontsz, labelpad=0)
         else:
-            ax1.set_xlabel(labelx, fontsize=font, labelpad=0)
+            ax1.set_xlabel(labelx, fontsize=fontsz, labelpad=0)
 
         if labely is None:
             pass
         elif labely == 'force':
-            ax1.set_ylabel('Y ($GMc^{-2}$)', fontsize=font, labelpad=-6)
+            ax1.set_ylabel('Y ($GMc^{-2}$)', fontsize=fontsz, labelpad=-6)
         elif labely == 'auto':
             if i == 0:
-                ax1.set_ylabel('Y ($GMc^{-2}$)', fontsize=font, labelpad=-6)
+                ax1.set_ylabel('Y ($GMc^{-2}$)', fontsize=fontsz, labelpad=-6)
         else:
-            ax1.set_ylabel(labely, fontsize=font, labelpad=-6)
+            ax1.set_ylabel(labely, fontsize=fontsz, labelpad=-6)
 
         ax1.tick_params(axis='both', which='major',
-                        labelsize=font, color='w', width=1.5)
+                        labelsize=fontsz, color='w', width=1.5)
         if zoom == True:
             r0 = np.sqrt(27)  # this gives the BH shadow in units of GM/c**2
             ax1.set_xlim([-r0 * 2, r0 * 2])
@@ -196,7 +196,7 @@ class Figure:
             self.count = self.count + 1
         else:
             ax1 = axis
-        font = self.font
+        fontsz = self.fontsz
         x = array.shape[0]
         if norm == True:
             array = array / (np.max(array))
@@ -214,7 +214,7 @@ class Figure:
                 cax1 = divider1.append_axes("right", size="7%", pad=0.05)
                 cbar1 = plt.colorbar(im1, cax=cax1, ticks=[
                                      0, 0.2, 0.4, 0.6, 0.8, 1])
-                cbar1.ax.tick_params(labelsize=font)
+                cbar1.ax.tick_params(labelsize=fontsz)
         if scale == 'log':
             if lim_log == False:
                 im1 = ax1.imshow(array,
@@ -232,27 +232,27 @@ class Figure:
                 divider1 = make_axes_locatable(ax1)
                 cax1 = divider1.append_axes("right", size="7%", pad=0.05)
                 cbar1 = plt.colorbar(im1, cax=cax1)
-                cbar1.ax.tick_params(labelsize=font)
+                cbar1.ax.tick_params(labelsize=fontsz)
 
         if labelx is None:
             pass
         elif labelx == 'force':
-            ax1.set_xlabel('$u$ (G $\lambda$)', fontsize=font, labelpad=0)
+            ax1.set_xlabel('$u$ (G $\lambda$)', fontsize=fontsz, labelpad=0)
         elif labelx == 'auto':
             if j == (n_row - 1):
-                ax1.set_xlabel('$u$ (G $\lambda$)', fontsize=font, labelpad=0)
+                ax1.set_xlabel('$u$ (G $\lambda$)', fontsize=fontsz, labelpad=0)
         else:
-            ax1.set_xlabel(labelx, fontsize=font, labelpad=0)
+            ax1.set_xlabel(labelx, fontsize=fontsz, labelpad=0)
 
         if labely is None:
             pass
         elif labely == 'force':
-            ax1.set_ylabel('$v$ (G $\lambda$)', fontsize=font, labelpad=-6)
+            ax1.set_ylabel('$v$ (G $\lambda$)', fontsize=fontsz, labelpad=-6)
         elif labely == 'auto':
             if i == 0:
-                ax1.set_ylabel('$v$ (G $\lambda$)', fontsize=font, labelpad=-6)
+                ax1.set_ylabel('$v$ (G $\lambda$)', fontsize=fontsz, labelpad=-6)
         else:
-            ax1.set_ylabel(labely, fontsize=font, labelpad=-6)
+            ax1.set_ylabel(labely, fontsize=fontsz, labelpad=-6)
 
         if btracks == True:
             module = __name__.split(".")[0]
@@ -262,7 +262,7 @@ class Figure:
             ax1.scatter(U, V, c='w', s=2, marker='o', edgecolors='none')
             ax1.scatter(-U, -V, c='w', s=2, marker='o', edgecolors='none')
         ax1.tick_params(axis='both', which='major',
-                        labelsize=font, color='w', width=1.5)
+                        labelsize=fontsz, color='w', width=1.5)
 
         if zoom == True:
             ext = 9.86099511299 # this is equal to 4 *8.3 kpc*c^2/(pi*sqrt(27)*4.31*10^6*solar mass*G)
@@ -312,7 +312,7 @@ class Figure:
             self.count = self.count + 1
         else:
             ax1 = axis
-        font = self.font
+        fontsz = self.fontsz
         x = array.shape[0]
 
         plt.set_cmap(colormap)
@@ -326,27 +326,27 @@ class Figure:
             divider1 = make_axes_locatable(ax1)
             cax1     = divider1.append_axes("right", size="7%", pad=0.05)
             cbar1    = plt.colorbar(im1, cax=cax1)
-            cbar1.ax.tick_params(labelsize=font)
+            cbar1.ax.tick_params(labelsize=fontsz)
 
         if labelx is None:
             pass
         elif labelx == 'force':
-            ax1.set_xlabel('$u$ (G $\lambda$)', fontsize=font, labelpad=0)
+            ax1.set_xlabel('$u$ (G $\lambda$)', fontsize=fontsz, labelpad=0)
         elif labelx == 'auto':
             if j == (n_row - 1):
-                ax1.set_xlabel('$u$ (G $\lambda$)', fontsize=font, labelpad=0)
+                ax1.set_xlabel('$u$ (G $\lambda$)', fontsize=fontsz, labelpad=0)
         else:
-            ax1.set_xlabel(labelx, fontsize=font, labelpad=0)
+            ax1.set_xlabel(labelx, fontsize=fontsz, labelpad=0)
 
         if labely is None:
             pass
         elif labely == 'force':
-            ax1.set_ylabel('$v$ (G $\lambda$)', fontsize=font, labelpad=-6)
+            ax1.set_ylabel('$v$ (G $\lambda$)', fontsize=fontsz, labelpad=-6)
         elif labely == 'auto':
             if i == 0:
-                ax1.set_ylabel('$v$ (G $\lambda$)', fontsize=font, labelpad=-6)
+                ax1.set_ylabel('$v$ (G $\lambda$)', fontsize=fontsz, labelpad=-6)
         else:
-            ax1.set_ylabel(labely, fontsize=font, labelpad=-6)
+            ax1.set_ylabel(labely, fontsize=fontsz, labelpad=-6)
 
         if btracks == True:
             module = __name__.split(".")[0]
@@ -356,7 +356,7 @@ class Figure:
             ax1.scatter( U,  V, c='w', s=2, marker='o', edgecolors='none')
             ax1.scatter(-U, -V, c='w', s=2, marker='o', edgecolors='none')
         ax1.tick_params(axis='both', which='major',
-                        labelsize=font, color='w', width=1.5)
+                        labelsize=fontsz, color='w', width=1.5)
 
         if zoom == True:
             ext = 9.86099511299 # this is equal to 4 *8.3 kpc*c^2/(pi*sqrt(27)*4.31*10^6*solar mass*G)
