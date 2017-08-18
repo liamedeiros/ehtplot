@@ -21,26 +21,12 @@ def set_theme(screen='crystal',        # e.g., jupyter notebook
                       'light-on-black'] ):
     """Setting the global theme for EHTplot
 
-    In a typical scientific workflow, a publication quality figure
-    often goes to multiple places, which can have very different
-    typesetting requirements.  For example, a figure first needs to be
-    rendered clearly and accurately onscreen; then, when exported into
-    vector graph formats in order to be included in publications, the
-    lines need to be visible, the font sizes of label and tickmarks
-    should match the caption font size, etc; finally, important
-    figures also go into talks, where larger fonts and wider line are
-    usually preferred, in addition, slides come with different
-    theme---dark and light backgrounds---which may require changing
-    the color theme in a figure.
-
-    EHTplot is designed to make creating multi-style-multi-destination
-    easy.  The whole library is theme based.  After creating a figure,
-    its presentation and rendering depends on the targeted output.
-    For example, the same figure appearing in a jupyter notebook has
-    smaller fonts than its png version, which is often used in slides.
-
-    set_theme() is used to set the default themes for these different
-    situations.
+    set_theme() is used to set the default themes for rendering to
+    screen, export to vector graphics formats (such as eps and pdf),
+    and export to raster/bitmap formats (such as jpg and png).  Each
+    of the arguments can be a single string of an array of strings.
+    In the later case, multiple figures will be rendered and/or
+    exported.
 
     Args:
         screen: the theme(s) used for rendering on screen
