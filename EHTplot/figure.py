@@ -27,7 +27,12 @@ import pkg_resources as pr
 class Figure:
     """The main class of EHTplot that enhances matplotlib's Figure.
 
-    ... long description ...
+    The Figure class is the "outermost container" in EHTplot that
+    enhances matplotlib's Figure class.  An EHTplot Figure can be
+    rendered on screen and exported to files.  Logically, an EHTplot
+    Figure always contains a single root EHTplot Panel instance,
+    although the root Panel can have multiple subpanels in it.  See
+    the documentation of the EHTplot Panel class for details.
 
     Attributes:
         fig: matplotlib Figure class
