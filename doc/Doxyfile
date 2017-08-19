@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "EHTplot"
+PROJECT_NAME           = "ehtplot"
 PROJECT_NUMBER         =
 PROJECT_BRIEF          =
 PROJECT_LOGO           =
@@ -112,7 +112,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ../EHTplot
+INPUT                  = ../ehtplot
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.dox *.py
 RECURSIVE              = YES

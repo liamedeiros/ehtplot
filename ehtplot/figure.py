@@ -1,19 +1,19 @@
 # Copyright (C) 2017 Lia Medeiros
 #
-# This file is part of EHTplot.
+# This file is part of ehtplot.
 #
-# EHTplot is free software: you can redistribute it and/or modify
+# ehtplot is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# EHTplot is distributed in the hope that it will be useful,
+# ehtplot is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with EHTplot.  If not, see <http://www.gnu.org/licenses/>.
+# along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -25,14 +25,14 @@ import pkg_resources as pr
 
 
 class Figure:
-    """The main class of EHTplot that enhances matplotlib's Figure.
+    """The main class of ehtplot that enhances matplotlib's Figure.
 
-    The Figure class is the "outermost container" in EHTplot that
-    enhances matplotlib's Figure class.  An EHTplot Figure can be
-    rendered on screen and exported to files.  Logically, an EHTplot
-    Figure always contains a single root EHTplot Panel instance,
+    The Figure class is the "outermost container" in ehtplot that
+    enhances matplotlib's Figure class.  An ehtplot Figure can be
+    rendered on screen and exported to files.  Logically, an ehtplot
+    Figure always contains a single root ehtplot Panel instance,
     although the root Panel can have multiple subpanels in it.  See
-    the documentation of the EHTplot Panel class for details.
+    the documentation of the ehtplot Panel class for details.
 
     Attributes:
         fig: matplotlib Figure class
@@ -44,7 +44,7 @@ class Figure:
     """
 
     def __init__(self, subplots=(1,1), size=None, fontsz=10):
-        """Construct the EHTplot Figure class.
+        """Construct the ehtplot Figure class.
 
         ... long description ...
 
