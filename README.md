@@ -1,7 +1,6 @@
-`ehtplot` is a python module that assists scientists in the Event
-Horizon Telescope (EHT <http://eventhorizontelescope.org>)
-Collabration to create publication quality, elegant, and consistent
-plots.
+`ehtplot` is a python module that assists scientists in the [Event
+Horizon Telescope (EHT) Collabration](http://eventhorizontelescope.org)
+to create publication quality, elegant, and consistent plots.
 
 `ehtplot` provides a set of easy-to-use plotting functions for EHT and
 Very-Long-Baseline Interferometry (VLBI) specific figures (see the
@@ -12,8 +11,8 @@ plots, adding the expected event horizon size to the plots, etc.
 By introducing a logical layer to hierarchically organize subplots and
 manage subplot properties, `ehtplot` is capible to combining many
 simple plots to a complex figure (see the documentation of the Panel
-class).  This feature helps to generate comparative plots for the EHT
-Imaging Challenge <http://vlbiimaging.csail.mit.edu/imagingchallenge>.
+class).  This feature helps to generate comparative plots for the [EHT
+Imaging Challenge](http://vlbiimaging.csail.mit.edu/imagingchallenge).
 
 In a typical scientific workflow, a publication quality plot often
 goes to multiple places, which can have very different typesetting and
@@ -23,9 +22,9 @@ formats in order to be included in publications, the lines need to be
 visible, the font sizes of labels and tickmarks should match the
 caption font size, etc; finally, important plots also go into talks,
 where larger fonts and wider lines are usually preferred; in addition,
-slides come with different theme---dark and light backgrounds---which
-may require changing the color theme in a plot.  In order to make
-creating these multi-style-multi-destination figures easy, `ehtplot`
-is theme based (see the documentation in "ehtplot/theme.py").  After
-creating a plot, its presentation and rendering depend on the user
-selected targeted outputs.
+slides come with different theme&mdash;dark and light
+backgrounds&mdash;which may require changing the color theme in a
+plot.  In order to make creating these multi-style-multi-destination
+figures easy, `ehtplot` is theme based (see the documentation in
+"ehtplot/theme.py").  After creating a plot, its presentation and
+rendering depend on the user selected targeted outputs.
