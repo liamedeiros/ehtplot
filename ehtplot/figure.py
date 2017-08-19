@@ -21,10 +21,11 @@ from matplotlib import cm, colors, rcParams
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import LogNorm
 from matplotlib.ticker import MultipleLocator
+import matplotlib
 import pkg_resources as pr
 
 
-class Figure:
+class Figure(matplotlib.figure.Figure):
     """The main class of ehtplot that enhances matplotlib's Figure.
 
     The Figure class is the "outermost container" in ehtplot that
@@ -43,7 +44,7 @@ class Figure:
 
     """
 
-    def __init__(self, subplots=(1,1), size=None, fontsz=10):
+    def __init__(self, subplots=(1,1), size=None, fontsz=10, **kwargs):
         """Construct the ehtplot Figure class.
 
         ... long description ...
@@ -60,7 +61,11 @@ class Figure:
         if size is None:
             w    = columnwidth if subplots[1] == 1 else textwidth
             size = (w, w / subplots[1] * subplots[0])
-        self.fig, axs = plt.subplots(subplots[0], subplots[1], figsize=size)
+
+        super(Figure, self).__init__(figsize=size, **kwargs)
+        self.set_canvas(matplotlib.backends.backend_agg.FigureCanvasAgg(self))
+
+        axs = self.subplots(subplots[0], subplots[1])
         if subplots[0] == 1 and subplots[1] == 1:
             axs = np.array([axs])
         self.axs = axs.reshape(subplots)
@@ -68,6 +73,7 @@ class Figure:
         self.fontsz = fontsz
         self.count  = 0
         self.size   = size
+
 
     def plot_image(self,
                    array, pixsize, axis=None, norm=True, scale='lin',
@@ -123,7 +129,7 @@ class Figure:
                 cbar1    = plt.colorbar(im1, cax=cax1,
                                         ticks=[0, 0.2, 0.4, 0.6, 0.8, 1])
                 cbar1.ax.tick_params(labelsize=fontsz)
-                self.fig.set_size_inches(self.size[0], self.size[1] * .8)
+                self.set_size_inches(self.size[0], self.size[1] * .8)
 
         if scale == 'log':
             im1 = ax1.imshow(array,
@@ -136,7 +142,7 @@ class Figure:
                 cax1     = divider1.append_axes("right", size="7%", pad=0.05)
                 cbar1    = plt.colorbar(im1, cax=cax1)
                 cbar1.ax.tick_params(labelsize=fontsz)
-                self.fig.set_size_inches(self.size[0], self.size[1] * .8)
+                self.set_size_inches(self.size[0], self.size[1] * .8)
         if labelx is None:
             pass
         elif labelx == 'force':
