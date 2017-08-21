@@ -35,5 +35,6 @@ rendering depend on the user selected targeted outputs.
 # Related Links
 
 - [The Event Horizon Telescope](https://eventhorizontelescope.org)
+- [EHT Imaging Challenge](http://vlbiimaging.csail.mit.edu/imagingchallenge)
 - [ehtplot Documentation](https://liamedeiros.github.io/ehtplot)
 - [matplotlib Usage Guide](https://matplotlib.org/tutorials/introductory/usage.html)
