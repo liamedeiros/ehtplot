@@ -64,11 +64,7 @@ class Figure(matplotlib.figure.Figure):
             w    = columnwidth if subplots[1] == 1 else textwidth
             size = (w, w / subplots[1] * subplots[0])
 
-        file = os.path.join(os.path.dirname(__file__), style+".mplstyle")
-        if os.path.isfile(file):
-            style = matplotlib.rc_params_from_file(file,
-                                                   use_default_template=False)
-        matplotlib.style.use(style)
+        self.use_style(style)
 
         super(Figure, self).__init__(figsize=size, **kwargs)
         self.set_canvas(matplotlib.backends.backend_agg.FigureCanvasAgg(self))
@@ -82,11 +78,18 @@ class Figure(matplotlib.figure.Figure):
         self.count  = 0
         self.size   = size
 
+    def use_style(self, style):
+        file = os.path.join(os.path.dirname(__file__), style+".mplstyle")
+        if os.path.isfile(file):
+            style = matplotlib.rc_params_from_file(file,
+                                                   use_default_template=False)
+        matplotlib.style.use(style)
 
     def plot_image(self,
                    array, pixsize, axis=None, norm=True, scale='lin',
                    colorbar=True, limits=(0, 1), colormap='gnuplot2',
-                   zoom=False, labelx='auto', labely='auto', lim_log=False):
+                   zoom=False, labelx='auto', labely='auto', lim_log=False,
+                   style=None):
         """Plot a two-dimensional numpy array as an image.
 
         ... long description ...
@@ -111,6 +114,9 @@ class Figure(matplotlib.figure.Figure):
             lim_log:
 
         """
+        if style:
+            self.use_style(style)
+
         n_row = self.axs.shape[0]
         n_col = self.axs.shape[1]
         if axis is None:
