@@ -16,9 +16,28 @@
 # You should have received a copy of the GNU General Public License
 # along with mockservation.  If not, see <http://www.gnu.org/licenses/>.
 
+from abc import ABC, abstractmethod
 import os
 import inspect
-from .bundle import Bundle
+
+class Bundle(ABC):
+    """An abstract class to be implemented by data bundle loaders
+    """
+    @abstractmethod
+    def close(self): # must be implemented by subclasses
+        pass
+
+    # Bundle is a context manager so it can be used with the `with` statement
+    def __enter__():
+        return self
+    def __exit__(self, exception_type, exception_val, trace):
+        self.close()
+
+    # Bundle may conform to the iterator protocal
+    def __iter__(self):
+        return self
+    def __next__(self):
+        raise NotImplementedError
 
 class MultipleImplementationError(Exception):
     pass
