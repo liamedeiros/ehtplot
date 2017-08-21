@@ -16,4 +16,7 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 from .open   import *
+from .theme  import *
 from .figure import *
+
+set_themes()

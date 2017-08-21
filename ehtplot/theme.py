@@ -15,7 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-def set_themes(screen='crystal',        # e.g., jupyter notebook
+import matplotlib as mpl
+import os
+
+def set_themes(style='ehtplot',
+               screen='crystal',        # e.g., jupyter notebook
                vector='ApJ',            # e.g., eps and pdf for journals
                raster=['dark-on-white', # e.g., for talks
                        'light-on-black'] ):
@@ -38,4 +42,7 @@ def set_themes(screen='crystal',        # e.g., jupyter notebook
         raster: the theme(s) used for exporting to raster (bitmap) formats
 
     """
-    pass
+    file = os.path.join(os.path.dirname(__file__), style+".mplstyle")
+    if os.path.isfile(file):
+        style = mpl.rc_params_from_file(file, use_default_template=False)
+    mpl.style.use(style)
