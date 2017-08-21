@@ -23,7 +23,7 @@ from matplotlib.colors import LogNorm
 from matplotlib.ticker import MultipleLocator
 import matplotlib
 import pkg_resources as pr
-
+import os
 
 class Figure(matplotlib.figure.Figure):
     """The main class of ehtplot that enhances matplotlib's Figure.
@@ -61,6 +61,11 @@ class Figure(matplotlib.figure.Figure):
         if size is None:
             w    = columnwidth if subplots[1] == 1 else textwidth
             size = (w, w / subplots[1] * subplots[0])
+
+        file  = os.path.join(os.path.dirname(__file__), "ehtplot.mplstyle")
+        style = matplotlib.rc_params_from_file(file,
+                                               use_default_template=False)
+        matplotlib.style.use(style)
 
         super(Figure, self).__init__(figsize=size, **kwargs)
         self.set_canvas(matplotlib.backends.backend_agg.FigureCanvasAgg(self))

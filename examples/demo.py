@@ -6,4 +6,4 @@ img = ep.open("sample")
 
 fig = ep.Figure()
 fig.plot_image(img, pixsize=1)
-fig.savefig("demo.jpg")
+fig.savefig("demo.png")
