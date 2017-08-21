@@ -79,32 +79,74 @@ class Figure(mpl.figure.Figure):
                    array, pixsize, axis=None, norm=True, scale='lin',
                    colorbar=True, limits=(0, 1), colormap='gnuplot2',
                    zoom=False, labelx='auto', labely='auto'):
-        """Plot a two-dimensional numpy array as an image.
+        """!@brief Makes a plot of an image.
 
-        This can be used for a single image or for multiple subplots.
+        This can be used for a single image or for multiple subplots,
+        below is an example of how this can be used for a single
+        image:
 
-        Args:
-            array: 2D numpy array of the image to be plotted
-            pixsize: pixel size
-            axis: optional matplotlib axis
-            norm: optional keyword, default set to True, if True will
-                  normalize image so that the maximum is 1, if false
-                  does not normalize image
-            scale: optional keyword, default set to 'lin', 'log' is
-                   also supported, this sets the scale of the color
-                   map
-            colorbar: optional keyword, default set to True, if True
-                      will plot the color bar
-            limits: this is the limits for the color bar if scale='lin'
-            colormap: this is the color map used in the plot
-            zoom: zoom in to the photon ring
-            labelx,
-            labely: can be 'auto' which will let the code choose
-                    whether to include the label.  'force' which will
-                    force it to have a label, None which will force it
-                    to not have a label, or you can set it equal to
-                    another string which will force it to have a label
-                    equal to that string.
+        @code
+        fig,(ax1) = plt.subplots(1,1)
+        fig.set_size_inches(6,6)
+
+        plot_image(image_array, fig, ax1, m)
+
+        fig.savefig(file_name, bbox_inches='tight')
+        plt.close(fig)
+        @endcode
+
+        This is an example for multiple subplots:
+
+        @code
+        fig,((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2)
+        fig.set_size_inches(12,12)
+
+        plot_image(image_array1, fig,ax1, m, colorbar=False)
+        plot_image(image_array2, fig,ax2, m, colorbar=False, model_text=False)
+        plot_image(image_array3, fig,ax3, m, colorbar=False, model_text=False)
+        plot_image(image_array4, fig,ax4, m, colorbar=False, model_text=False)
+
+        fig.savefig(file_name, bbox_inches='tight')
+        plt.close(fig)
+        @endcode
+
+        Note that for multiple subplots you might want to omit color
+        bars, and only include the model name in one of the subplots.
+
+        @param array 2D numpy array of the image to be plotted
+
+        @param pixsize pixel size of the image
+
+        @param axis the subplot (where applicable) where you want to
+        plot your image, see the example code above
+
+        @param norm optional keyword, default set to True, if True
+        will normalize image so that the maximum is 1, if false does
+        not normalize image
+
+        @param scale optional keyword, default set to 'lin', 'log' is
+        also supported, this sets the scale of the color map
+
+        @param colorbar optional keyword, default set to True, if True
+        will plot the color bar
+
+        @param colormap optional keyword, default set to 'gnuplot2',
+        this sets the color map of the image and color bar
+
+        @param limits optional keyword, default set to (0, 1), this
+        sets limits for the color if scale='lin'
+
+        @param zoom optional keyword, default set to True, when True
+        will zoom the plot in to the photon ring
+
+        @param labelx optional keyword, default set to True, when True
+        will plot the x-axis label
+
+        @param labely optional keyword, default set to True, when True
+        will plot the y-axis label
+
+        @returns 0
+
         """
         n_row = self.axs.shape[0]
         n_col = self.axs.shape[1]
