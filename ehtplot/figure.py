@@ -44,7 +44,9 @@ class Figure(matplotlib.figure.Figure):
 
     """
 
-    def __init__(self, subplots=(1,1), size=None, fontsz=10, **kwargs):
+    def __init__(self, style="ehtplot",
+                 subplots=(1,1), size=None,
+                 fontsz=10, **kwargs):
         """Construct the ehtplot Figure class.
 
         ... long description ...
@@ -62,9 +64,10 @@ class Figure(matplotlib.figure.Figure):
             w    = columnwidth if subplots[1] == 1 else textwidth
             size = (w, w / subplots[1] * subplots[0])
 
-        file  = os.path.join(os.path.dirname(__file__), "ehtplot.mplstyle")
-        style = matplotlib.rc_params_from_file(file,
-                                               use_default_template=False)
+        file = os.path.join(os.path.dirname(__file__), style+".mplstyle")
+        if os.path.isfile(file):
+            style = matplotlib.rc_params_from_file(file,
+                                                   use_default_template=False)
         matplotlib.style.use(style)
 
         super(Figure, self).__init__(figsize=size, **kwargs)
