@@ -36,3 +36,4 @@ rendering depend on the user selected targeted outputs.
 
 - [The Event Horizon Telescope](https://eventhorizontelescope.org)
 - [ehtplot Documentation](https://liamedeiros.github.io/ehtplot)
+- [matplotlib Usage Guide](https://matplotlib.org/tutorials/introductory/usage.html)
