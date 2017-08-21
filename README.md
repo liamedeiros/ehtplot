@@ -12,8 +12,8 @@ plots, adding the expected event horizon size to the plots, etc.
 # Special Features
 
 By introducing a logical layer to hierarchically organize subplots and
-manage subplot properties, `ehtplot` is capible to combining many
-simple plots to a complex figure (see the documentation of the Panel
+manage subplot properties, `ehtplot` is capable to combining many
+simple plots in a complex figure (see the documentation of the Panel
 class).  This feature helps to generate comparative plots for the [EHT
 Imaging Challenge](http://vlbiimaging.csail.mit.edu/imagingchallenge).
 
