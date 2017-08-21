@@ -15,31 +15,31 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-import numpy as np
+import numpy             as np
+import matplotlib        as mpl
 import matplotlib.pyplot as plt
-from matplotlib import cm, colors, rcParams
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from matplotlib.colors import LogNorm
-from matplotlib.ticker import MultipleLocator
-import matplotlib
-import pkg_resources as pr
+import pkg_resources     as pr
 
-class Figure(matplotlib.figure.Figure):
+from matplotlib              import cm, colors, rcParams
+from matplotlib.colors       import LogNorm
+from matplotlib.ticker       import MultipleLocator
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+class Figure(mpl.figure.Figure):
     """The main class of ehtplot that enhances matplotlib's Figure.
 
     The Figure class is the "outermost container" in ehtplot that
-    enhances matplotlib's Figure class.  An ehtplot Figure can be
+    inherits matplotlib's Figure class.  An ehtplot Figure can be
     rendered on screen and exported to files.  Logically, an ehtplot
     Figure always contains a single root ehtplot Panel instance,
     although the root Panel can have multiple subpanels in it.  See
     the documentation of the ehtplot Panel class for details.
 
     Attributes:
-        fig: matplotlib Figure class
-        axs: matplotlib axes
-        fontsz: font size
-        count: number of subplots
-        size: size is in (x, y)
+        axs:       matplotlib axes
+        fontsz:    font size
+        count:     number of subplots
+        size:      size is in (x, y)
 
     """
 
@@ -64,7 +64,7 @@ class Figure(matplotlib.figure.Figure):
             size = (w, w / subplots[1] * subplots[0])
 
         super(Figure, self).__init__(figsize=size, **kwargs)
-        self.set_canvas(matplotlib.backends.backend_agg.FigureCanvasAgg(self))
+        self.set_canvas(mpl.backends.backend_agg.FigureCanvasAgg(self))
 
         axs = self.subplots(subplots[0], subplots[1])
         if subplots[0] == 1 and subplots[1] == 1:

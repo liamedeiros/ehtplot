@@ -19,8 +19,7 @@
 from abc import ABC, abstractmethod
 
 class Bundle(ABC):
-    """
-    An abstract class to be implemented by data bundle loaders
+    """An abstract class to be implemented by data bundle loaders
     """
     @abstractmethod
     def close(self): # must be implemented by subclasses

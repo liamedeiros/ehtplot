@@ -37,6 +37,7 @@ def set_themes(style='ehtplot',
     dictionary to store themes for now.
 
     Args:
+        style:  master matplotlib style
         screen: the theme(s) used for rendering on screen
         vector: the theme(s) used for exporting to vector graphics formats
         raster: the theme(s) used for exporting to raster (bitmap) formats

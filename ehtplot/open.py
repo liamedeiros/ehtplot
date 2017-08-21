@@ -27,8 +27,7 @@ def fullname(cls):
     return cls.__module__ + "." + cls.__name__
 
 def open(name):
-    """
-    Open a data file/bundle for mockservation according to extensions
+    """Open a data file/bundle for mockservation according to extensions
 
     Args:
         name:    Name of the data file/bundle
@@ -42,6 +41,7 @@ def open(name):
     Examples:
         >>> import mockservation as mock
         >>> handle = mock.open("data_file.raw")
+
     """
     if os.path.isdir(name):
         open_x = open_bundle # open_bundle() have been implemented; see below
@@ -59,8 +59,7 @@ def open(name):
     return open_x(name)
 
 def open_bundle(name):
-    """
-    Open a folder as a data bundle
+    """Open a folder as a data bundle
 
     Args:
         name:    Name of the data bundle
@@ -74,6 +73,7 @@ def open_bundle(name):
     Examples:
         >>> import mockservation as mock
         >>> handle = mock.open_bundle("data_bundle")
+
     """
     abcname = fullname(Bundle)
 
