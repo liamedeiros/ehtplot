@@ -78,21 +78,26 @@ class Figure(mpl.figure.Figure):
     def plot_image(self,
                    array, pixsize, axis=None, norm=True, scale='lin',
                    colorbar=True, limits=(0, 1), colormap='gnuplot2',
-                   zoom=False, labelx='auto', labely='auto', lim_log=False):
+                   zoom=False, labelx='auto', labely='auto'):
         """Plot a two-dimensional numpy array as an image.
 
-        ... long description ...
+        This can be used for a single image or for multiple subplots.
 
         Args:
-            array:
-            pixsize:
-            axis:
-            norm:
-            scale:
-            colorbar:
-            limits:
-            colormap:
-            zoom:
+            array: 2D numpy array of the image to be plotted
+            pixsize: pixel size
+            axis: optional matplotlib axis
+            norm: optional keyword, default set to True, if True will
+                  normalize image so that the maximum is 1, if false
+                  does not normalize image
+            scale: optional keyword, default set to 'lin', 'log' is
+                   also supported, this sets the scale of the color
+                   map
+            colorbar: optional keyword, default set to True, if True
+                      will plot the color bar
+            limits: this is the limits for the color bar if scale='lin'
+            colormap: this is the color map used in the plot
+            zoom: zoom in to the photon ring
             labelx,
             labely: can be 'auto' which will let the code choose
                     whether to include the label.  'force' which will
@@ -100,8 +105,6 @@ class Figure(mpl.figure.Figure):
                     to not have a label, or you can set it equal to
                     another string which will force it to have a label
                     equal to that string.
-            lim_log:
-
         """
         n_row = self.axs.shape[0]
         n_col = self.axs.shape[1]
