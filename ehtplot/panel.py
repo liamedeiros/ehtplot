@@ -16,7 +16,7 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 class Panel:
-    """The class for hierarchically organize subplots in ehtplot
+    """The "node" class for hierarchically organizing subplots in ehtplot
 
     The Panel class is the "organization class" that allows ehtplot to
     hierarchically organize subplots and manage subplot properties.
@@ -25,4 +25,13 @@ class Panel:
     set of subpanels.
 
     """
-    pass
+
+    def __init__(self, image=None):
+        self.plots = []
+        if image is not None:
+            self.plot_image(image)
+
+    def plot_image(self, img):
+        def plot(ax):
+            ax.imshow(img)
+        self.plots += [plot]

@@ -17,6 +17,7 @@
 
 from .open   import *
 from .theme  import *
+from .panel  import *
 from .figure import *
 
 set_themes()

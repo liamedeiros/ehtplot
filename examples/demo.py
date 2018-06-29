@@ -3,9 +3,9 @@
 import ehtplot as ep
 
 img = ep.open("sample")
-pnl = ep.Panel(image=img, pixsize=1)
+pnl = ep.Panel(image=img)
 fig = ep.Figure(pnl)
 
-fig.show(style='ggplot')
-fig.save(style='default', "demo.png")
-fig.save(style='seaborn', "demo-seaborn.png")
+fig.save("demo-seaborn.png", style='seaborn')
+fig.save("demo-ggplot.png",  style='ggplot')
+fig.save("demo.png")
