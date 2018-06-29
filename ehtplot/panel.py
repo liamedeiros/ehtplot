@@ -37,10 +37,17 @@ class Panel:
         return iter(self.subpanels)
 
     def __call__(self, ax):
-        for s in self.subpanels:
-            s(ax)
-        for p in self.plots:
-            p(ax)
+        for plot in self.plots:
+            plot(ax)
+
+        if not self.subpanels:
+            return
+        fig = ax.figure
+        pos = ax.get_position()
+        h   =  pos.y1 - pos.y0
+        w   = (pos.x1 - pos.x0) / len(self.subpanels)
+        for i, panel in enumerate(self.subpanels):
+            panel(fig.add_axes([pos.x0+i*w, pos.y0, w, h]))
 
     def plot_image(self, img):
         def plot(ax):
