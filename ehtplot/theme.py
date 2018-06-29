@@ -1,4 +1,4 @@
-# Copyright (C) 2017 Chi-kwan Chan
+# Copyright (C) 2017--2018 Lia Medeiros & Chi-kwan Chan
 #
 # This file is part of ehtplot.
 #
