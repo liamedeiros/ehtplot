@@ -36,6 +36,6 @@ class Figure:
     def save(self, file, style='default'):
         set_themes(style)
 
-        fig, axes = plt.subplots(1, 1)
-        self.panel(axes)
+        fig = plt.figure()
+        self.panel(fig)
         fig.savefig(file)

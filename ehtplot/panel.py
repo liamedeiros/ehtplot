@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+import matplotlib as mpl
+
 class Panel:
     """The "node" class for hierarchically organizing subplots in ehtplot
 
@@ -37,6 +39,9 @@ class Panel:
         return iter(self.subpanels)
 
     def __call__(self, ax):
+        if isinstance(ax, mpl.figure.Figure):
+            ax = ax.add_axes([0, 0, 1, 1])
+
         if not self.plots:
             ax.axis('off')
         for plot in self.plots:
