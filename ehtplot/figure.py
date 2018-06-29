@@ -31,13 +31,11 @@ class Figure:
     """
 
     def __init__(self, panel):
-        self.panels = [panel]
+        self.panel = panel
 
     def save(self, file, style='default'):
         set_themes(style)
 
         fig, axes = plt.subplots(1, 1)
-        for P in self.panels:
-            for p in P.plots:
-                p(axes)
+        self.panel(axes)
         fig.savefig(file)

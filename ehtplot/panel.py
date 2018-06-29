@@ -26,10 +26,21 @@ class Panel:
 
     """
 
-    def __init__(self, image=None):
-        self.plots = []
+    def __init__(self, subpanels=None, image=None):
+        self.subpanels = [] if subpanels is None else subpanels
+        self.plots     = []
+
         if image is not None:
             self.plot_image(image)
+
+    def __iter__(self):
+        return iter(self.subpanels)
+
+    def __call__(self, ax):
+        for s in self.subpanels:
+            s(ax)
+        for p in self.plots:
+            p(ax)
 
     def plot_image(self, img):
         def plot(ax):
