@@ -37,6 +37,8 @@ class Panel:
         return iter(self.subpanels)
 
     def __call__(self, ax):
+        if not self.plots:
+            ax.axis('off')
         for plot in self.plots:
             plot(ax)
 
