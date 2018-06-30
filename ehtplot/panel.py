@@ -19,12 +19,15 @@ import matplotlib as mpl
 import importlib.util as iu
 from os.path import dirname
 
-def load(name):
-    plotdir = dirname(__file__) + "/plot/"
-    spec    = iu.spec_from_file_location("plot_image", plotdir + name + ".py")
-    module  = iu.module_from_spec(spec)
+def load(method):
+    dir, name = method.split('_', 1)
+
+    file   = dirname(__file__) + "/" + dir + "/" + name + ".py"
+    spec   = iu.spec_from_file_location("plot_image", file)
+    module = iu.module_from_spec(spec)
     spec.loader.exec_module(module)
-    return module
+
+    return module.__dict__[method]
 
 class Panel:
     """The "node" class for hierarchically organizing subplots in ehtplot
@@ -67,9 +70,8 @@ class Panel:
 
     def __getattr__(self, method):
         def stage(*args, **kwargs):
-            module = load("image")
+            func = load(method)
             def plot(ax):
-                module.plot_image(ax, *args, **kwargs)
+                func(ax, *args, **kwargs)
             self.plots += [plot]
-
         return stage
