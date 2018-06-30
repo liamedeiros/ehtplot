@@ -28,12 +28,12 @@ class Panel:
 
     """
 
-    def __init__(self, subpanels=None, image=None):
+    def __init__(self, subpanels=None, image=None, *args, **kwargs):
         self.subpanels = [] if subpanels is None else subpanels
         self.plots     = []
 
         if image is not None:
-            self.plot_image(image)
+            self.plot_image(image, *args, **kwargs)
 
     def __iter__(self):
         return iter(self.subpanels)
@@ -56,7 +56,10 @@ class Panel:
         for i, panel in enumerate(self.subpanels):
             panel(fig.add_axes([pos.x0+i*w, pos.y0, w, h]))
 
-    def plot_image(self, img):
+    def plot_image(self, img, *args, **kwargs):
+        from .plot.image import plot_image
+
         def plot(ax):
-            ax.imshow(img)
+            plot_image(ax, img, *args, **kwargs)
+
         self.plots += [plot]
