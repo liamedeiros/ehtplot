@@ -16,6 +16,15 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 import matplotlib as mpl
+import importlib.util as iu
+from os.path import dirname
+
+def load(name):
+    plotdir = dirname(__file__) + "/plot/"
+    spec    = iu.spec_from_file_location("plot_image", plotdir + name + ".py")
+    module  = iu.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 class Panel:
     """The "node" class for hierarchically organizing subplots in ehtplot
@@ -57,9 +66,9 @@ class Panel:
             panel(fig.add_axes([pos.x0+i*w, pos.y0, w, h]))
 
     def plot_image(self, img, *args, **kwargs):
-        from .plot.image import plot_image
+        module = load("image")
 
         def plot(ax):
-            plot_image(ax, img, *args, **kwargs)
+            module.plot_image(ax, img, *args, **kwargs)
 
         self.plots += [plot]
