@@ -31,11 +31,15 @@ class Figure:
     """
 
     def __init__(self, panel):
+        self.fig   = plt.figure()
         self.panel = panel
+
+    def show(self, style='default'):
+        set_themes(style)
+        self.panel(self.fig)
+        self.fig.show()
 
     def save(self, file, style='default'):
         set_themes(style)
-
-        fig = plt.figure()
-        self.panel(fig)
-        fig.savefig(file)
+        self.panel(self.fig)
+        self.fig.savefig(file)
