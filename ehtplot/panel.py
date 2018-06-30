@@ -65,10 +65,11 @@ class Panel:
         for i, panel in enumerate(self.subpanels):
             panel(fig.add_axes([pos.x0+i*w, pos.y0, w, h]))
 
-    def plot_image(self, img, *args, **kwargs):
-        module = load("image")
+    def __getattr__(self, method):
+        def stage(*args, **kwargs):
+            module = load("image")
+            def plot(ax):
+                module.plot_image(ax, *args, **kwargs)
+            self.plots += [plot]
 
-        def plot(ax):
-            module.plot_image(ax, img, *args, **kwargs)
-
-        self.plots += [plot]
+        return stage
