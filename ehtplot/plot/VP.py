@@ -15,94 +15,83 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-def plot_VP(ax1, array, fig=None, output=None, name=None, btracks=True,
-font=10.56, colorbar=True, pad=8, M=64,  x_label=True, y_label=True, zoom=True,
-white_width=5, interpolation='bilinear',tick_color='k', cb_tick_color='k'):
+def plot_VP(ax1, array, pad=8, M=64,
+            name=None,
+            btracks=True, colorbar=True,
+            white_width=5, interpolation='bilinear',
+            x_label=True, y_label=True, zoom=True,
+            tick_color='k', cb_tick_color='k'):
     """!@brief Makes a plot of a visibility phase map.
 
     This can be used for a single image or for multiple subplots,
     below is an example of how this can be used for a single image:
-   @code
-    plot_VP(VP_array,name='Visibility Phase', output='output_file.pdf')
+    @code
+    fig = Figure(Panel().plot_VP(VP_array,name='Visibility Phase'))
+    fig.savefig(file_name)
     @endcode
 
     This is an example for multiple subplots:
 
     @code
-    fig,((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2)
-    fig.set_size_inches(12,12)
+    pnl1 = Panel().plot_VP(VP_array1, colorbar=False)
+    pnl1 = Panel().plot_VP(VP_array2, colorbar=False)
+    pnl1 = Panel().plot_VP(VP_array3, colorbar=False)
+    pnl1 = Panel().plot_VP(VP_array4, colorbar=False)
 
-    plot_VP(VP_array1, fig=fig,ax1=ax1, colorbar=False)
-    plot_VP(VP_array2, fig=fig,ax1=ax2, colorbar=False)
-    plot_VP(VP_array3, fig=fig,ax1=ax3, colorbar=False)
-    plot_VP(VP_array4, fig=fig,ax1=ax4, colorbar=False)
-
-    fig.savefig(file_name, bbox_inches='tight')
-    plt.close(fig)
+    fig = Figure([[pnl1, pnl2], [pnl3, pnl4]])
+    fig.savefig(file_name)
     @endcode
-
 
     Note that for multiple subplots you might want to omit color bars,
     and only include the model name in one of the subplots.
 
+    @param ax1 the name of the subplot (where applicable) where you
+    want to plot your image, see the example code above.
+
     @param array 2D numpy array of the image to be plotted.
 
-    @param fig the name of the figure where you want to plot your image,
-    see the example code above.
+    @param name optional keyword, default set to None. If not None
+    must be a string and will add a text label to the plot equal to
+    this string.
 
-    @param ax1 the name of the subplot (where applicable) where you want to plot
-    your image, see the example code above.
+    @param btracks optional keyword, default set to True, if True will
+    plot the baseline tracks for the EHT over the VA map.
 
-    @param output optional keyword, default set to None, if not None should be
-    a string and  will save the figure to a file with file name equal to output.
-    @param name optional keyword, default set to None. If not None must be a
-    string and will add a text label to the plot equal to this string.
+    @param font optional keyword, default set to 20, this sets the
+    font size for the axis labels, and numbers as well as the numbers
+    for the color bar.
 
-    @param name optional keyword, default set to None. If not None must be a
-    string and will add a text label to the plot equal to this string.
+    @param colorbar optional keyword, default set to True, if True
+    will plot the color bar, if False will do nothing, and if set to
+    'top' will plot colorbar on top.
 
-    @param btracks optional keyword, default set to True, if True will plot the
-    baseline tracks for the EHT over the VA map.
+    @param pad int, optional keyword, default set to 8, factor by
+    which I want to pad my arrays before taking the fft.
 
-    @param font optional keyword, default set to 20, this sets
-    the font size for the axis labels, and numbers as well as the numbers for
-    the color bar.
+    @param M int, optional keyword, default set to 64, size the the
+    array in units of \f$ GM/c^2 \f$.
 
-    @param colorbar optional keyword, default set to True, if True will plot the
-    color bar, if False will do nothing, and if set to 'top' will plot colorbar
-    on top.
+    @param x_label optional keyword, default set to True. If True will
+    add a label to the x-axis, if False, will not add this label..
 
-    @param pad int, optional keyword, default set to 8, factor by which I want
-    to pad my arrays before taking the fft.
+    @param y_label optional keyword, default set to True. If True will
+    add a label to the y-axis, if False, will not add this label.
 
-    @param M int, optional keyword, default set to 64, size the the array in
-    units of \f$ GM/c^2 \f$.
+    @param zoom optional keyword, default set to True. If set to True
+    will zoom in to about 20 \f$ G \lambda \f$ on each side, if not
+    set to True, will leave the full array visible, unless bounds is
+    set.
 
-    @param x_label optional keyword, default set to True. If True will add a
-    label to the x-axis, if False, will not add this label..
+    @param white_width optional keyword, default set to 5. This will
+    control the width of the white border around the black text on the
+    plot.
 
-    @param y_label optional keyword, default set to True. If True will add a
-    label to the y-axis, if False, will not add this label.
+    @param interpolation optional keyword, default set to
+    'bilinear'. This will control the type of interpolation that is
+    used in the plot, the options are the same as those for
+    matplotlib.
 
-    @param zoom optional keyword, default set to True. If set to True will zoom
-    in to about 20 \f$ G \lambda \f$ on each side, if not set to True, will leave
-    the full array visible, unless bounds is set.
-
-    @param white_width optional keyword, default set to 5. This will control the
-    width of the white border around the black text on the plot.
-
-    @param interpolation optional keyword, default set to 'bilinear'. This will
-    control the type of interpolation that is used in the plot, the options are
-    the same as those for matplotlib.
-
-    @returns ax1 if ax1 not given, or the image object if ax1 is given.
     """
-    make_fig = False
-    if (fig == None) and (ax1 == None):
-        make_fig =True
-        columnwidth = 3.39441
-        fig,(ax1) = plt.subplots(1,1)
-        fig.set_size_inches(columnwidth,columnwidth)
 
     x       = np.shape(array)[0]
     r0      = x*np.sqrt(27)/M # this is the radius of the black hole shadow
@@ -150,9 +139,3 @@ white_width=5, interpolation='bilinear',tick_color='k', cb_tick_color='k'):
         if name !=None:
             txt = ax1.text(.9*temp[0],-.9*temp[0], name, fontsize=font, color='k') #makes the text label
             txt.set_path_effects([PathEffects.withStroke(linewidth=white_width, foreground='w')])
-
-    if output != None:
-        fig.savefig(output, bbox_inches='tight')
-        plt.close(fig)
-    if make_fig == True:return(ax1)
-    else: return(im1)
