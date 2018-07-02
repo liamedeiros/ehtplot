@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-def plot_VA(array, fig=None, ax1=None, output=None, name=None, norm=True, scale='lin',
+def plot_VA(ax1, array, fig=None, output=None, name=None, norm=True, scale='lin',
 btracks=True, font=10.56, colorbar=True, lim_lin=np.array([0,1]), lim_log=False,
 norm_num=1, pad=8, M=64, bounds='default', x_label=True, y_label=True, zoom=True,
 colorbar_ticks='set', tick_color='w', cb_tick_color='k'):

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-def plot_VP(array, fig=None, ax1=None, output=None, name=None, btracks=True,
+def plot_VP(ax1, array, fig=None, output=None, name=None, btracks=True,
 font=10.56, colorbar=True, pad=8, M=64,  x_label=True, y_label=True, zoom=True,
 white_width=5, interpolation='bilinear',tick_color='k', cb_tick_color='k'):
     """!@brief Makes a plot of a visibility phase map.
