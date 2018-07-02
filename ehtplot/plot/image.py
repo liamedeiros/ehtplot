@@ -1,4 +1,4 @@
-# Copyright (C) 2017--2018 Lia Medeiros & Chi-kwan Chan
+# Copyright (C) 2018 Lia Medeiros
 #
 # This file is part of ehtplot.
 #
@@ -15,206 +15,225 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-import numpy             as np
-import matplotlib        as mpl
+import numpy as np
 import matplotlib.pyplot as plt
-import pkg_resources     as pr
-
-from matplotlib              import cm, colors, rcParams
-from matplotlib.colors       import LogNorm
-from matplotlib.ticker       import MultipleLocator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib.colors import LogNorm
 
-class Figure(mpl.figure.Figure):
-    """The main class of ehtplot that enhances matplotlib's Figure.
+def plot_image(array, fig=None, ax1=None, spin=None, theta=60.0, output=None, name=None, norm=True, scale='lin',
+               font=10.56, colorbar=True, norm_num=1, lim_lin=np.array([0,1]), lim_log=False, flip_x=False,
+               horz=False, M=64, x_label=True, y_label=True, colorbar_ticks='set', circle_width=1,
+               zoom=True, tick_color='w', cb_tick_color='k'):
+    """!@brief Makes a plot of an image.
 
-    The Figure class is the "outermost container" in ehtplot that
-    inherits matplotlib's Figure class.  An ehtplot Figure can be
-    rendered on screen and exported to files.  Logically, an ehtplot
-    Figure always contains a single root ehtplot Panel instance,
-    although the root Panel can have multiple subpanels in it.  See
-    the documentation of the ehtplot Panel class for details.
+    This can be used for a single image or for multiple subplots,
+    below is an example of how this can be used for a single image:
+    @code
+    plot_image(image_array, spin=.9, name='Model B', output= 'output_file.pdf')
+    @endcode
 
-    Attributes:
-        axs:       matplotlib axes
-        fontsz:    font size
-        count:     number of subplots
-        size:      size is in (x, y)
+    This is an example for multiple subplots:
 
+    @code
+    fig,((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2)
+    fig.set_size_inches(12,12)
+
+    plot_image(image_array1, fig=fig, ax1=ax1, spin=.9, colorbar=False)
+    plot_image(image_array2, fig=fig, ax1=ax2, spin=.9, colorbar=False)
+    plot_image(image_array3, fig=fig, ax1=ax3, spin=.9, colorbar=False)
+    plot_image(image_array4, fig=fig, ax1=ax4, spin=.9, colorbar=False)
+
+    fig.savefig(file_name, bbox_inches='tight')
+    plt.close(fig)
+    @endcode
+
+    Note that for multiple subplots you might want to omit color bars,
+    and only include the model name in one of the subplots.
+
+    @param array 2D numpy array of the image to be plotted.
+
+    @param fig optional keyword, default set to None. If None will create a
+    figure of size columnwidth by columnwidth with one subplot. If not None this
+    should be the name of the figure where you want to plot your image,
+    see the example code above.
+
+    @param ax1 optional keyword, default set to None this keyword is closely
+    tied with fig, either they both must be None or neither. If None will create a
+    figure of size columnwidth by columnwidth with one subplot. If not None this
+    should be the name of the subplot (where applicable) where you want to plot
+    your image, see the example code above.
+
+    @param spin optional keyword, default set to None. If None, will not draw a
+    circle over the image, if not None will draw the black hole shadow calculated
+    analytically for a kerr black hole with black hole spin given by this
+    parameter and the inclination of the observer given by the parameter theta.
+
+    @param theta optional keyword, default set to 60.0 degrees. This is the
+    inclination of the observer relative to the black hole in degrees, used to
+    analytically calculate the shape and position of the black hole shadow see
+    also spin.
+
+    @param output optional keyword, default set to None, if not None should be
+    a string and  will save the figure to a file with file name equal to output.
+
+    @param name optional keyword, default set to None. If not None must be a
+    string and will add a text label to the plot equal to this string.
+
+    @param norm optional keyword, default set to True, if True will normalize
+    image so that the maximum is 1, if false does not normalize image.
+
+    @param scale optional keyword, default set to 'lin', 'log' is also
+    supported, this sets the scale of the color map.
+
+    @param font this is an optional keyword, default is set to 10.56 because this
+    is the size of the font in the emulate ApJ 2-column latex format, this sets
+    the font size for the axis labels, and numbers as well as the numbers for
+    the color bar.
+
+    @param colorbar optional keyword, default set to True, if True will plot the
+    color bar, if False will do nothing, and if set to 'top' will plot colorbar
+    on top.
+
+    @param norm_num optional keyword, default set to 1, this is in case
+    normalizing to 1 doesn't give the desired image, you can control a more
+    specific normalization with norm_num, for example, if norm_num=1.2, the
+    maximum value in the image will be 1.2, but the color bar will go from 0 to
+    1 (assuming scale='lin').
+
+    @param lim_lin optional keyword, default set to np.array([0,1]), this is the
+    limits for the color bar if scale='lin'.
+
+    @param lim_log optional keyword, default set to False, this is the limits
+    for the color bar if scale='log'.
+
+    @param flip_x optional keyword, default set to False. if set to True will
+    flip the array in the left-right direction.
+
+    @param horz optional keyword, default set to False, sometimes I want to plot
+    the images transposed so that we can compare different orientations, this
+    will move the red circle accordingly.
+
+    @param M int, optional keyword, default set to 64, size the array in units
+    of \f$ GM/c^2 \f$.
+
+    @param x_label optional keyword, default set to True. If True will add a
+    label to the x-axis, if False, will not add this label.
+
+    @param y_label optional keyword, default set to True. If True will add a
+    label to the y-axis, if False, will not add this label.
+
+    @param colorbar_ticks optional keyword, default set to 'set'. If set to
+    'set' the colorbar ticks will be at [0,0.2,0.4,0.6,0.8,1], if set to 'auto'
+    will let matplotlib set the colorbar ticks automatically.
+
+    @param circle_width optional keyword, default set to 1. This controls the
+    line-width of the circle that corresponds to the black hole shadow, see also
+    spin.
+
+    @param zoom optional keyword, default set to True. If set to True will zoom
+    in to about 20 \f$ GM/c^2 \f$ on each side, if not set to True, will leave
+    the full array visible.
+
+    @param tick_color optional keyword, default set to 'w' will set the color of
+    the ticks in the plot.
+
+    @param cb_tick_color optional keyword, default set to 'k' will set the color
+    of the ticks for the colobar, as long as colorbar not set to 'top'.
+
+    @returns ax1 if ax1 not given, or the image object if ax1 is given.
     """
-
-    def __init__(self,
-                 subplots=(1,1), size=None,
-                 fontsz=10, **kwargs):
-        """Construct the ehtplot Figure class.
-
-        ... long description ...
-
-        Args:
-            subplots: subplots is (row, column)
-            size: size is in (x, y)
-            fontsz: font size
-
-        """
-        textwidth   = 7.1     # in inch; for full width figure in ApJ
-        columnwidth = 3.39375 # in inch; for half width figure in ApJ
-
-        if size is None:
-            w    = columnwidth if subplots[1] == 1 else textwidth
-            size = (w, w / subplots[1] * subplots[0])
-
-        super(Figure, self).__init__(figsize=size, **kwargs)
-        self.set_canvas(mpl.backends.backend_agg.FigureCanvasAgg(self))
-
-        axs = self.subplots(subplots[0], subplots[1])
-        if subplots[0] == 1 and subplots[1] == 1:
-            axs = np.array([axs])
-        self.axs = axs.reshape(subplots)
-
-        self.fontsz = fontsz
-        self.count  = 0
-        self.size   = size
-
-    def plot_image(self,
-                   array, pixsize, axis=None, norm=True, scale='lin',
-                   colorbar=True, limits=(0, 1), colormap='gnuplot2',
-                   zoom=False, labelx='auto', labely='auto'):
-        """!@brief Makes a plot of an image.
-
-        This can be used for a single image or for multiple subplots,
-        below is an example of how this can be used for a single
-        image:
-
-        @code
+    make_fig = False
+    if (fig == None) and (ax1 == None):
+        make_fig =True
+        columnwidth = 3.39441
         fig,(ax1) = plt.subplots(1,1)
-        fig.set_size_inches(6,6)
+        fig.set_size_inches(columnwidth,columnwidth)
 
-        plot_image(image_array, fig, ax1, m)
+    x       = np.shape(array)[0]
+    r0      = x*np.sqrt(27)/M # this is the radius of the black hole shadow
+    r0M     = r0*M/x # this gives the BH shadow in units of GM/c**2
+    if norm == True: array = array/(np.max(array))*norm_num
 
-        fig.savefig(file_name, bbox_inches='tight')
+    plt.set_cmap('gnuplot2')
+    if scale == 'lin':
+        if flip_x == True:
+            array = np.fliplr(array)
+            im1   = ax1.imshow(array, extent=[M/2.0,-M/2.0,-M/2.0,M/2.0],vmin=lim_lin[0], vmax=lim_lin[1], origin='lower', interpolation='bilinear')
+        else:
+            im1   = ax1.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],vmin=lim_lin[0], vmax=lim_lin[1], origin='lower', interpolation='bilinear')
+        if colorbar==True:
+            divider1 = make_axes_locatable(ax1)
+            cax1     = divider1.append_axes("right", size="7%", pad=0.05)
+            if colorbar_ticks == 'auto': cbar1    = plt.colorbar(im1, cax=cax1)
+            else: cbar1    = plt.colorbar(im1, cax=cax1, ticks=[0,0.2,0.4,0.6,0.8,1])
+            cbar1.ax.tick_params(labelsize=font, color=cb_tick_color,width=1, direction='in')
+        elif colorbar== 'top':
+            divider1 = make_axes_locatable(ax1)
+            cax1     = divider1.append_axes("top", size="7%", pad=0.05)
+            if colorbar_ticks == 'auto': cbar1    = plt.colorbar(im1,orientation="horizontal", cax=cax1)
+            else: cbar1    = plt.colorbar(im1, cax=cax1,orientation="horizontal", ticks=[0,0.2,0.4,0.6,0.8])
+            cbar1.ax.tick_params(labelsize=font)#, color='w',width=1.5, direction='in')
+            cbar1.ax.xaxis.set_ticks_position('top')
+    elif scale == 'log':
+        if type(lim_log) ==bool:
+            if flip_x == True:
+                array = np.fliplr(array)
+                im1=ax1.imshow(array, extent=[M/2.0,-M/2.0,-M/2.0,M/2.0], norm=LogNorm()                                , origin='lower', interpolation='bilinear')
+            else:
+                im1=ax1.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0], norm=LogNorm()                                , origin='lower', interpolation='bilinear')
+        else:
+            if flip_x == True:
+                array = np.fliplr(array)
+                im1=ax1.imshow(array, extent=[M/2.0,-M/2.0,-M/2.0,M/2.0], norm=LogNorm(vmin=lim_log[0], vmax=lim_log[1]), origin='lower', interpolation='bilinear')
+            else:
+                im1=ax1.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0], norm=LogNorm(vmin=lim_log[0], vmax=lim_log[1]), origin='lower', interpolation='bilinear')
+        if colorbar==True:
+            divider1 = make_axes_locatable(ax1)
+            cax1     = divider1.append_axes("right", size="7%", pad=0.05)
+            cbar1    = plt.colorbar(im1, cax=cax1)
+            cbar1.ax.xaxis.set_ticks_position('top')
+            cbar1.ax.tick_params(labelsize=font, color=cb_tick_color, direction='in')
+        elif colorbar== 'top':
+            divider1 = make_axes_locatable(ax1)
+            cax1     = divider1.append_axes("top", size="7%", pad=0.05)
+            cbar1    = plt.colorbar(im1,orientation="horizontal", cax=cax1)
+            cbar1.ax.tick_params(labelsize=font)#, color='w',width=1.5, direction='in')
+            cbar1.ax.xaxis.set_ticks_position('top')
+    ax1.tick_params(axis='both', which='major', labelsize=font, color=tick_color,width=1.5, direction='in')
+
+    if flip_x == False:
+        if zoom == True: # flip_x = False, zoom=True
+            ax1.set_xlim([-r0M*2, r0M*2])
+            ax1.set_ylim([-r0M*2, r0M*2])
+            ax1.set_xticks([-10,-5,0,5,10])
+            ax1.set_yticks([-10,-5,0,5,10])
+            if name != None:
+                ax1.text(-9,-9, name, fontsize=font, color='w') #makes the text label
+        else:# flip_x = False, zoom=False
+            ax1.set_yticks(ax1.get_xticks())
+            ax1.set_ylim(ax1.get_xlim())
+            if name !=None:
+                ax1.text(-0.47*M,-0.47*M, name, fontsize=font, color='w') #makes the text label
+    elif zoom == True: # flip_x = True, zoom=True
+        ax1.set_xlim([r0M*2, -r0M*2])
+        ax1.set_ylim([-r0M*2, r0M*2])
+        ax1.set_xticks([10,5,0,-5,-10])
+        ax1.set_yticks([-10,-5,0,5,10])
+        if name != None:
+            ax1.text(9,-9, name, fontsize=font, color='w') #makes the text label
+    elif zoom == False:# flip_x = True, zoom=False
+        ax1.set_yticks(-1*ax1.get_xticks())
+        temp = ax1.get_xlim()
+        ax1.set_ylim(-1*temp[0], -1*temp[1])
+        if name !=None:
+                ax1.text(0.47*M,-0.47*M, name, fontsize=font, color='w') #makes the text label
+
+    if x_label==True: ax1.set_xlabel('X ($GMc^{-2}$)',fontsize=font)
+    if y_label==True: ax1.set_ylabel('Y ($GMc^{-2}$)',fontsize=font)
+    if spin != None:
+        make_circle_kerr(ax1,spin,i=theta,circle_width=circle_width)
+    if output != None:
+        fig.savefig(output, bbox_inches='tight')
         plt.close(fig)
-        @endcode
-
-        This is an example for multiple subplots:
-
-        @code
-        fig,((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2)
-        fig.set_size_inches(12,12)
-
-        plot_image(image_array1, fig,ax1, m, colorbar=False)
-        plot_image(image_array2, fig,ax2, m, colorbar=False, model_text=False)
-        plot_image(image_array3, fig,ax3, m, colorbar=False, model_text=False)
-        plot_image(image_array4, fig,ax4, m, colorbar=False, model_text=False)
-
-        fig.savefig(file_name, bbox_inches='tight')
-        plt.close(fig)
-        @endcode
-
-        Note that for multiple subplots you might want to omit color
-        bars, and only include the model name in one of the subplots.
-
-        @param array 2D numpy array of the image to be plotted
-
-        @param pixsize pixel size of the image
-
-        @param axis the subplot (where applicable) where you want to
-        plot your image, see the example code above
-
-        @param norm optional keyword, default set to True, if True
-        will normalize image so that the maximum is 1, if false does
-        not normalize image
-
-        @param scale optional keyword, default set to 'lin', 'log' is
-        also supported, this sets the scale of the color map
-
-        @param colorbar optional keyword, default set to True, if True
-        will plot the color bar
-
-        @param colormap optional keyword, default set to 'gnuplot2',
-        this sets the color map of the image and color bar
-
-        @param limits optional keyword, default set to (0, 1), this
-        sets limits for the color if scale='lin'
-
-        @param zoom optional keyword, default set to True, when True
-        will zoom the plot in to the photon ring
-
-        @param labelx optional keyword, default set to True, when True
-        will plot the x-axis label
-
-        @param labely optional keyword, default set to True, when True
-        will plot the y-axis label
-
-        @returns 0
-
-        """
-        n_row = self.axs.shape[0]
-        n_col = self.axs.shape[1]
-        if axis is None:
-            i   = self.count %  n_col # column
-            j   = self.count // n_col # row
-            ax1 = self.axs[j%n_row, i]
-            self.count = self.count + 1
-        else:
-            ax1 = axis
-        fontsz = self.fontsz
-        x = array.shape[0]
-        if norm == True:
-            array = array / np.max(array)
-        plt.set_cmap(colormap)
-        if scale == 'lin':
-            im1 = ax1.imshow(array,
-                             extent=[-x / 2. * pixsize, x / 2. * pixsize,
-                                     -x / 2. * pixsize, x / 2. * pixsize],
-                             vmin=limits[0], vmax=limits[1],
-                             origin='lower', interpolation='bilinear', aspect=1)
-            if colorbar == True:
-                divider1 = make_axes_locatable(ax1)
-                cax1     = divider1.append_axes("right", size="7%", pad=0.05)
-                cbar1    = plt.colorbar(im1, cax=cax1,
-                                        ticks=[0, 0.2, 0.4, 0.6, 0.8, 1])
-                cbar1.ax.tick_params(labelsize=fontsz)
-                self.set_size_inches(self.size[0], self.size[1] * .8)
-
-        if scale == 'log':
-            im1 = ax1.imshow(array,
-                             extent=[-x / 2. * pixsize, x / 2. * pixsize,
-                                     -x / 2. * pixsize, x / 2. * pixsize],
-                             LogNorm=(),
-                             origin='lower', interpolation='bilinear')
-            if colorbar == True:
-                divider1 = make_axes_locatable(ax1)
-                cax1     = divider1.append_axes("right", size="7%", pad=0.05)
-                cbar1    = plt.colorbar(im1, cax=cax1)
-                cbar1.ax.tick_params(labelsize=fontsz)
-                self.set_size_inches(self.size[0], self.size[1] * .8)
-        if labelx is None:
-            pass
-        elif labelx == 'force':
-            ax1.set_xlabel('X ($GMc^{-2}$)', fontsize=fontsz, labelpad=0)
-        elif labelx == 'auto':
-            if j == (n_row - 1):
-                ax1.set_xlabel('X ($GMc^{-2}$)', fontsize=fontsz, labelpad=0)
-        else:
-            ax1.set_xlabel(labelx, fontsize=fontsz, labelpad=0)
-
-        if labely is None:
-            pass
-        elif labely == 'force':
-            ax1.set_ylabel('Y ($GMc^{-2}$)', fontsize=fontsz, labelpad=-6)
-        elif labely == 'auto':
-            if i == 0:
-                ax1.set_ylabel('Y ($GMc^{-2}$)', fontsize=fontsz, labelpad=-6)
-        else:
-            ax1.set_ylabel(labely, fontsize=fontsz, labelpad=-6)
-
-        ax1.tick_params(axis='both', which='major',
-                        labelsize=fontsz, color='w', width=1.5)
-        if zoom == True:
-            r0 = np.sqrt(27)  # this gives the BH shadow in units of GM/c**2
-            ax1.set_xlim([-r0 * 2, r0 * 2])
-            ax1.set_ylim([-r0 * 2, r0 * 2])
-            ax1.set_xticks([-10, -5, 0, 5, 10])
-            ax1.set_yticks([-10, -5, 0, 5, 10])
-
-        return 0
+    if make_fig == True:return(ax1)
+    else: return(im1)
