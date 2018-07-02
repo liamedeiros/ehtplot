@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import LogNorm
 
-def plot_image(array, fig=None, ax1=None, spin=None, theta=60.0, output=None, name=None, norm=True, scale='lin',
+def plot_image(ax1, array, fig=None, spin=None, theta=60.0, output=None, name=None, norm=True, scale='lin',
                font=10.56, colorbar=True, norm_num=1, lim_lin=np.array([0,1]), lim_log=False, flip_x=False,
                horz=False, M=64, x_label=True, y_label=True, colorbar_ticks='set', circle_width=1,
                zoom=True, tick_color='w', cb_tick_color='k'):
@@ -142,6 +142,7 @@ def plot_image(array, fig=None, ax1=None, spin=None, theta=60.0, output=None, na
 
     @returns ax1 if ax1 not given, or the image object if ax1 is given.
     """
+
     make_fig = False
     if (fig == None) and (ax1 == None):
         make_fig =True
