@@ -25,7 +25,7 @@ def plot_image(ax1, array,
                colorbar=True, norm_num=1, lim_lin=np.array([0,1]), lim_log=False,
                flip_x=False, horz=False, M=64, x_label=True, y_label=True,
                colorbar_ticks='set', circle_width=1,
-               font=10.56, zoom=True, tick_color='w', cb_tick_color='k'):
+               zoom=True, tick_color='w', cb_tick_color='k'):
     """!@brief Makes a plot of an image.
 
     This can be used for a single image or for multiple subplots,
@@ -80,11 +80,6 @@ def plot_image(ax1, array,
 
     @param scale optional keyword, default set to 'lin', 'log' is also
     supported, this sets the scale of the color map.
-
-    @param font this is an optional keyword, default is set to 10.56
-    because this is the size of the font in the emulate ApJ 2-column
-    latex format, this sets the font size for the axis labels, and
-    numbers as well as the numbers for the color bar.
 
     @param colorbar optional keyword, default set to True, if True
     will plot the color bar, if False will do nothing, and if set to
@@ -163,7 +158,7 @@ def plot_image(ax1, array,
                 cbar1 = plt.colorbar(im1, cax=cax1)
             else:
                 cbar1 = plt.colorbar(im1, cax=cax1, ticks=[0,0.2,0.4,0.6,0.8,1])
-            cbar1.ax.tick_params(labelsize=font, color=cb_tick_color,width=1,
+            cbar1.ax.tick_params(color=cb_tick_color,width=1,
                                  direction='in')
         elif colorbar== 'top':
             divider1 = make_axes_locatable(ax1)
@@ -173,7 +168,6 @@ def plot_image(ax1, array,
             else:
                 cbar1 = plt.colorbar(im1, cax=cax1, orientation="horizontal",
                                      ticks=[0,0.2,0.4,0.6,0.8])
-            cbar1.ax.tick_params(labelsize=font)#, color='w',width=1.5, direction='in')
             cbar1.ax.xaxis.set_ticks_position('top')
     elif scale == 'log':
         if flip_x == True:
@@ -191,15 +185,14 @@ def plot_image(ax1, array,
             cax1     = divider1.append_axes("right", size="7%", pad=0.05)
             cbar1    = plt.colorbar(im1, cax=cax1)
             cbar1.ax.xaxis.set_ticks_position('top')
-            cbar1.ax.tick_params(labelsize=font, color=cb_tick_color,
+            cbar1.ax.tick_params(color=cb_tick_color,
                                  direction='in')
         elif colorbar== 'top':
             divider1 = make_axes_locatable(ax1)
             cax1     = divider1.append_axes("top", size="7%", pad=0.05)
             cbar1    = plt.colorbar(im1,orientation="horizontal", cax=cax1)
-            cbar1.ax.tick_params(labelsize=font)#, color='w',width=1.5, direction='in')
             cbar1.ax.xaxis.set_ticks_position('top')
-    ax1.tick_params(axis='both', which='major', labelsize=font,
+    ax1.tick_params(axis='both', which='major',
                     color=tick_color,width=1.5, direction='in')
 
     if flip_x == False:
@@ -209,29 +202,29 @@ def plot_image(ax1, array,
             ax1.set_xticks([-10,-5,0,5,10])
             ax1.set_yticks([-10,-5,0,5,10])
             if name != None:
-                ax1.text(-9,-9, name, fontsize=font, color='w') #makes the text label
+                ax1.text(-9,-9, name, color='w') #makes the text label
         else:# flip_x = False, zoom=False
             ax1.set_yticks(ax1.get_xticks())
             ax1.set_ylim(ax1.get_xlim())
             if name !=None:
-                ax1.text(-0.47*M,-0.47*M, name, fontsize=font, color='w') #makes the text label
+                ax1.text(-0.47*M,-0.47*M, name, color='w') #makes the text label
     elif zoom == True: # flip_x = True, zoom=True
         ax1.set_xlim([r0M*2, -r0M*2])
         ax1.set_ylim([-r0M*2, r0M*2])
         ax1.set_xticks([10,5,0,-5,-10])
         ax1.set_yticks([-10,-5,0,5,10])
         if name != None:
-            ax1.text(9,-9, name, fontsize=font, color='w') #makes the text label
+            ax1.text(9,-9, name, color='w') #makes the text label
     elif zoom == False:# flip_x = True, zoom=False
         ax1.set_yticks(-1*ax1.get_xticks())
         temp = ax1.get_xlim()
         ax1.set_ylim(-1*temp[0], -1*temp[1])
         if name !=None:
-            ax1.text(0.47*M,-0.47*M, name, fontsize=font, color='w') #makes the text label
+            ax1.text(0.47*M,-0.47*M, name, color='w') #makes the text label
 
     if x_label:
-        ax1.set_xlabel('X ($GMc^{-2}$)', fontsize=font)
+        ax1.set_xlabel('X ($GMc^{-2}$)')
     if y_label:
-        ax1.set_ylabel('Y ($GMc^{-2}$)', fontsize=font)
+        ax1.set_ylabel('Y ($GMc^{-2}$)')
     if spin != None:
         make_circle_kerr(ax1,spin,i=theta,circle_width=circle_width)

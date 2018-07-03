@@ -1,2 +1,6 @@
+text.usetex: true
+font.size: 10.56
+font.family: Times New Roman
+
 savefig.dpi: 300
 savefig.transparent: True
