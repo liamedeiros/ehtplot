@@ -25,7 +25,7 @@ def plot_image(ax1, array,
                colorbar=True, norm_num=1, lim_lin=np.array([0,1]), lim_log=False,
                flip_x=False, M=64, x_label=True, y_label=True,
                colorbar_ticks='set',
-               zoom=True, tick_color='w', cb_tick_color='k'):
+               zoom=True):
     """!@brief Makes a plot of an image.
 
     This can be used for a single image or for multiple subplots,
@@ -102,13 +102,6 @@ def plot_image(ax1, array,
     will zoom in to about 20 \f$ GM/c^2 \f$ on each side, if not set
     to True, will leave the full array visible.
 
-    @param tick_color optional keyword, default set to 'w' will set
-    the color of the ticks in the plot.
-
-    @param cb_tick_color optional keyword, default set to 'k' will set
-    the color of the ticks for the colobar, as long as colorbar not
-    set to 'top'.
-
     """
 
     x = np.shape(array)[0]
@@ -134,8 +127,7 @@ def plot_image(ax1, array,
                 cbar1 = plt.colorbar(im1, cax=cax1)
             else:
                 cbar1 = plt.colorbar(im1, cax=cax1, ticks=[0,0.2,0.4,0.6,0.8,1])
-            cbar1.ax.tick_params(color=cb_tick_color,width=1,
-                                 direction='in')
+            cbar1.ax.tick_params(width=1,direction='in')
         elif colorbar== 'top':
             divider1 = make_axes_locatable(ax1)
             cax1     = divider1.append_axes("top", size="7%", pad=0.05)
@@ -161,15 +153,13 @@ def plot_image(ax1, array,
             cax1     = divider1.append_axes("right", size="7%", pad=0.05)
             cbar1    = plt.colorbar(im1, cax=cax1)
             cbar1.ax.xaxis.set_ticks_position('top')
-            cbar1.ax.tick_params(color=cb_tick_color,
-                                 direction='in')
+            cbar1.ax.tick_params(direction='in')
         elif colorbar== 'top':
             divider1 = make_axes_locatable(ax1)
             cax1     = divider1.append_axes("top", size="7%", pad=0.05)
             cbar1    = plt.colorbar(im1,orientation="horizontal", cax=cax1)
             cbar1.ax.xaxis.set_ticks_position('top')
-    ax1.tick_params(axis='both', which='major',
-                    color=tick_color,width=1.5, direction='in')
+    ax1.tick_params(axis='both', which='major',width=1.5, direction='in')
 
     if flip_x == False:
         if zoom == True: # flip_x = False, zoom=True

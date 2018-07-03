@@ -2,5 +2,8 @@ text.usetex: true
 font.size: 10.56
 font.family: Times New Roman
 
+xtick.color: white
+ytick.color: white
+
 savefig.dpi: 300
 savefig.transparent: True
