@@ -37,23 +37,18 @@ class Figure:
         else:
             self.panel = Panel(panel)
 
-    def show(self, style='default'):
+    def __call__(self, style):
         fig = plt.figure()
         ax  = fig.add_axes([0, 0, 1, 1])
         set_themes(style)
         self.panel(ax)
-        fig.show()
+        return fig
+
+    def show(self, style='default'):
+        self(style).show()
 
     def draw(self, style='default'):
-        fig = plt.figure()
-        ax  = fig.add_axes([0, 0, 1, 1])
-        set_themes(style)
-        self.panel(ax)
-        fig.canvas.draw_idle()
+        self(style).canvas.draw_idle()
 
     def save(self, file, style='default'):
-        fig = plt.figure()
-        ax  = fig.add_axes([0, 0, 1, 1])
-        set_themes(style)
-        self.panel(ax)
-        fig.savefig(file)
+        self(style).savefig(file)
