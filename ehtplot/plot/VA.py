@@ -125,17 +125,22 @@ def plot_VA(ax1, array, pad=8, M=64,
     widthL  = (1/(np.pi*r0))*x*uvpix*pad
     ext     = widthL*4
 
-    if norm == True: array = array/(np.max(array))*norm_num
+    if norm == True:
+        array = array/(np.max(array))*norm_num
 
     if scale == 'lin':
-        im1=ax1.imshow(array,extent=[x/2*uvpix,-x/2*uvpix,-x/2*uvpix,x/2*uvpix],vmin=lim_lin[0], vmax=lim_lin[1], origin='lower', interpolation='bilinear')
-        if colorbar==True:
+        im1=ax1.imshow(array,extent=[x/2*uvpix,-x/2*uvpix,-x/2*uvpix,x/2*uvpix],
+                       vmin=lim_lin[0], vmax=lim_lin[1],
+                       origin='lower', interpolation='bilinear')
+        if colorbar == True:
             divider1 = make_axes_locatable(ax1)
             cax1     = divider1.append_axes("right", size="7%", pad=0.05)
-            if colorbar_ticks == 'auto': cbar1 = plt.colorbar(im1, cax=cax1)
-            else: cbar1 = plt.colorbar(im1, cax=cax1, ticks=[0,0.2,0.4,0.6,0.8,1])
+            if colorbar_ticks == 'auto':
+                cbar1 = plt.colorbar(im1, cax=cax1)
+            else:
+                cbar1 = plt.colorbar(im1, cax=cax1, ticks=[0,0.2,0.4,0.6,0.8,1])
             cbar1.ax.tick_params(labelsize=font, color=cb_tick_color,width=1.5, direction='in')
-        elif colorbar== 'top':
+        elif colorbar == 'top':
             divider1 = make_axes_locatable(ax1)
             cax1     = divider1.append_axes("top", size="7%", pad=0.05)
             if colorbar_ticks == 'auto': cbar1    = plt.colorbar(im1,orientation="horizontal", cax=cax1)
@@ -143,9 +148,15 @@ def plot_VA(ax1, array, pad=8, M=64,
             cbar1.ax.tick_params(labelsize=font)#, color='w',width=1.5, direction='in')
             cbar1.ax.xaxis.set_ticks_position('top')
     if scale == 'log':
-        if type(lim_log) ==bool: im1=ax1.imshow(array,extent=[x/2*uvpix,-x/2*uvpix,-x/2*uvpix,x/2*uvpix],norm=LogNorm(),origin='lower', interpolation='bilinear')
-        else: im1=ax1.imshow(array,extent=[x/2*uvpix,-x/2*uvpix,-x/2*uvpix,x/2*uvpix],norm=LogNorm(vmin=lim_log[0], vmax=lim_log[1]),origin='lower', interpolation='bilinear')
-        if colorbar==True:
+        if type(lim_log) == bool:
+            im1=ax1.imshow(array,extent=[x/2*uvpix,-x/2*uvpix,-x/2*uvpix,x/2*uvpix],
+                           norm=LogNorm(),
+                           origin='lower', interpolation='bilinear')
+        else:
+            im1=ax1.imshow(array,extent=[x/2*uvpix,-x/2*uvpix,-x/2*uvpix,x/2*uvpix],
+                           norm=LogNorm(vmin=lim_log[0], vmax=lim_log[1]),
+                           origin='lower', interpolation='bilinear')
+        if colorbar == True:
             divider1 = make_axes_locatable(ax1)
             cax1     = divider1.append_axes("right", size="7%", pad=0.05)
             cbar1    = plt.colorbar(im1, cax=cax1)
@@ -156,26 +167,31 @@ def plot_VA(ax1, array, pad=8, M=64,
             cbar1    = plt.colorbar(im1,orientation="horizontal", cax=cax1)
             cbar1.ax.tick_params(labelsize=font)#, color=
             cbar1.ax.xaxis.set_ticks_position('top')
-    if x_label==True: ax1.set_xlabel('$u$ (G $\lambda$)',fontsize=font)
-    if y_label==True: ax1.set_ylabel('$v$ (G $\lambda$)',fontsize=font)
+    if x_label == True:
+        ax1.set_xlabel('$u$ (G $\lambda$)',fontsize=font)
+    if y_label == True:
+        ax1.set_ylabel('$v$ (G $\lambda$)',fontsize=font)
     if btracks == True:
         path    = __file__.replace('my_plot.pyc', '')
         U, V    = np.load(path+'U.npy'), np.load(path+'V.npy')
         U,V     = U*10**(-6),V*10**(-6)
         ax1.scatter( U, V, c='w', s=2, marker='o',edgecolors='none')
         ax1.scatter(-U,-V, c='w', s=2, marker='o',edgecolors='none')
-    ax1.tick_params(axis='both', which='major', labelsize=font, color=tick_color, width=1.5, direction='in')
+    ax1.tick_params(axis='both', which='major',
+                    labelsize=font, color=tick_color, width=1.5, direction='in')
     if zoom == True:
         if type(bounds) == str:
             ax1.set_xlim([ext,-ext])
             ax1.set_ylim([-ext,ext])
             ax1.set_xticks([-5,0,5])
             ax1.set_yticks([-5,0,5])
-            if name != None: ax1.text(9,-9, name, fontsize=font,color='w') #makes the text label
+            if name != None:
+                ax1.text(9,-9, name, fontsize=font,color='w') #makes the text label
         else:
             ax1.set_xlim([bounds,-bounds])
             ax1.set_ylim([-bounds,bounds])
-            if name != None: ax1.text(.9*bounds,-.9*bounds, name, fontsize=font,color='w') #makes the text label
+            if name != None:
+                ax1.text(.9*bounds,-.9*bounds, name, fontsize=font,color='w') #makes the text label
     else:
         ax1.set_yticks(-1*ax1.get_xticks())
         temp = ax1.get_xlim()

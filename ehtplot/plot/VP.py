@@ -103,39 +103,44 @@ def plot_VP(ax1, array, pad=8, M=64,
     array[np.where(array < -np.pi)] = array[np.where(array < -np.pi)]+2.0*np.pi
 
     plt.set_cmap('hsv')
-    im1=ax1.imshow(array,extent=[x/2*uvpix,-x/2*uvpix,-x/2*uvpix,x/2*uvpix], vmin=-np.pi, vmax=np.pi, origin='lower', interpolation=interpolation)
-    if colorbar==True:
+    im1=ax1.imshow(array,extent=[x/2*uvpix,-x/2*uvpix,-x/2*uvpix,x/2*uvpix],
+                   vmin=-np.pi, vmax=np.pi,
+                   origin='lower', interpolation=interpolation)
+    if colorbar == True:
         divider1 = make_axes_locatable(ax1)
         cax1     = divider1.append_axes("right", size="7%", pad=0.05)
         cbar1    = plt.colorbar(im1, cax=cax1)
-        cbar1.ax.tick_params(labelsize=font, color=cb_tick_color,width=1.5, direction='in')
-    elif colorbar== 'top':
+        cbar1.ax.tick_params(labelsize=font, color=cb_tick_color, width=1.5, direction='in')
+    elif colorbar == 'top':
         divider1 = make_axes_locatable(ax1)
         cax1     = divider1.append_axes("top", size="7%", pad=0.05)
         cbar1    = plt.colorbar(im1,orientation="horizontal", cax=cax1)
         cbar1.ax.tick_params(labelsize=font)#, color='w',width=1.5, direction='in')
         cbar1.ax.xaxis.set_ticks_position('top')
-    if x_label==True: ax1.set_xlabel('$u$ (G $\lambda$)',fontsize=font)
-    if y_label==True: ax1.set_ylabel('$v$ (G $\lambda$)',fontsize=font)
+    if x_label == True:
+        ax1.set_xlabel('$u$ (G $\lambda$)', fontsize=font)
+    if y_label == True:
+        ax1.set_ylabel('$v$ (G $\lambda$)', fontsize=font)
     if btracks == True:
         path    = __file__.replace('my_plot.pyc', '')
         U, V    = np.load(path+'U.npy'), np.load(path+'V.npy')
         U,V     = U*10**(-6),V*10**(-6)
-        ax1.scatter( U, V, c='k', s=2, marker='o',edgecolors='none')
-        ax1.scatter(-U,-V, c='k', s=2, marker='o',edgecolors='none')
-    ax1.tick_params(axis='both', which='major', labelsize=font,color=tick_color,width=1.5, direction='in')
+        ax1.scatter( U, V, c='k', s=2, marker='o', edgecolors='none')
+        ax1.scatter(-U,-V, c='k', s=2, marker='o', edgecolors='none')
+    ax1.tick_params(axis='both', which='major',
+                    labelsize=font, color=tick_color, width=1.5, direction='in')
     if zoom == True:
         ax1.set_xlim([ext,-ext])
         ax1.set_ylim([-ext,ext])
         ax1.set_xticks([-5,0,5])
         ax1.set_yticks([-5,0,5])
         if name != None:
-            txt = ax1.text(9,-9, name, fontsize=font,color='k') #makes the text label
+            txt = ax1.text(9,-9, name, fontsize=font, color='k') #makes the text label
             txt.set_path_effects([PathEffects.withStroke(linewidth=white_width, foreground='w')])
     else:
         ax1.set_yticks(-1*ax1.get_xticks())
         temp = ax1.get_xlim()
         ax1.set_ylim(-1*temp[0], -1*temp[1])
-        if name !=None:
+        if name != None:
             txt = ax1.text(.9*temp[0],-.9*temp[0], name, fontsize=font, color='k') #makes the text label
             txt.set_path_effects([PathEffects.withStroke(linewidth=white_width, foreground='w')])
