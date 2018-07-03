@@ -20,7 +20,7 @@ def plot_VP(ax1, array, pad=8, M=64,
             btracks=True, colorbar=True,
             white_width=5, interpolation='bilinear',
             x_label=True, y_label=True, zoom=True,
-            tick_color='k', cb_tick_color='k'):
+            font=10.56, tick_color='k', cb_tick_color='k'):
     """!@brief Makes a plot of a visibility phase map.
 
     This can be used for a single image or for multiple subplots,

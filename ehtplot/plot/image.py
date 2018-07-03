@@ -25,7 +25,7 @@ def plot_image(ax1, array,
                colorbar=True, norm_num=1, lim_lin=np.array([0,1]), lim_log=False,
                flip_x=False, horz=False, M=64, x_label=True, y_label=True,
                colorbar_ticks='set', circle_width=1,
-               zoom=True, tick_color='w', cb_tick_color='k'):
+               font=10.56, zoom=True, tick_color='w', cb_tick_color='k'):
     """!@brief Makes a plot of an image.
 
     This can be used for a single image or for multiple subplots,

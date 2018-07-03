@@ -20,7 +20,7 @@ def plot_VA(ax1, array, pad=8, M=64,
             btracks=True, colorbar=True,
             lim_lin=np.array([0,1]), lim_log=False, norm_num=1,
             bounds='default', x_label=True, y_label=True, zoom=True,
-            colorbar_ticks='set', tick_color='w', cb_tick_color='k'):
+            font=10.56, colorbar_ticks='set', tick_color='w', cb_tick_color='k'):
     """!@brief Makes a plot of a visibility amplitude map.
 
     This can be used for a single image or for multiple subplots,
