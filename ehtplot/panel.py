@@ -46,9 +46,6 @@ class Panel:
         if image is not None:
             self.plot_image(image, *args, **kwargs)
 
-    def __iter__(self):
-        return iter(self.subpanels)
-
     def __call__(self, ax):
         if not self.plots:
             ax.axis('off')
@@ -71,3 +68,6 @@ class Panel:
                 func(ax, *args, **kwargs)
             self.plots += [plot]
         return stage
+
+    def __iter__(self):
+        return iter(self.subpanels)
