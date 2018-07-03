@@ -44,6 +44,13 @@ class Figure:
         self.panel(ax)
         fig.show()
 
+    def draw(self, style='default'):
+        fig = plt.figure()
+        ax  = fig.add_axes([0, 0, 1, 1])
+        set_themes(style)
+        self.panel(ax)
+        fig.canvas.draw_idle()
+
     def save(self, file, style='default'):
         fig = plt.figure()
         ax  = fig.add_axes([0, 0, 1, 1])
