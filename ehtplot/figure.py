@@ -16,7 +16,8 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 import matplotlib.pyplot as plt
-from .theme  import *
+from .theme import *
+from .panel import *
 
 class Figure:
     """The "head" class for hierarchically organizing panels in ehtplot
@@ -31,8 +32,11 @@ class Figure:
     """
 
     def __init__(self, panel):
-        self.fig   = plt.figure()
-        self.panel = panel
+        self.fig = plt.figure()
+        if isinstance(panel, Panel):
+            self.panel = panel
+        else:
+            self.panel = Panel(panel)
 
     def show(self, style='default'):
         set_themes(style)
