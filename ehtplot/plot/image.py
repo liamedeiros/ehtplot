@@ -21,28 +21,23 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import LogNorm
 
 def plot_image(ax1, array,
-               spin=None, theta=60.0, name=None, norm=True, scale='lin',
+               name=None, norm=True, scale='lin',
                colorbar=True, norm_num=1, lim_lin=np.array([0,1]), lim_log=False,
-               flip_x=False, horz=False, M=64, x_label=True, y_label=True,
-               colorbar_ticks='set', circle_width=1,
+               flip_x=False, M=64, x_label=True, y_label=True,
+               colorbar_ticks='set',
                zoom=True, tick_color='w', cb_tick_color='k'):
     """!@brief Makes a plot of an image.
 
     This can be used for a single image or for multiple subplots,
     below is an example of how this can be used for a single image:
     @code
-    fig = Figure(Panel().plot_image(image_array, spin=.9, name='Model B'))
+    fig = Figure(Panel().plot_image(image_array, name='Model B'))
     fig.savefig(file_name)
     @endcode
 
     This is an example for multiple subplots:
 
     @code
-    pnl1 = Panel().plot_image(image_array1, spin=.9, colorbar=False)
-    pnl2 = Panel().plot_image(image_array2, spin=.9, colorbar=False)
-    pnl3 = Panel().plot_image(image_array3, spin=.9, colorbar=False)
-    pnl4 = Panel().plot_image(image_array4, spin=.9, colorbar=False)
-
     fig = Figure([[pnl1, pnl2], [pnl3, pnl4]])
     fig.savefig(file_name)
     @endcode
@@ -58,17 +53,6 @@ def plot_image(ax1, array,
     image, see the example code above.
 
     @param array 2D numpy array of the image to be plotted.
-
-    @param spin optional keyword, default set to None. If None, will
-    not draw a circle over the image, if not None will draw the black
-    hole shadow calculated analytically for a kerr black hole with
-    black hole spin given by this parameter and the inclination of the
-    observer given by the parameter theta.
-
-    @param theta optional keyword, default set to 60.0 degrees. This
-    is the inclination of the observer relative to the black hole in
-    degrees, used to analytically calculate the shape and position of
-    the black hole shadow see also spin.
 
     @param name optional keyword, default set to None. If not None
     must be a string and will add a text label to the plot equal to
@@ -100,10 +84,6 @@ def plot_image(ax1, array,
     @param flip_x optional keyword, default set to False. if set to
     True will flip the array in the left-right direction.
 
-    @param horz optional keyword, default set to False, sometimes I
-    want to plot the images transposed so that we can compare
-    different orientations, this will move the red circle accordingly.
-
     @param M int, optional keyword, default set to 64, size the array
     in units of \f$ GM/c^2 \f$.
 
@@ -117,10 +97,6 @@ def plot_image(ax1, array,
     set to 'set' the colorbar ticks will be at [0,0.2,0.4,0.6,0.8,1],
     if set to 'auto' will let matplotlib set the colorbar ticks
     automatically.
-
-    @param circle_width optional keyword, default set to 1. This
-    controls the line-width of the circle that corresponds to the
-    black hole shadow, see also spin.
 
     @param zoom optional keyword, default set to True. If set to True
     will zoom in to about 20 \f$ GM/c^2 \f$ on each side, if not set
@@ -226,5 +202,3 @@ def plot_image(ax1, array,
         ax1.set_xlabel('X ($GMc^{-2}$)')
     if y_label:
         ax1.set_ylabel('Y ($GMc^{-2}$)')
-    if spin != None:
-        make_circle_kerr(ax1,spin,i=theta,circle_width=circle_width)
