@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-import matplotlib as mpl
 import importlib.util as iu
 from os.path import dirname
 
@@ -51,9 +50,6 @@ class Panel:
         return iter(self.subpanels)
 
     def __call__(self, ax):
-        if isinstance(ax, mpl.figure.Figure):
-            ax = ax.add_axes([0, 0, 1, 1])
-
         if not self.plots:
             ax.axis('off')
         for plot in self.plots:

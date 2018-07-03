@@ -39,12 +39,14 @@ class Figure:
 
     def show(self, style='default'):
         fig = plt.figure()
+        ax  = fig.add_axes([0, 0, 1, 1])
         set_themes(style)
-        self.panel(fig)
+        self.panel(ax)
         fig.show()
 
     def save(self, file, style='default'):
         fig = plt.figure()
+        ax  = fig.add_axes([0, 0, 1, 1])
         set_themes(style)
-        self.panel(fig)
+        self.panel(ax)
         fig.savefig(file)
