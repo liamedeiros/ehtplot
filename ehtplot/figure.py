@@ -32,18 +32,19 @@ class Figure:
     """
 
     def __init__(self, panel):
-        self.fig = plt.figure()
         if isinstance(panel, Panel):
             self.panel = panel
         else:
             self.panel = Panel(panel)
 
     def show(self, style='default'):
+        fig = plt.figure()
         set_themes(style)
-        self.panel(self.fig)
-        self.fig.show()
+        self.panel(fig)
+        fig.show()
 
     def save(self, file, style='default'):
+        fig = plt.figure()
         set_themes(style)
-        self.panel(self.fig)
-        self.fig.savefig(file)
+        self.panel(fig)
+        fig.savefig(file)

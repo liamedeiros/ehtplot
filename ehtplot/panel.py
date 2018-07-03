@@ -52,11 +52,7 @@ class Panel:
 
     def __call__(self, ax):
         if isinstance(ax, mpl.figure.Figure):
-            axes = ax.get_axes()
-            if len(axes) == 0:
-                ax = ax.add_axes([0, 0, 1, 1])
-            else:
-                ax = axes[0]
+            ax = ax.add_axes([0, 0, 1, 1])
 
         if not self.plots:
             ax.axis('off')
