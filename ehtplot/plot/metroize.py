@@ -55,6 +55,9 @@ def plot_metroized(ax, img, **kwargs):
                     if jj < 0 or jj >= s1:
                         continue
                     if img[ii,jj] > 0.0:
+                        if ii != i and jj != j:
+                            if img[ii,j] > 0.0 or img[i,jj] > 0.0:
+                                continue
                         ax.plot([j,(jj-j)/2+j], s1-np.array([i,(ii-i)/2+i]),
                                 color='k')
                         c += 1
