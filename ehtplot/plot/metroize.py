@@ -59,7 +59,7 @@ def plot_metroized(ax, img, **kwargs):
                                 color='k')
                         c += 1
             if c == 0:
-                ax.plot([j], [s1-i], marker='o', color='k')
+                ax.plot([j], [s1-i], marker='.', color='k')
 
     ax.set_xlim([0, sh[1]])
     ax.set_ylim([0, sh[0]])
