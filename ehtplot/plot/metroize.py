@@ -63,3 +63,6 @@ def plot_metroized(ax, img, **kwargs):
 
     ax.set_xlim([0, sh[1]])
     ax.set_ylim([0, sh[0]])
+    ax.tick_params(axis='both', which='both',
+                   top=False, bottom=False, labelbottom=False,
+                   left=False, right=False, labelleft=False)
