@@ -18,18 +18,21 @@
 from skimage.morphology import skeletonize
 import numpy as np
 
-def rebin(array, shape=[32, 32]):
-    reshape = shape[0], a.shape[0]//shape[0], shape[1], a.shape[1]//shape[1]
-    return array.reshape(reshape).mean(-1).mean(1)
+def rebin(arr, shape=[32, 32]):
+    reshape = (shape[0], arr.shape[0]//shape[0],
+               shape[1], arr.shape[1]//shape[1])
+    return arr.reshape(reshape).mean(-1).mean(1)
 
-def metroize(img, mgrid=32, threshold=0.5):
-    img /= np.sum(img)
+def translate_threshold(img, threshold=0.5):
+    threshold *= np.sum(img)
     s = np.sort(img.flatten())
     i = np.searchsorted(np.cumsum(s), threshold, side="left")
-    img = skeletonize(img > s[i])
-    img = rebin(img, [mgrid, mgrid])
-    img[img > 0.0] = 1.0
-    img = skeletonize(img)
+    return s[i]
+
+def metroize(img, mgrid=32, threshold=0.5):
+    threshold = translate_threshold(img, threshold=threshold)
+    img = skeletonize(img > threshold)
+    img = skeletonize(rebin(img, [mgrid, mgrid]) > 0)
     return img
 
 def plot_metroized(ax, img, **kwargs):
