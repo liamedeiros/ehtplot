@@ -18,9 +18,9 @@
 from skimage.morphology import skeletonize
 import numpy as np
 
-def rebin(a, shape):
-    sh = shape[0],a.shape[0]//shape[0],shape[1],a.shape[1]//shape[1]
-    return a.reshape(sh).mean(-1).mean(1)
+def rebin(array, shape=[32, 32]):
+    reshape = shape[0], a.shape[0]//shape[0], shape[1], a.shape[1]//shape[1]
+    return array.reshape(reshape).mean(-1).mean(1)
 
 def metroize(img, mgrid=32, threshold=0.5):
     img /= np.sum(img)
