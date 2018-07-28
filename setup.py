@@ -1,4 +1,5 @@
 # Copyright (C) 2017 Lia Medeiros
+# Copyright (C) 2017 Steward Observatory
 #
 # This file is part of ehtplot.
 #

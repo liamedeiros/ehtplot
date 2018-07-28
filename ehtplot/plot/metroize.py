@@ -1,4 +1,5 @@
 # Copyright (C) 2018 Chi-kwan Chan
+# Copyright (C) 2018 Steward Observatory
 #
 # This file is part of ehtplot.
 #
