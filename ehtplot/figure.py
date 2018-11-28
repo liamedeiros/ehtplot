@@ -41,8 +41,8 @@ class Figure:
     def __call__(self, style):
         fig = plt.figure()
         ax  = fig.add_axes([0, 0, 1, 1])
-        set_themes(style)
-        self.panel(ax)
+        with plt.style.context(get_themes(style)):
+            self.panel(ax)
         return fig
 
     def show(self, style='default'):
