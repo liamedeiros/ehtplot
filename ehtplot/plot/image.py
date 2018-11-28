@@ -105,23 +105,19 @@ def plot_image(ax1, array,
         if flip_x == True:
             array = np.fliplr(array)
             im1   = ax1.imshow(array, extent=[M/2.0,-M/2.0,-M/2.0,M/2.0],
-                               vmin=lim_lin[0], vmax=lim_lin[1],
-                               origin='lower', interpolation='bilinear')
+                               vmin=lim_lin[0], vmax=lim_lin[1])
         else:
             im1   = ax1.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
-                               vmin=lim_lin[0], vmax=lim_lin[1],
-                               origin='lower', interpolation='bilinear')
+                               vmin=lim_lin[0], vmax=lim_lin[1])
     elif scale == 'log':
         if flip_x == True:
             array = np.fliplr(array)
         if type(lim_log) == bool:
             im1=ax1.imshow(array, extent=[M/2.0,-M/2.0,-M/2.0,M/2.0],
-                           norm=LogNorm(),
-                           origin='lower', interpolation='bilinear')
+                           norm=LogNorm())
         else:
             im1=ax1.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
-                           norm=LogNorm(vmin=lim_log[0], vmax=lim_log[1]),
-                           origin='lower', interpolation='bilinear')
+                           norm=LogNorm(vmin=lim_log[0], vmax=lim_log[1]))
     ax1.tick_params(axis='both', which='major',width=1.5, direction='in')
 
     if flip_x == False:

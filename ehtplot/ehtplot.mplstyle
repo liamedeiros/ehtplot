@@ -23,6 +23,8 @@ font.family: Times New Roman
 xtick.color: white
 ytick.color: white
 
+image.interpolation: bilinear
+image.origin: lower
 image.cmap: hot
 
 savefig.dpi: 300
