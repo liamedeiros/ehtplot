@@ -19,7 +19,7 @@
 import matplotlib as mpl
 import os
 
-def get_themes(style='default'):
+def get_themes(style=None):
     """Getting a theme for ehtplot
 
     get_themes() is used to get the theme for rendering to screen,
@@ -35,7 +35,7 @@ def get_themes(style='default'):
 
     """
 
-    if style == 'default':
+    if style is None or style == 'default':
         style = 'ehtplot'
 
     file = os.path.join(os.path.dirname(__file__), style+".mplstyle")
