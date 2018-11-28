@@ -23,8 +23,9 @@ from matplotlib.colors import LogNorm
 
 def plot_image(ax1, array,
                name=None, norm=True, scale='lin',
-               norm_num=1, lim_lin=np.array([0,1]), lim_log=False,
+               colorbar=True, norm_num=1, lim_lin=np.array([0,1]), lim_log=False,
                flip_x=False, M=64, x_label=True, y_label=True,
+               colorbar_ticks='set',
                zoom=True):
     """!@brief Makes a plot of an image.
 
@@ -65,6 +66,10 @@ def plot_image(ax1, array,
     @param scale optional keyword, default set to 'lin', 'log' is also
     supported, this sets the scale of the color map.
 
+    @param colorbar optional keyword, default set to True, if True
+    will plot the color bar, if False will do nothing, and if set to
+    'top' will plot colorbar on top.
+
     @param norm_num optional keyword, default set to 1, this is in
     case normalizing to 1 doesn't give the desired image, you can
     control a more specific normalization with norm_num, for example,
@@ -89,6 +94,11 @@ def plot_image(ax1, array,
     @param y_label optional keyword, default set to True. If True will
     add a label to the y-axis, if False, will not add this label.
 
+    @param colorbar_ticks optional keyword, default set to 'set'. If
+    set to 'set' the colorbar ticks will be at [0,0.2,0.4,0.6,0.8,1],
+    if set to 'auto' will let matplotlib set the colorbar ticks
+    automatically.
+
     @param zoom optional keyword, default set to True. If set to True
     will zoom in to about 20 \f$ GM/c^2 \f$ on each side, if not set
     to True, will leave the full array visible.
@@ -111,6 +121,23 @@ def plot_image(ax1, array,
             im1   = ax1.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
                                vmin=lim_lin[0], vmax=lim_lin[1],
                                origin='lower', interpolation='bilinear')
+        if colorbar==True:
+            divider1 = make_axes_locatable(ax1)
+            cax1     = divider1.append_axes("right", size="7%", pad=0.05)
+            if colorbar_ticks == 'auto':
+                cbar1 = plt.colorbar(im1, cax=cax1)
+            else:
+                cbar1 = plt.colorbar(im1, cax=cax1, ticks=[0,0.2,0.4,0.6,0.8,1])
+            cbar1.ax.tick_params(width=1,direction='in')
+        elif colorbar== 'top':
+            divider1 = make_axes_locatable(ax1)
+            cax1     = divider1.append_axes("top", size="7%", pad=0.05)
+            if colorbar_ticks == 'auto':
+                cbar1 = plt.colorbar(im1, cax=cax1, orientation="horizontal")
+            else:
+                cbar1 = plt.colorbar(im1, cax=cax1, orientation="horizontal",
+                                     ticks=[0,0.2,0.4,0.6,0.8])
+            cbar1.ax.xaxis.set_ticks_position('top')
     elif scale == 'log':
         if flip_x == True:
             array = np.fliplr(array)
@@ -122,6 +149,17 @@ def plot_image(ax1, array,
             im1=ax1.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
                            norm=LogNorm(vmin=lim_log[0], vmax=lim_log[1]),
                            origin='lower', interpolation='bilinear')
+        if colorbar == True:
+            divider1 = make_axes_locatable(ax1)
+            cax1     = divider1.append_axes("right", size="7%", pad=0.05)
+            cbar1    = plt.colorbar(im1, cax=cax1)
+            cbar1.ax.xaxis.set_ticks_position('top')
+            cbar1.ax.tick_params(direction='in')
+        elif colorbar== 'top':
+            divider1 = make_axes_locatable(ax1)
+            cax1     = divider1.append_axes("top", size="7%", pad=0.05)
+            cbar1    = plt.colorbar(im1,orientation="horizontal", cax=cax1)
+            cbar1.ax.xaxis.set_ticks_position('top')
     ax1.tick_params(axis='both', which='major',width=1.5, direction='in')
 
     if flip_x == False:
