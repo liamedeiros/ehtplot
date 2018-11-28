@@ -38,18 +38,21 @@ class Figure:
         else:
             self.panel = Panel(panel)
 
-    def __call__(self, style):
+    def __call__(self, **kwargs):
+        style = kwargs.pop('style', None)
+
         fig = plt.figure()
         ax  = fig.add_axes([0, 0, 1, 1])
         with plt.style.context(get_themes(style)):
             self.panel(ax)
+
         return fig
 
-    def show(self, style='default'):
-        self(style).show()
+    def show(self, **kwargs):
+        self(**kwargs).show()
 
-    def draw(self, style='default'):
-        self(style).canvas.draw_idle()
+    def draw(self, **kwargs):
+        self(**kwargs).canvas.draw_idle()
 
-    def save(self, file, style='default'):
-        self(style).savefig(file)
+    def save(self, file, **kwargs):
+        self(**kwargs).savefig(file)
