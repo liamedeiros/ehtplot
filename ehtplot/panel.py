@@ -40,8 +40,12 @@ class Panel:
 
     """
 
-    def __init__(self, subpanels=None, image=None, *args, **kwargs):
+    def __init__(self,
+                 subpanels=None, inrow=True,
+                 image=None,
+                 *args, **kwargs):
         self.subpanels = [] if subpanels is None else subpanels
+        self.inrow     = inrow
         self.plots     = []
 
         if image is not None:
@@ -60,10 +64,16 @@ class Panel:
             return
         fig = ax.figure
         pos = ax.get_position()
-        h   =  pos.y1 - pos.y0
-        w   = (pos.x1 - pos.x0) / len(self.subpanels)
-        for i, panel in enumerate(self.subpanels):
-            panel(fig.add_axes([pos.x0+i*w, pos.y0, w, h]), **kwargs)
+        if self.inrow:
+            h =  pos.y1 - pos.y0
+            w = (pos.x1 - pos.x0) / len(self.subpanels)
+            for i, panel in enumerate(self.subpanels):
+                panel(fig.add_axes([pos.x0+i*w, pos.y0, w, h]), **kwargs)
+        else:
+            h = (pos.y1 - pos.y0) / len(self.subpanels)
+            w =  pos.x1 - pos.x0
+            for i, panel in enumerate(self.subpanels):
+                panel(fig.add_axes([pos.x0, pos.y0+i*h, w, h]), **kwargs)
 
     def __getattr__(self, method):
         def stage(*args, **kwargs):
