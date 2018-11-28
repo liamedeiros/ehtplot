@@ -44,7 +44,7 @@ class Figure:
         fig = plt.figure()
         ax  = fig.add_axes([0, 0, 1, 1])
         with plt.style.context(get_themes(style)):
-            self.panel(ax)
+            self.panel(ax, **kwargs)
 
         return fig
 

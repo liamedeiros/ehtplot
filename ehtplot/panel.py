@@ -47,7 +47,10 @@ class Panel:
         if image is not None:
             self.plot_image(image, *args, **kwargs)
 
-    def __call__(self, ax):
+    def __call__(self, ax, **kwargs):
+        # TODO: **kwargs is passed recursively down to the subpanel
+        # leaves.  However, there is not a clear to actually use them
+        # for now.
         if not self.plots:
             ax.axis('off')
         for plot in self.plots:
@@ -60,7 +63,7 @@ class Panel:
         h   =  pos.y1 - pos.y0
         w   = (pos.x1 - pos.x0) / len(self.subpanels)
         for i, panel in enumerate(self.subpanels):
-            panel(fig.add_axes([pos.x0+i*w, pos.y0, w, h]))
+            panel(fig.add_axes([pos.x0+i*w, pos.y0, w, h]), **kwargs)
 
     def __getattr__(self, method):
         def stage(*args, **kwargs):
