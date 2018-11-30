@@ -24,7 +24,7 @@ from matplotlib.colors import LogNorm
 def plot_image(ax1, array,
                name=None, norm=True, scale='lin',
                norm_num=1, lim_lin=np.array([0,1]), lim_log=False,
-               flip_x=False, M=64,
+               M=64,
                zoom=True):
     """!@brief Makes a plot of an image.
 
@@ -77,9 +77,6 @@ def plot_image(ax1, array,
     @param lim_log optional keyword, default set to False, this is the
     limits for the color bar if scale='log'.
 
-    @param flip_x optional keyword, default set to False. if set to
-    True will flip the array in the left-right direction.
-
     @param M int, optional keyword, default set to 64, size the array
     in units of \f$ GM/c^2 \f$.
 
@@ -98,16 +95,9 @@ def plot_image(ax1, array,
         array = array/(np.max(array))*norm_num
 
     if scale == 'lin':
-        if flip_x == True:
-            array = np.fliplr(array)
-            im1   = ax1.imshow(array, extent=[M/2.0,-M/2.0,-M/2.0,M/2.0],
-                               vmin=lim_lin[0], vmax=lim_lin[1])
-        else:
-            im1   = ax1.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
-                               vmin=lim_lin[0], vmax=lim_lin[1])
+        im1   = ax1.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
+                           vmin=lim_lin[0], vmax=lim_lin[1])
     elif scale == 'log':
-        if flip_x == True:
-            array = np.fliplr(array)
         if type(lim_log) == bool:
             im1=ax1.imshow(array, extent=[M/2.0,-M/2.0,-M/2.0,M/2.0],
                            norm=LogNorm())
@@ -116,29 +106,15 @@ def plot_image(ax1, array,
                            norm=LogNorm(vmin=lim_log[0], vmax=lim_log[1]))
     ax1.tick_params(axis='both', which='major',width=1.5, direction='in')
 
-    if flip_x == False:
-        if zoom == True: # flip_x = False, zoom=True
-            ax1.set_xlim([-r0M*2, r0M*2])
-            ax1.set_ylim([-r0M*2, r0M*2])
-            ax1.set_xticks([-10,-5,0,5,10])
-            ax1.set_yticks([-10,-5,0,5,10])
-            if name != None:
-                ax1.text(-9,-9, name, color='w') #makes the text label
-        else:# flip_x = False, zoom=False
-            ax1.set_yticks(ax1.get_xticks())
-            ax1.set_ylim(ax1.get_xlim())
-            if name !=None:
-                ax1.text(-0.47*M,-0.47*M, name, color='w') #makes the text label
-    elif zoom == True: # flip_x = True, zoom=True
-        ax1.set_xlim([r0M*2, -r0M*2])
+    if zoom == True: # flip_x = False, zoom=True
+        ax1.set_xlim([-r0M*2, r0M*2])
         ax1.set_ylim([-r0M*2, r0M*2])
-        ax1.set_xticks([10,5,0,-5,-10])
+        ax1.set_xticks([-10,-5,0,5,10])
         ax1.set_yticks([-10,-5,0,5,10])
         if name != None:
-            ax1.text(9,-9, name, color='w') #makes the text label
-    elif zoom == False:# flip_x = True, zoom=False
-        ax1.set_yticks(-1*ax1.get_xticks())
-        temp = ax1.get_xlim()
-        ax1.set_ylim(-1*temp[0], -1*temp[1])
+            ax1.text(-9,-9, name, color='w') #makes the text label
+    else:# flip_x = False, zoom=False
+        ax1.set_yticks(ax1.get_xticks())
+        ax1.set_ylim(ax1.get_xlim())
         if name !=None:
-            ax1.text(0.47*M,-0.47*M, name, color='w') #makes the text label
+            ax1.text(-0.47*M,-0.47*M, name, color='w') #makes the text label
