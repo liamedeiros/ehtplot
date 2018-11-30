@@ -25,3 +25,19 @@ should consider setting
 instead of setting it manually in a function call
 
     plt.plot(x, y, linewidth=3)
+
+To allow flexible compositions of different matplotlib styles, it is
+useful to split matplotlib style sheets into two classes: plotting
+styles and color palettes.
+
+### Plotting Styles
+
+The plotting style stylesheets should focus on the presentation of
+different plotting elements, such as direction of tickmarks (inside or
+outside), presentation of axes, line thickness.
+
+### Color Palettes
+
+The color palette stylesheets should focus on the color of different
+plotting elements.  It is most useful for creating plots that go into
+presentations, which can use different color palette themselves.
