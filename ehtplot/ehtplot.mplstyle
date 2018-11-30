@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+figure.figsize: 3.39441, 3.39441
+
 # text.usetex: true
 font.size: 10.56
 font.family: STIXGeneral
