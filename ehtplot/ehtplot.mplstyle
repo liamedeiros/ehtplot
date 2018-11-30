@@ -28,7 +28,7 @@ ytick.color: white
 
 image.interpolation: bilinear
 image.origin: lower
-image.cmap: hot
+image.cmap: afmhot
 
 savefig.dpi: 300
 savefig.transparent: True
