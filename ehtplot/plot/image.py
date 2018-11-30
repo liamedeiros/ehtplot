@@ -31,7 +31,7 @@ def add_scale(ax, label='$50 \mu $arcsec', length=10, color='gold', padding=0.15
     if label != None:
         ax.text((lims[0]+factor)+1.5,(lims[0]+factor)*.95, label, fontsize=font, color=color)
 
-def plot_image(ax1, array,
+def plot_image(ax1, array, length_scale=True,
                name=None, norm=True, scale='lin',
                norm_num=1, lim_lin=np.array([0,1]), lim_log=False,
                M=64,
@@ -128,3 +128,6 @@ def plot_image(ax1, array,
         ax1.set_ylim(ax1.get_xlim())
         if name !=None:
             ax1.text(-0.47*M,-0.47*M, name, color='w') #makes the text label
+
+    if length_scale:
+        add_scale(ax1)
