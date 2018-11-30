@@ -24,7 +24,7 @@ from matplotlib.colors import LogNorm
 def plot_image(ax1, array,
                name=None, norm=True, scale='lin',
                norm_num=1, lim_lin=np.array([0,1]), lim_log=False,
-               flip_x=False, M=64, x_label=True, y_label=True,
+               flip_x=False, M=64,
                zoom=True):
     """!@brief Makes a plot of an image.
 
@@ -82,12 +82,6 @@ def plot_image(ax1, array,
 
     @param M int, optional keyword, default set to 64, size the array
     in units of \f$ GM/c^2 \f$.
-
-    @param x_label optional keyword, default set to True. If True will
-    add a label to the x-axis, if False, will not add this label.
-
-    @param y_label optional keyword, default set to True. If True will
-    add a label to the y-axis, if False, will not add this label.
 
     @param zoom optional keyword, default set to True. If set to True
     will zoom in to about 20 \f$ GM/c^2 \f$ on each side, if not set
@@ -148,8 +142,3 @@ def plot_image(ax1, array,
         ax1.set_ylim(-1*temp[0], -1*temp[1])
         if name !=None:
             ax1.text(0.47*M,-0.47*M, name, color='w') #makes the text label
-
-    if x_label:
-        ax1.set_xlabel('X ($GMc^{-2}$)')
-    if y_label:
-        ax1.set_ylabel('Y ($GMc^{-2}$)')
