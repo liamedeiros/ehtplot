@@ -18,7 +18,8 @@
 
 # text.usetex: true
 font.size: 10.56
-font.family: Times New Roman
+font.family: STIXGeneral
+mathtext.fontset: stix
 
 xtick.color: white
 ytick.color: white
