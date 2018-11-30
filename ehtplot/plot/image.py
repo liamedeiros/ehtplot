@@ -95,6 +95,8 @@ def plot_image(ax1, array,
 
     """
 
+    ax1.set_axis_off()
+
     x = np.shape(array)[0]
     r0      = x*np.sqrt(27)/M # this is the radius of the black hole shadow
     r0M     = r0*M/x # this gives the BH shadow in units of GM/c**2
