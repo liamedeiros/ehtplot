@@ -34,3 +34,16 @@ Given that human eyes are less senstive to color in low light:
 
 - If color provides important information in a figure, the colormap
   may start at gray instead of black.
+
+## Color Models, Color Spaces, and Default Image Color Profile
+
+The "raw" RGB and CMYK color models are device-dependent.  In order to
+describe device-independent color, companies "standarize" color spaces
+and create sRGB (standard Red Green Blue by HP and Microsoft) and
+Adobe RGB.  A color profile, either characterizes a device or a color
+space, can then be used to accurately map the color in an image to a
+device.
+
+sRGB is often the default image color space for modern softwares.
+That is, if we save an image without a color profile, it is often
+interperted as in sRGB with gamma 2.2.
