@@ -62,4 +62,6 @@ It is useful to transform the Cartesian CIELAB color space to the
 cylindrical CIELCh color space which has coordinates L*, C*, and h.
 The lightness coordinate L* is identical to CIELAB.  The chroma
 (relative saturation) C* and hue h (in degree h°) are simply `C* =
-sqrt(a*^2 + b*^2)` and `h = atan2(b*, a*)`.
+sqrt(a*^2 + b*^2)` and `h = atan2(b*, a*)`.  [Q: are the CIELCh hue
+and (s)RGB hue `h_rgb = atan2(sqrt(3) * (G-B), 2*R - G - B)`
+equivalent?]
