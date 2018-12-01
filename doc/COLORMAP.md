@@ -47,3 +47,20 @@ device.
 sRGB is often the default image color space for modern softwares.
 That is, if we save an image without a color profile, it is often
 interperted as in sRGB with gamma 2.2.
+
+## Color Appearance Parameters
+
+The CIECAM02 color appearance model (CAM) published by the
+International Commission on Illumination (ICE) in 2002 defines six
+color appearances:
+
+- Brightness (luminance):
+- Lightness
+- Colorfulness
+- Chroma
+- Saturation
+- Hue: "the degree to which a stimulus can be described as similar to
+  or different from stimuli that are described as red, green, blue,
+  and yellow."  It can be computed by `h_rgb = atan2(sqrt(3) * (G-B),
+  2*R - G - B)` from (s)RGB, and `h_ab = atan2(b*, a*)` from CIELAB.
+  [FIXME: are these two hue equivalent?]
