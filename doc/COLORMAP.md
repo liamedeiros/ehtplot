@@ -85,3 +85,8 @@ CIELCh:
   or different from stimuli that are described as red, green, blue,
   and yellow."  [Q: are the CIELCh hue and (s)RGB hue `h_rgb =
   atan2(sqrt(3) \* (G-B), 2\*R - G - B)` equivalent?]
+
+It is important to note that the above terms can be defined very
+differently in different context.  For example, RGB brightness is
+defined as `(R + G + B) / 3`, which is completely different than
+CIECAM02 brightness.
