@@ -32,7 +32,7 @@ Therefore, it is clear that, at minimal, we need:
 
 - Perceptually uniform colormaps
 
-Given that human eyes are less senstive to color in low light:
+Given that human eyes are less sensitive to color in low light:
 
 - If color provides important information in a figure, the colormap
   may start at gray instead of black.
@@ -40,7 +40,7 @@ Given that human eyes are less senstive to color in low light:
 ## Color Models and Color Spaces
 
 The "raw" RGB and CMYK color models are device-dependent.  In order to
-describe device-independent color, companies "standarize" color spaces
+describe device-independent color, companies "standardize" color spaces
 and create sRGB (standard Red Green Blue by HP and Microsoft) and
 Adobe RGB.
 
@@ -48,7 +48,7 @@ A color profile, either characterizes a device or a color space, can
 then be used to accurately map the color in an image to a device.
 sRGB is often the default image color space for modern softwares.
 That is, if we save an image without a color profile, it is often
-interperted as in sRGB with gamma 2.2.
+interpreted as in sRGB with gamma 2.2.
 
 The CIELAB (== CIE L\*a\*b\* == Lab) color space, introduced by the
 International Commission on Illumination (ICE) in 1976, was the first
@@ -66,7 +66,7 @@ The lightness coordinate L\* is identical to CIELAB.  The chroma
 (relative saturation) C\* and hue h (in degree h°) are simply `C\* =
 sqrt(a\*^2 + b\*^2)` and `h = atan2(b\*, a\*)`.
 
-## Color Apperance Parameters
+## Color Appearance Parameters
 
 We completely ignore spatial appearance phenomena and consider only
 the the six color appearance parameters defined by CIECAM02.  They can
