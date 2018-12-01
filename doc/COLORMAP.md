@@ -18,10 +18,19 @@ guidance on the colormap usages in different situations.
 
 ## General Guidance
 
-Without putting in too much details, the minimal requirements of a
-good colormap for scientific image representation should:
+Without putting in too much details, the requirements of a good
+colormap for scientific image representation should:
 
-1. Given readers a correct sense on the pixel values (intensities) in
-   the image.
-2. Not artificially show features that do not exist.
-3. Not hide features that exist.
+- Given readers a correct sense on the pixel values (intensities) in
+  the image.
+- Not artificially show features that do not exist.
+- Not hide features that exist.
+
+Therefore, it is clear that, at minimal, we need:
+
+- Perceptually uniform colormaps
+
+Given that human eyes are less senstive to color in low light:
+
+- If color provides important information in a figure, the colormap
+  may start at gray instead of black.
