@@ -62,6 +62,24 @@ It is useful to transform the Cartesian CIELAB color space to the
 cylindrical CIELCh color space which has coordinates L*, C*, and h.
 The lightness coordinate L* is identical to CIELAB.  The chroma
 (relative saturation) C* and hue h (in degree h°) are simply `C* =
-sqrt(a*^2 + b*^2)` and `h = atan2(b*, a*)`.  [Q: are the CIELCh hue
-and (s)RGB hue `h_rgb = atan2(sqrt(3) * (G-B), 2*R - G - B)`
-equivalent?]
+sqrt(a*^2 + b*^2)` and `h = atan2(b*, a*)`.
+
+## Color Apperance Parameters
+
+We completely ignore spatial appearance phenomena and consider only
+the the six color appearance parameters defined by CIECAM02.  They can
+be grouped into three classes, correspond to the three coordinates of
+CIELCh:
+
+- Brightness and lightness: they are the extrinsic and intrinsic
+  "tones" or "values", respectively.
+
+- Colorfulness, chroma, and saturation: colorfulness and chroma are,
+  roughly speaking, the extrinsic and intrinsic difference between a
+  color and grey of an object, respectively.  Saturation is the
+  colorfulness of a color relative to its own brightness.
+
+- Hue: "the degree to which a stimulus can be described as similar to
+  or different from stimuli that are described as red, green, blue,
+  and yellow."  [Q: are the CIELCh hue and (s)RGB hue `h_rgb =
+  atan2(sqrt(3) * (G-B), 2*R - G - B)` equivalent?]
