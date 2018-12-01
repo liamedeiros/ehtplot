@@ -50,17 +50,15 @@ interperted as in sRGB with gamma 2.2.
 
 ## Color Appearance Parameters
 
-The CIECAM02 color appearance model (CAM) published by the
-International Commission on Illumination (ICE) in 2002 defines six
-color appearances:
+A color appearance model (CAM) seeks to describe the perceptual
+aspects of human color vision.  For simplicity, we only summarize
+three CAM here.
 
-- Brightness (luminance):
-- Lightness
-- Colorfulness
-- Chroma
-- Saturation
-- Hue: "the degree to which a stimulus can be described as similar to
-  or different from stimuli that are described as red, green, blue,
-  and yellow."  It can be computed by `h_rgb = atan2(sqrt(3) * (G-B),
-  2*R - G - B)` from (s)RGB, and `h_ab = atan2(b*, a*)` from CIELAB.
-  [FIXME: are these two hue equivalent?]
+- The International Commission on Illumination (ICE) created the
+  CIELAB (== CIE L*a*b* == Lab) color space, which has all the
+  necessary features to become the first color appearance model.
+- The CIECAM02 color appearance model (CAM) published by the in 2002
+   defines six color appearances: brightness, lightness, colorfulness,
+   chroma, saturation, and hue.
+- The iCAM06 is an image color appearance model that is capable of
+  handling spatial appearance phenomena.
