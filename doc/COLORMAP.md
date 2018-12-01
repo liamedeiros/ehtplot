@@ -51,7 +51,15 @@ interperted as in sRGB with gamma 2.2.
 The CIELAB (== CIE L*a*b* == Lab) color space, introduced by the
 International Commission on Illumination (ICE) in 1976, was the first
 attempt to take into account the the perceptual aspects of human
-vision.  The CIECAM02 color appearance model (CAM) published by the
-CIE in 2002 defines six color appearances: brightness, lightness,
-colorfulness, chroma, saturation, and hue.  And the iCAM06 model is
-capable of handling spatial appearance phenomena such as contrast.
+vision.  Here, L* is the lightness and a* and b* are the green-red and
+blue-yellow color components.  The CIECAM02 color appearance model
+(CAM) published by the CIE in 2002 defines six color appearances:
+brightness, lightness, colorfulness, chroma, saturation, and hue.  And
+the iCAM06 model is capable of handling spatial appearance phenomena
+such as contrast.
+
+It is useful to transform the Cartesian CIELAB color space to the
+cylindrical CIELCh color space which has coordinates L*, C*, and h.
+The lightness coordinate L* is identical to CIELAB.  The chroma
+(relative saturation) C* and hue h (in degree h°) are simply `C* =
+sqrt(a*^2 + b*^2)` and `h = atan2(b*, a*)`.
