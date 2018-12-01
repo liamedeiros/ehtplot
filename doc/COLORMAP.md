@@ -42,8 +42,8 @@ such as contrast.
 It is useful to transform the Cartesian CIELAB color space to the
 cylindrical CIELCh color space which has coordinates L\*, C\*, and h.
 The lightness coordinate L\* is identical to CIELAB.  The chroma
-(relative saturation) C\* and hue h (in degree h°) are simply `C\* =
-sqrt(a\*^2 + b\*^2)` and `h = atan2(b\*, a\*)`.
+(relative saturation) C\* and hue h (in degree h°) are simply `C* =
+sqrt(a*^2 + b*^2)` and `h = atan2(b*, a*)`.
 
 ## Color Appearance Parameters
 
@@ -63,7 +63,7 @@ CIELCh:
 - Hue: "the degree to which a stimulus can be described as similar to
   or different from stimuli that are described as red, green, blue,
   and yellow."  [Q: are the CIELCh hue and (s)RGB hue `h_rgb =
-  atan2(sqrt(3) \* (G-B), 2\*R - G - B)` equivalent?]
+  atan2(sqrt(3) * (G-B), 2*R - G - B)` equivalent?]
 
 It is important to note that the above terms can be defined very
 differently in different context.  For example, RGB brightness is
@@ -72,8 +72,8 @@ CIECAM02 brightness.
 
 ## Basic Requirements
 
-Without putting in too much details, the requirements of a good
-colormap for scientific image representation should:
+Without putting in too much details, a good colormap for scientific
+image representation should:
 
 - given readers a correct sense on the pixel values (intensities) in
   the image;
