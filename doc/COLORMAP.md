@@ -16,27 +16,6 @@ In order to present the resulting images of the EHT as accurate as
 possible, we take into account how human eyes work and provide a few
 guidance on the colormap usages in different situations.
 
-## General Guidance
-
-Without putting in too much details, the requirements of a good
-colormap for scientific image representation should:
-
-- Given readers a correct sense on the pixel values (intensities) in
-  the image.
-
-- Not artificially show features that do not exist.
-
-- Not hide features that exist.
-
-Therefore, it is clear that, at minimal, we need:
-
-- Perceptually uniform colormaps
-
-Given that human eyes are less sensitive to color in low light:
-
-- If color provides important information in a figure, the colormap
-  may start at gray instead of black.
-
 ## Color Models and Color Spaces
 
 The "raw" RGB and CMYK color models are device-dependent.  In order to
@@ -90,3 +69,43 @@ It is important to note that the above terms can be defined very
 differently in different context.  For example, RGB brightness is
 defined as `(R + G + B) / 3`, which is completely different than
 CIECAM02 brightness.
+
+## Basic Requirements
+
+Without putting in too much details, the requirements of a good
+colormap for scientific image representation should:
+
+- given readers a correct sense on the pixel values (intensities) in
+  the image;
+
+- not artificially show features that do not exist;
+
+- not hide features that exist.
+
+## General Guidance
+
+Given the above requirements, at minimal,
+
+- we need to use *perceptually uniform colormaps*
+
+so that the lightness of the colormap is a fair representation of its
+pixel values.  Since chrominance is a two-dimensional quantity, we can
+use the different dimensions for different purposes.  Being
+independent of lightness and chroma and easily recognized,
+
+- *hue can encode additional quantity* in an image;
+
+- *hue is also ideal in making an image more attractive* without
+  interferencing the representation of pixel values.
+
+The other dimension chroma is less recognizable and should not be used
+to encode physical information.  Instead,
+
+- *chroma (or saturation) is useful to place focus of an image*
+  without affecting the representation of the physical quantities.
+
+Finally, given that human eyes are less sensitive to color in low
+light,
+
+- if color is used to encode an additional quantity in a figure, the
+  *colormap may start (or end) at non-zero lightness*.
