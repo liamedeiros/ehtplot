@@ -35,30 +35,23 @@ Given that human eyes are less senstive to color in low light:
 - If color provides important information in a figure, the colormap
   may start at gray instead of black.
 
-## Color Models, Color Spaces, and Default Image Color Profile
+## Color Models and Color Appearance Models
 
 The "raw" RGB and CMYK color models are device-dependent.  In order to
 describe device-independent color, companies "standarize" color spaces
 and create sRGB (standard Red Green Blue by HP and Microsoft) and
-Adobe RGB.  A color profile, either characterizes a device or a color
-space, can then be used to accurately map the color in an image to a
-device.
+Adobe RGB.
 
+A color profile, either characterizes a device or a color space, can
+then be used to accurately map the color in an image to a device.
 sRGB is often the default image color space for modern softwares.
 That is, if we save an image without a color profile, it is often
 interperted as in sRGB with gamma 2.2.
 
-## Color Appearance Parameters
-
-A color appearance model (CAM) seeks to describe the perceptual
-aspects of human color vision.  For simplicity, we only summarize
-three CAM here.
-
-- The International Commission on Illumination (ICE) created the
-  CIELAB (== CIE L*a*b* == Lab) color space, which has all the
-  necessary features to become the first color appearance model.
-- The CIECAM02 color appearance model (CAM) published by the in 2002
-   defines six color appearances: brightness, lightness, colorfulness,
-   chroma, saturation, and hue.
-- The iCAM06 is an image color appearance model that is capable of
-  handling spatial appearance phenomena.
+The CIELAB (== CIE L*a*b* == Lab) color space, introduced by the
+International Commission on Illumination (ICE) in 1976, was the first
+attempt to take into account the the perceptual aspects of human
+vision.  The CIECAM02 color appearance model (CAM) published by the
+CIE in 2002 defines six color appearances: brightness, lightness,
+colorfulness, chroma, saturation, and hue.  And the iCAM06 model is
+capable of handling spatial appearance phenomena such as contrast.
