@@ -85,9 +85,9 @@ CIECAM02 brightness.
 ## Basic Requirements
 
 Without putting in too much details, a good colormap for scientific
-representation of a scale image should:
+representation of a scalar image should:
 
-1. give the readers a correct sense on the scale values (intensities)
+1. give the readers a correct sense on the scalar values (intensities)
    in the image;
 
 2. not artificially show features that do not exist;
@@ -105,7 +105,7 @@ In response to the above requirements, at minimal,
 - we need to use *perceptually uniform colormaps*
 
 so that the lightness of the color in an image is a fair
-representation of its scale values.  While visual perception is a
+representation of its scalar values.  While visual perception is a
 complex science, the Lab lightness L\* should serve us as a good
 approximation for generating perceptually uniform colormaps.  In fact,
 linearity in L\* is used as the working definition of Perceptually
