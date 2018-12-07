@@ -30,32 +30,34 @@ profile](https://en.wikipedia.org/wiki/ICC_profile), either
 characterizes a device or a color space, can then be used to
 accurately map the color in an image to a device.
 
-The [CIELAB](https://en.wikipedia.org/wiki/CIELAB_color_space) (== CIE
-L\*a\*b\* == Lab) color space, introduced by the [International
-Commission on Illumination (ICE)](https://en.wikipedia.org/wiki/International_Commission_on_Illumination)
+The [CIELAB](https://en.wikipedia.org/wiki/CIELAB_color_space) (also
+CIE L\*a\*b\*, hereafter Lab) color space, introduced by the
+[International Commission on Illumination
+(ICE)](https://en.wikipedia.org/wiki/International_Commission_on_Illumination)
 in 1976, was the first attempt to take into account the the perceptual
 aspects of human vision.  Here, L\* is the lightness; a\* and b\* are
 the green-red and blue-yellow color components.  The
-[CIECAM02](https://en.wikipedia.org/wiki/CIECAM02)
-[color appearance model (CAM)](https://en.wikipedia.org/wiki/Color_appearance_model)
+[CIECAM02](https://en.wikipedia.org/wiki/CIECAM02) [color appearance
+model (CAM)](https://en.wikipedia.org/wiki/Color_appearance_model)
 published by the CIE in 2002 defines six color appearances:
 brightness, lightness, colorfulness, chroma, saturation, and hue.  And
-the [iCAM06](https://en.wikipedia.org/wiki/Color_appearance_model#iCAM06)
+the
+[iCAM06](https://en.wikipedia.org/wiki/Color_appearance_model#iCAM06)
 model is capable of handling spatial appearance phenomena such as
 contrast.
 
-It is useful to transform the Cartesian CIELAB color space to the
+It is useful to transform the Cartesian Lab color space to the
 cylindrical [CIELCh](https://en.wikipedia.org/wiki/CIELAB_color_space#Cylindrical_representation:_CIELCh_or_CIEHLC)
-color space which has coordinates L\*, C\*, and h.  The lightness
-coordinate L\* is identical to CIELAB.  The chroma (relative
-saturation) C\* and hue h (in degree h°) are simply `C* = sqrt(a*^2 +
-b*^2)` and `h = atan2(b*, a*)`.
+(hereafter LCh) color space which has coordinates L\*, C\*, and h.
+The lightness coordinate L\* is identical to Lab.  The chroma
+(relative saturation) C\* and hue h (in degree h°) are simply `C* =
+sqrt(a*^2 + b*^2)` and `h = atan2(b*, a*)`.
 
 ## Color Appearance Parameters
 
 We ignore spatial appearance phenomena and consider only the the six
 color appearance parameters defined by CIECAM02.  They can be grouped
-into three classes, correspond to the three coordinates of CIELCh:
+into three classes, correspond to the three coordinates of LCh:
 
 - [Brightness](https://en.wikipedia.org/wiki/Brightness) and
   [lightness](https://en.wikipedia.org/wiki/Lightness): they are the
@@ -104,7 +106,7 @@ In response to the above requirements, at minimal,
 
 so that the lightness of the color in an image is a fair
 representation of its scale values.  While visual perception is a
-complex science, the CIELAB lightness L\* should serve us as a good
+complex science, the Lab lightness L\* should serve us as a good
 approximation for generating perceptually uniform colormaps.  In fact,
 linearity in L\* is used as the working definition of Perceptually
 Uniform Sequential colormaps by
@@ -123,7 +125,7 @@ lightness and chroma and easily recognized,
 
 The other dimension chroma is less recognizable and should not be used
 to encode physical information.  Since sRGB is only a subset of the
-CIELAB colorspace, there are human regonizable color that are not
+Lab colorspace, there are human regonizable color that are not
 displayable.  In order to accurately represent the physical
 quantities,
 
