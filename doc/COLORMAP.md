@@ -31,19 +31,19 @@ characterizes a device or a color space, can then be used to
 accurately map the color in an image to a device.  sRGB is often the
 default image color space for modern softwares.  That is, if we save
 an image without a color profile, it is often interpreted as in sRGB
-with gamma 2.2.
+with [gamma](https://en.wikipedia.org/wiki/Gamma_correction) 2.2.
 
 The [CIELAB](https://en.wikipedia.org/wiki/CIELAB_color_space) (== CIE
 L\*a\*b\* == Lab) color space, introduced by the [International
 Commission on Illumination (ICE)](https://en.wikipedia.org/wiki/International_Commission_on_Illumination)
 in 1976, was the first attempt to take into account the the perceptual
-aspects of human vision.  Here, L\* is the lightness and a\* and b\*
-are the green-red and blue-yellow color components.  The
-[CIECAM02](https://en.wikipedia.org/wiki/CIECAM02) color appearance
-model (CAM) published by the CIE in 2002 defines six color
-appearances: brightness, lightness, colorfulness, chroma, saturation,
-and hue.  And the
-[iCAM06](https://en.wikipedia.org/wiki/Color_appearance_model#iCAM06)
+aspects of human vision.  Here, L\* is the lightness; a\* and b\* are
+the green-red and blue-yellow color components.  The
+[CIECAM02](https://en.wikipedia.org/wiki/CIECAM02)
+[color appearance model (CAM)](https://en.wikipedia.org/wiki/Color_appearance_model)
+published by the CIE in 2002 defines six color appearances:
+brightness, lightness, colorfulness, chroma, saturation, and hue.  And
+the [iCAM06](https://en.wikipedia.org/wiki/Color_appearance_model#iCAM06)
 model is capable of handling spatial appearance phenomena such as
 contrast.
 
