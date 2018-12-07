@@ -28,10 +28,7 @@ spaces](https://en.wikipedia.org/wiki/Color_space) such as
 HP and Microsoft) and [Adobe RGB](https://en.wikipedia.org/wiki/Adobe_RGB_color_space).  A [color
 profile](https://en.wikipedia.org/wiki/ICC_profile), either
 characterizes a device or a color space, can then be used to
-accurately map the color in an image to a device.  sRGB is often the
-default image color space for modern softwares.  That is, if we save
-an image without a color profile, it is often interpreted as in sRGB
-with [gamma](https://en.wikipedia.org/wiki/Gamma_correction) 2.2.
+accurately map the color in an image to a device.
 
 The [CIELAB](https://en.wikipedia.org/wiki/CIELAB_color_space) (== CIE
 L\*a\*b\* == Lab) color space, introduced by the [International
@@ -86,25 +83,35 @@ CIECAM02 brightness.
 ## Basic Requirements
 
 Without putting in too much details, a good colormap for scientific
-image representation should:
+representation of a scale image should:
 
-- given readers a correct sense on the pixel values (intensities) in
-  the image;
+1. give the readers a correct sense on the scale values (intensities)
+   in the image;
 
-- not artificially show features that do not exist;
+2. not artificially show features that do not exist;
 
-- not hide features that exist.
+3. not intentionally hide features that exist;
+
+4. be effective in communicating scientific messages;
+
+5. be device-independent.
 
 ## General Guidance
 
-Given the above requirements, at minimal,
+In response to the above requirements, at minimal,
 
 - we need to use *perceptually uniform colormaps*
 
-so that the lightness of the colormap is a fair representation of its
-pixel values.  Since chrominance is a two-dimensional quantity, we can
-use the different dimensions for different purposes.  Being
-independent of lightness and chroma and easily recognized,
+so that the lightness the color of a image is a fair representation of
+its scale values.  While visual perception is a complex field, the
+CIELAB lightness L\* should serve us as a good enough approximation to
+generate perceptually uniform colormaps.  In fact, linearity in L\* is
+used as the working definition by [matplotlib's Perceptually Uniform
+Sequential colormaps](https://matplotlib.org/users/colormaps.html).
+
+Since chrominance is a two-dimensional quantity, we can use the
+different dimensions for different purposes.  Being independent of
+lightness and chroma and easily recognized,
 
 - *hue can encode additional information* in an image;
 
@@ -112,13 +119,21 @@ independent of lightness and chroma and easily recognized,
   interferencing the representation of pixel values.
 
 The other dimension chroma is less recognizable and should not be used
-to encode physical information.  Instead,
+to encode physical information.  In fact, if we adopt Eva Lubbe's
+formula `S = C* / sqrt(C*^2 + L*^2)`,
 
-- *chroma (or saturation) is useful to place focus of an image*
-  without affecting the representation of the physical quantities.
+- *saturation is useful to place focus of an image* without affecting
+  the representation of the physical quantities.
 
-Finally, given that human eyes are less sensitive to color in low
-light,
+Given that human eyes are less sensitive to color in low light,
 
 - if color is used to encode an additional information in a figure,
   the *colormap may start (or end) at non-zero lightness*.
+
+Finally, sRGB is often the default image color space for modern
+softwares.  That is, if we save an image without a color profile, it
+is often interpreted as in sRGB with [gamma](https://en.wikipedia.org/wiki/Gamma_correction) 2.2.
+Therefore, we should
+
+- convert colormaps to sRGB with gamma 2.2, and then save the
+  resulting images without any color profile.
