@@ -102,33 +102,43 @@ In response to the above requirements, at minimal,
 
 - we need to use *perceptually uniform colormaps*
 
-so that the lightness the color of a image is a fair representation of
-its scale values.  While visual perception is a complex field, the
-CIELAB lightness L\* should serve us as a good enough approximation to
-generate perceptually uniform colormaps.  In fact, linearity in L\* is
-used as the working definition by [matplotlib's Perceptually Uniform
-Sequential colormaps](https://matplotlib.org/users/colormaps.html).
+so that the lightness of the color in an image is a fair
+representation of its scale values.  While visual perception is a
+complex science, the CIELAB lightness L\* should serve us as a good
+approximation for generating perceptually uniform colormaps.  In fact,
+linearity in L\* is used as the working definition of Perceptually
+Uniform Sequential colormaps by
+[matplotlib](https://matplotlib.org/users/colormaps.html).
 
 Since chrominance is a two-dimensional quantity, we can use the
 different dimensions for different purposes.  Being independent of
 lightness and chroma and easily recognized,
 
-- *hue can encode additional information* in an image;
+- *hue can encode an additional physical quantity* in an image (when
+  used in this way, the change of hue should be linearly proportional
+  to the quantity);
 
 - *hue is also ideal in making an image more attractive* without
   interferencing the representation of pixel values.
 
 The other dimension chroma is less recognizable and should not be used
-to encode physical information.  In fact, if we adopt Eva Lubbe's
-formula `S = C* / sqrt(C*^2 + L*^2)`,
+to encode physical information.  Since sRGB is only a subset of the
+CIELAB colorspace, there are human regonizable color that are not
+displayable.  In order to accurately represent the physical
+quantities,
+
+- if a color is not displayable, one should preserve its lightness L\*
+  and hue h, and adjust its chroma.
+
+If we adopt Eva Lubbe's formula `S = C* / sqrt(C*^2 + L*^2)`,
 
 - *saturation is useful to place focus of an image* without affecting
   the representation of the physical quantities.
 
 Given that human eyes are less sensitive to color in low light,
 
-- if color is used to encode an additional information in a figure,
-  the *colormap may start (or end) at non-zero lightness*.
+- if color is used to encode an additional physical quantity in a
+  figure, the *colormap may start (or end) at non-zero lightness*.
 
 Finally, sRGB is often the default image color space for modern
 softwares.  That is, if we save an image without a color profile, it
