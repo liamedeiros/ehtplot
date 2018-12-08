@@ -3,7 +3,7 @@
 import ehtplot as ep
 
 img = ep.Panel(image=ep.open("sample"))
-row = ep.Panel([img, img, img])
+row = ep.Panel(subpanels=[img, img, img])
 fig = ep.Figure([row, row], inrow=False)
 
 fig.save("demo-seaborn.png", style='seaborn')

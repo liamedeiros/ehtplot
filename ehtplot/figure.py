@@ -37,7 +37,7 @@ class Figure:
             # TODO: how to handle *args and **kwargs here?
             self.panel = root
         else:
-            self.panel = Panel(root, *args, **kwargs)
+            self.panel = Panel(subpanels=root, *args, **kwargs)
 
     def __call__(self, **kwargs):
         style = kwargs.pop('style', None)

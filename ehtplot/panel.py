@@ -40,11 +40,12 @@ class Panel:
 
     """
 
-    def __init__(self,
-                 subpanels=None, inrow=True,
-                 image=None,
-                 *args, **kwargs):
-        self.subpanels = [] if subpanels is None else subpanels
+    def __init__(self, *args, **kwargs):
+        subpanels = kwargs.pop('subpanels', [])
+        inrow     = kwargs.pop('inrow',     True)
+        image     = kwargs.pop('image',     None)
+
+        self.subpanels = subpanels
         self.inrow     = inrow
         self.plots     = []
 
