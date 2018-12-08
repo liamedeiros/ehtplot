@@ -31,11 +31,11 @@ def add_scale(ax, label='$50 \mu $arcsec', length=10, color='gold', padding=0.15
     if label != None:
         ax.text((lims[0]+factor)+1.5,(lims[0]+factor)*.95, label, fontsize=font, color=color)
 
-def plot_image(ax, img, length_scale=True,
-               name=None, norm=True, scale='lin',
-               norm_num=1, lim_lin=np.array([0,1]), lim_log=False,
-               M=64,
-               zoom=True):
+def plot_image(ax, img, name=None,
+               M=64, zoom=True,
+               length_scale=True,
+               norm=True, norm_num=1,
+               scale='lin', lim_lin=np.array([0,1]), lim_log=False):
     """!@brief Makes a plot of an image.
 
     This can be used for a single image or for multiple subplots,
