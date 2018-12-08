@@ -35,7 +35,7 @@ def plot_image(ax, img, name=None,
                M=64, zoom=True,
                length_scale=True,
                norm=True, norm_num=1,
-               scale='lin', lim_lin=np.array([0,1]), lim_log=False):
+               scale='lin', vlim=None):
     """!@brief Makes a plot of an image.
 
     This can be used for a single image or for multiple subplots,
@@ -105,15 +105,17 @@ def plot_image(ax, img, name=None,
         img = img/(np.max(img))*norm_num
 
     if scale == 'lin':
+        if vlim is None:
+            vlim = [0, 1]
         ax.imshow(img, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
-                  vmin=lim_lin[0], vmax=lim_lin[1])
+                  vmin=vlim[0], vmax=vlim[1])
     elif scale == 'log':
-        if type(lim_log) == bool:
+        if vlim is None:
             ax.imshow(img, extent=[M/2.0,-M/2.0,-M/2.0,M/2.0],
                       norm=LogNorm())
         else:
             ax.imshow(img, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
-                      norm=LogNorm(vmin=lim_log[0], vmax=lim_log[1]))
+                      norm=LogNorm(vmin=vlim[0], vmax=vlim[1]))
     ax.tick_params(axis='both', which='major',width=1.5, direction='in')
 
     if zoom == True: # flip_x = False, zoom=True
