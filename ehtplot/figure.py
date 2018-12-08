@@ -33,20 +33,19 @@ class Figure:
     """
 
     def __init__(self, root, *args, **kwargs):
-        if isinstance(root, Panel):
-            # TODO: how to handle *args and **kwargs here?
+        if not isinstance(root, Panel):
+            self.panel = Panel(subpanels=root, *args, **kwargs)
+        elif args is None and kwargs is None:
             self.panel = root
         else:
-            self.panel = Panel(subpanels=root, *args, **kwargs)
+            raise ValueError('no argument allowed when passing ehtplot.Panel')
 
     def __call__(self, **kwargs):
         style = kwargs.pop('style', None)
-
         fig = plt.figure()
         ax  = fig.add_axes([0, 0, 1, 1])
         with plt.style.context(get_themes(style)):
             self.panel(ax, **kwargs)
-
         return fig
 
     def show(self, **kwargs):
