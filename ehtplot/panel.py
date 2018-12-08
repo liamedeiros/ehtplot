@@ -19,6 +19,11 @@
 import importlib.util as iu
 from os.path import dirname
 
+try:
+    basestring
+except NameError:
+    basestring = str # so that we can always test strings as in python2
+
 def load(method):
     dir, name = method.split('_', 1)
 
@@ -79,4 +84,8 @@ class Panel:
         return iter(self.subpanels)
 
     def stage(self, method, *args, **kwargs):
-        self.plots += [lambda ax: load(method)(ax, *args, **kwargs)]
+        if isinstance(method, basestring):
+            method = load(method)
+        if not callable(method):
+            raise TypeError('method should be a callable')
+        self.plots += [lambda ax: method(ax, *args, **kwargs)]
