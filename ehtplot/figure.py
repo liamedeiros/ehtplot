@@ -32,12 +32,12 @@ class Figure:
 
     """
 
-    def __init__(self, panel, **kwargs):
-        if isinstance(panel, Panel):
-            # TODO: how to handle **kwargs here?
-            self.panel = panel
+    def __init__(self, root, *args, **kwargs):
+        if isinstance(root, Panel):
+            # TODO: how to handle *args and **kwargs here?
+            self.panel = root
         else:
-            self.panel = Panel(panel, **kwargs)
+            self.panel = Panel(root, *args, **kwargs)
 
     def __call__(self, **kwargs):
         style = kwargs.pop('style', None)
