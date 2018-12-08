@@ -31,7 +31,7 @@ def add_scale(ax, label='$50 \mu $arcsec', length=10, color='gold', padding=0.15
     if label != None:
         ax.text((lims[0]+factor)+1.5,(lims[0]+factor)*.95, label, fontsize=font, color=color)
 
-def plot_image(ax1, array, length_scale=True,
+def plot_image(ax, array, length_scale=True,
                name=None, norm=True, scale='lin',
                norm_num=1, lim_lin=np.array([0,1]), lim_log=False,
                M=64,
@@ -55,7 +55,7 @@ def plot_image(ax1, array, length_scale=True,
     Note that for multiple subplots you might want to omit color bars,
     and only include the model name in one of the subplots.
 
-    @param ax1 optional keyword, default set to None this keyword is
+    @param ax optional keyword, default set to None this keyword is
     closely tied with fig, either they both must be None or
     neither. If None will create a figure of size columnwidth by
     columnwidth with one subplot. If not None this should be the name
@@ -96,7 +96,7 @@ def plot_image(ax1, array, length_scale=True,
 
     """
 
-    ax1.set_axis_off()
+    ax.set_axis_off()
 
     x   = np.shape(array)[0]
     r0  = x*np.sqrt(27)/M # this is the radius of the black hole shadow
@@ -105,29 +105,29 @@ def plot_image(ax1, array, length_scale=True,
         array = array/(np.max(array))*norm_num
 
     if scale == 'lin':
-        im1   = ax1.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
+        im1   = ax.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
                            vmin=lim_lin[0], vmax=lim_lin[1])
     elif scale == 'log':
         if type(lim_log) == bool:
-            im1=ax1.imshow(array, extent=[M/2.0,-M/2.0,-M/2.0,M/2.0],
+            im1=ax.imshow(array, extent=[M/2.0,-M/2.0,-M/2.0,M/2.0],
                            norm=LogNorm())
         else:
-            im1=ax1.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
+            im1=ax.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
                            norm=LogNorm(vmin=lim_log[0], vmax=lim_log[1]))
-    ax1.tick_params(axis='both', which='major',width=1.5, direction='in')
+    ax.tick_params(axis='both', which='major',width=1.5, direction='in')
 
     if zoom == True: # flip_x = False, zoom=True
-        ax1.set_xlim([-r0M*2, r0M*2])
-        ax1.set_ylim([-r0M*2, r0M*2])
-        ax1.set_xticks([-10,-5,0,5,10])
-        ax1.set_yticks([-10,-5,0,5,10])
+        ax.set_xlim([-r0M*2, r0M*2])
+        ax.set_ylim([-r0M*2, r0M*2])
+        ax.set_xticks([-10,-5,0,5,10])
+        ax.set_yticks([-10,-5,0,5,10])
         if name != None:
-            ax1.text(-9,-9, name, color='w') #makes the text label
+            ax.text(-9,-9, name, color='w') #makes the text label
     else:# flip_x = False, zoom=False
-        ax1.set_yticks(ax1.get_xticks())
-        ax1.set_ylim(ax1.get_xlim())
+        ax.set_yticks(ax.get_xticks())
+        ax.set_ylim(ax.get_xlim())
         if name !=None:
-            ax1.text(-0.47*M,-0.47*M, name, color='w') #makes the text label
+            ax.text(-0.47*M,-0.47*M, name, color='w') #makes the text label
 
     if length_scale:
-        add_scale(ax1)
+        add_scale(ax)
