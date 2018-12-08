@@ -75,15 +75,10 @@ class Panel:
                 panel(fig.add_axes([pos.x0, pos.y0+i*h, w, h]), **kwargs)
 
     def __getattr__(self, attr):
-        def stage(*args, **kwargs):
-            self.stage(attr, *args, **kwargs)
-        return stage
+        return lambda *args, **kwargs: self.stage(attr, *args, **kwargs)
 
     def __iter__(self):
         return iter(self.subpanels)
 
     def stage(self, method, *args, **kwargs):
-        func = load(method)
-        def plot(ax):
-            func(ax, *args, **kwargs)
-        self.plots += [plot]
+        self.plots += [lambda ax: load(method)(ax, *args, **kwargs)]
