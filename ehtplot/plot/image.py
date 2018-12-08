@@ -67,31 +67,26 @@ def plot_image(ax, img, name=None,
     must be a string and will add a text label to the plot equal to
     this string.
 
-    @param norm optional keyword, default set to True, if True will
-    normalize image so that the maximum is 1, if false does not
-    normalize image.
-
-    @param scale optional keyword, default set to 'lin', 'log' is also
-    supported, this sets the scale of the color map.
-
-    @param norm_num optional keyword, default set to 1, this is in
-    case normalizing to 1 doesn't give the desired image, you can
-    control a more specific normalization with norm_num, for example,
-    if norm_num=1.2, the maximum value in the image will be 1.2, but
-    the color bar will go from 0 to 1 (assuming scale='lin').
-
-    @param lim_lin optional keyword, default set to np.array([0,1]),
-    this is the limits for the color bar if scale='lin'.
-
-    @param lim_log optional keyword, default set to False, this is the
-    limits for the color bar if scale='log'.
-
-    @param M int, optional keyword, default set to 64, size the array
-    in units of \f$ GM/c^2 \f$.
+    @param imgsz float, optional keyword, default set to 64, size of
+    the array in units of \f$ GM/c^2 \f$.
 
     @param zoom optional keyword, default set to True. If set to True
     will zoom in to about 20 \f$ GM/c^2 \f$ on each side, if not set
     to True, will leave the full array visible.
+
+    @param length_scale optional keyword, default set to True.
+
+    @param scale optional keyword, default set to 'lin', 'log' is also
+    supported, this sets the scale of the color map.
+
+    @param norm optional keyword, default set to 1, this is in case
+    normalizing to 1 doesn't give the desired image, you can control a
+    more specific normalization with norm_num, for example, if
+    norm_num=1.2, the maximum value in the image will be 1.2, but the
+    color bar will go from 0 to 1 (assuming scale='lin').
+
+    @param vlim optional keyword, default set to [0, 1], this is the
+    limits for the color bar.
 
     """
 
