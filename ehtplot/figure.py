@@ -41,10 +41,9 @@ class Figure:
             raise ValueError('no argument allowed when passing ehtplot.Panel')
 
     def __call__(self, *args, **kwargs):
-        style = kwargs.pop('style', None)
         fig = plt.figure()
         ax  = fig.add_axes([0, 0, 1, 1])
-        with plt.style.context(get_themes(style)):
+        with plt.style.context(get_themes(kwargs.pop('style', None))):
             self.panel(ax, *args, **kwargs)
         return fig
 
