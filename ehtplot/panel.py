@@ -23,7 +23,7 @@ def load(method):
     dir, name = method.split('_', 1)
 
     file   = dirname(__file__) + "/" + dir + "/" + name + ".py"
-    spec   = iu.spec_from_file_location("plot_image", file)
+    spec   = iu.spec_from_file_location(method, file)
     module = iu.module_from_spec(spec)
     spec.loader.exec_module(module)
 
@@ -40,15 +40,16 @@ class Panel:
 
     """
 
+    types = ['image']
+
     def __init__(self, *args, **kwargs):
         self.subpanels = kwargs.pop('subpanels', [])
         self.inrow     = kwargs.pop('inrow', True)
         self.plots     = []
 
-        image = kwargs.pop('image', None)
-        if image is not None:
-            #self.plot_image(image, *args, **kwargs)
-            self.stage('plot_image', image, *args, **kwargs)
+        data = {type: kwargs.pop(type) for type in self.types if type in kwargs}
+        for type, datum in data.items():
+            self.stage('plot_'+type, datum, *args, **kwargs)
 
     def __call__(self, ax, **kwargs):
         # TODO: **kwargs is passed recursively down to the subpanel
