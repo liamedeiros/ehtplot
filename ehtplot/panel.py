@@ -51,7 +51,7 @@ class Panel:
         for type, datum in data.items():
             self.stage('plot_'+type, datum, *args, **kwargs)
 
-    def __call__(self, ax, **kwargs):
+    def __call__(self, ax, *args, **kwargs):
         # TODO: **kwargs is passed recursively down to the subpanel
         # leaves.  However, there is not a clear to actually use them
         # for now.
@@ -68,12 +68,12 @@ class Panel:
             h =  pos.y1 - pos.y0
             w = (pos.x1 - pos.x0) / len(self.subpanels)
             for i, panel in enumerate(self.subpanels):
-                panel(fig.add_axes([pos.x0+i*w, pos.y0, w, h]), **kwargs)
+                panel(fig.add_axes([pos.x0+i*w, pos.y0, w, h]), *args, **kwargs)
         else:
             h = (pos.y1 - pos.y0) / len(self.subpanels)
             w =  pos.x1 - pos.x0
             for i, panel in enumerate(self.subpanels):
-                panel(fig.add_axes([pos.x0, pos.y0+i*h, w, h]), **kwargs)
+                panel(fig.add_axes([pos.x0, pos.y0+i*h, w, h]), *args, **kwargs)
 
     def __getattr__(self, attr):
         return lambda *args, **kwargs: self.stage(attr, *args, **kwargs)
