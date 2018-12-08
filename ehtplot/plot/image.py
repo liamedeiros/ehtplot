@@ -32,7 +32,7 @@ def add_scale(ax, label='$50 \mu $arcsec', length=10, color='gold', padding=0.15
         ax.text((lims[0]+factor)+1.5,(lims[0]+factor)*.95, label, fontsize=font, color=color)
 
 def plot_image(ax, img, name=None,
-               M=64, zoom=True,
+               imgsz=64, zoom=True,
                length_scale=True,
                norm=1, scale='lin', vlim=None):
     """!@brief Makes a plot of an image.
@@ -97,34 +97,33 @@ def plot_image(ax, img, name=None,
 
     ax.set_axis_off()
 
-    x   = np.shape(img)[0]
-    r0  = x*np.sqrt(27)/M # this is the radius of the black hole shadow
-    r0M = r0*M/x # this gives the BH shadow in units of GM/c**2
+    x   = img.shape[0]
+    r0  = x * np.sqrt(27) / imgsz # radius of the black hole shadow in pixels
+    r0M = r0 * imgsz / x          # BH shadow in units of GM/c**2
+    bb  = [-0.5*imgsz, 0.5*imgsz, -0.5*imgsz, 0.5*imgsz]
+
     if norm is not False:
         img *= norm / np.max(img)
 
     if scale == 'lin':
         if vlim is None:
             vlim = [0, 1]
-        ax.imshow(img, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
-                  vmin=vlim[0], vmax=vlim[1])
+        ax.imshow(img, extent=bb, vmin=vlim[0], vmax=vlim[1])
     elif scale == 'log':
         if vlim is None:
-            ax.imshow(img, extent=[M/2.0,-M/2.0,-M/2.0,M/2.0],
-                      norm=LogNorm())
+            ax.imshow(img, extent=bb, norm=LogNorm())
         else:
-            ax.imshow(img, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
-                      norm=LogNorm(vmin=vlim[0], vmax=vlim[1]))
-    ax.tick_params(axis='both', which='major',width=1.5, direction='in')
+            ax.imshow(img, extent=bb, norm=LogNorm(vmin=vlim[0], vmax=vlim[1]))
+    ax.tick_params(axis='both', which='major', width=1.5, direction='in')
 
-    if zoom == True: # flip_x = False, zoom=True
+    if zoom is True: # flip_x = False, zoom=True
         ax.set_xlim([-r0M*2, r0M*2])
         ax.set_ylim([-r0M*2, r0M*2])
         ax.set_xticks([-10,-5,0,5,10])
         ax.set_yticks([-10,-5,0,5,10])
         if name != None:
             ax.text(-9,-9, name, color='w') #makes the text label
-    else:# flip_x = False, zoom=False
+    else: # flip_x = False, zoom=False
         ax.set_yticks(ax.get_xticks())
         ax.set_ylim(ax.get_xlim())
         if name !=None:
