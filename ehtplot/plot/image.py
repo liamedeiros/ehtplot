@@ -34,8 +34,7 @@ def add_scale(ax, label='$50 \mu $arcsec', length=10, color='gold', padding=0.15
 def plot_image(ax, img, name=None,
                M=64, zoom=True,
                length_scale=True,
-               norm=True, norm_num=1,
-               scale='lin', vlim=None):
+               norm=1, scale='lin', vlim=None):
     """!@brief Makes a plot of an image.
 
     This can be used for a single image or for multiple subplots,
@@ -101,8 +100,8 @@ def plot_image(ax, img, name=None,
     x   = np.shape(img)[0]
     r0  = x*np.sqrt(27)/M # this is the radius of the black hole shadow
     r0M = r0*M/x # this gives the BH shadow in units of GM/c**2
-    if norm == True:
-        img = img/(np.max(img))*norm_num
+    if norm is not False:
+        img *= norm / np.max(img)
 
     if scale == 'lin':
         if vlim is None:
