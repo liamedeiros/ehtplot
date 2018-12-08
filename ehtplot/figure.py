@@ -40,19 +40,19 @@ class Figure:
         else:
             raise ValueError('no argument allowed when passing ehtplot.Panel')
 
-    def __call__(self, **kwargs):
+    def __call__(self, *args, **kwargs):
         style = kwargs.pop('style', None)
         fig = plt.figure()
         ax  = fig.add_axes([0, 0, 1, 1])
         with plt.style.context(get_themes(style)):
-            self.panel(ax, **kwargs)
+            self.panel(ax, *args, **kwargs)
         return fig
 
-    def show(self, **kwargs):
-        self(**kwargs).show()
+    def show(self, *args, **kwargs):
+        self(*args, **kwargs).show()
 
-    def draw(self, **kwargs):
-        self(**kwargs).canvas.draw_idle()
+    def draw(self, *args, **kwargs):
+        self(*args, **kwargs).canvas.draw_idle()
 
-    def save(self, file, **kwargs):
-        self(**kwargs).savefig(file)
+    def save(self, file, *args, **kwargs):
+        self(*args, **kwargs).savefig(file)
