@@ -52,9 +52,9 @@ class Panel:
             self.stage('plot_'+type, datum, *args, **kwargs)
 
     def __call__(self, ax, *args, **kwargs):
-        # TODO: **kwargs is passed recursively down to the subpanel
-        # leaves.  However, there is not a clear to actually use them
-        # for now.
+        # TODO: *args and **kwargs are passed recursively down to the
+        # subpanel leaves.  However, there is not a clear to actually
+        # use them for now.
         if not self.plots:
             ax.axis('off')
         for plot in self.plots:
