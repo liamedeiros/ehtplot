@@ -105,15 +105,15 @@ def plot_image(ax, img, length_scale=True,
         img = img/(np.max(img))*norm_num
 
     if scale == 'lin':
-        im1 = ax.imshow(img, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
-                           vmin=lim_lin[0], vmax=lim_lin[1])
+        ax.imshow(img, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
+                  vmin=lim_lin[0], vmax=lim_lin[1])
     elif scale == 'log':
         if type(lim_log) == bool:
-            im1 = ax.imshow(img, extent=[M/2.0,-M/2.0,-M/2.0,M/2.0],
-                            norm=LogNorm())
+            ax.imshow(img, extent=[M/2.0,-M/2.0,-M/2.0,M/2.0],
+                      norm=LogNorm())
         else:
-            im1 = ax.imshow(img, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
-                            norm=LogNorm(vmin=lim_log[0], vmax=lim_log[1]))
+            ax.imshow(img, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
+                      norm=LogNorm(vmin=lim_log[0], vmax=lim_log[1]))
     ax.tick_params(axis='both', which='major',width=1.5, direction='in')
 
     if zoom == True: # flip_x = False, zoom=True
