@@ -50,7 +50,15 @@ def colormap(N=256, **kwargs):
 def lightness(r, g, b, a=1.0):
     return convert_color(sRGBColor(r, g, b), LabColor).lab_l
 
-def linearize(cm, N=256):
-    y = np.linspace(lightness(*cm(0.0)), lightness(*cm(1.0)), N)
-    x = [bisect(lambda x: lightness(*cm(x)) - v, 0.0, 1.0) for v in y]
-    return ListedColormap([cm(v) for v in x])
+def linearize(cm, N=256,
+              lmin=None, lmax=None,
+              vmin=0.0,  vmax=1.0):
+    def v2l(v):
+        return lightness(*cm(v))
+    def l2v(l):
+        return bisect(lambda v: v2l(v) - l, vmin, vmax)
+
+    L = np.linspace(v2l(vmin) if lmin is None else lmin,
+                    v2l(vmax) if lmax is None else lmax, N)
+    V = [l2v(l) for l in L]
+    return ListedColormap([cm(v) for v in V])
