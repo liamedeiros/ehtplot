@@ -106,12 +106,12 @@ def plot_image(ax, img, name=None,
     if scale == 'lin':
         if vlim is None:
             vlim = [0, 1]
-        ax.imshow(img, extent=bb, vmin=vlim[0], vmax=vlim[1])
+        scale_kwargs = {'vmin': vlim[0], 'vmax': vlim[1]}
     elif scale == 'log':
-        if vlim is None:
-            ax.imshow(img, extent=bb, norm=LogNorm())
-        else:
-            ax.imshow(img, extent=bb, norm=LogNorm(vmin=vlim[0], vmax=vlim[1]))
+        scale_kwargs = {'norm': (LogNorm() if vlim is None else
+                                 LogNorm(vmin=vlim[0], vmax=vlim[1]))}
+
+    ax.imshow(img, extent=bb, **scale_kwargs)
     ax.tick_params(axis='both', which='major', width=1.5, direction='in')
 
     if zoom is True: # flip_x = False, zoom=True
