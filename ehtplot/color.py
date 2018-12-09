@@ -16,7 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+import numpy as np
+
 from math import sqrt, degrees
+from scipy.optimize import bisect
 
 from colormath.color_objects     import LabColor, LCHabColor, sRGBColor
 from colormath.color_conversions import convert_color
@@ -46,3 +49,8 @@ def colormap(N=256, **kwargs):
 
 def lightness(r, g, b, a=1.0):
     return convert_color(sRGBColor(r, g, b), LabColor).lab_l
+
+def linearize(cm, N=256):
+    y = np.linspace(lightness(*cm(0.0)), lightness(*cm(1.0)), N)
+    x = [bisect(lambda x: lightness(*cm(x)) - v, 0.0, 1.0) for v in y]
+    return ListedColormap([cm(v) for v in x])
