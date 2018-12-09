@@ -24,13 +24,14 @@ from colormath.color_conversions import convert_color
 from matplotlib.colors import ListedColormap
 
 def convert(i, N,
-            darkest=0.0, saturation=None, hue=None):
+            darkest=0.0, lightest=1.0,
+            saturation=None, hue=None):
     f = i / (N - 1.0)
 
     s = sqrt(0.5) if saturation is None else saturation(f)
     h = 0.0       if hue        is None else hue(f)
 
-    l = darkest + f * (1.0-darkest)
+    l = darkest + f * (lightest-darkest)
     c = l*s / sqrt(1.0 - s*s)
 
     lch = LCHabColor(100.0 * l, 100 * c, degrees(h))
