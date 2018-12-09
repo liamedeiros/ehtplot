@@ -19,7 +19,7 @@
 import numpy as np
 
 from math import sqrt, degrees
-from scipy.optimize import bisect
+from scipy.optimize import bisect, minimize
 
 from colormath.color_objects     import LabColor, LCHabColor, sRGBColor
 from colormath.color_conversions import convert_color
@@ -61,3 +61,47 @@ def linearize(cm, N=256,
     L = np.linspace(v2l(vmin) if lmin is None else lmin,
                     v2l(vmax) if lmax is None else lmax, N)
     return ListedColormap([cm(l2v(l)) for l in L])
+
+def symmetrize(cm, N=256,
+               lmin=None, lmid=None, lmax=None,
+               vmin=0.0,  vmid=None, vmax=1.0):
+    def v2l(v):
+        return  lightness(*cm(v[0] if isinstance(v, np.ndarray) else v))
+    def v2ml(v):
+        return -lightness(*cm(v[0] if isinstance(v, np.ndarray) else v))
+
+    if lmin is None: lmin = v2l(vmin)
+    if lmid is None: lmid = v2l(0.5 if vmid is None else vmid)
+    if lmax is None: lmax = v2l(vmax)
+
+    if (lmax - lmid) * (lmid - lmin) >= 0.0:
+        raise ValueError('colormap does not seem to diverge')
+
+    if vmid is None:
+        opt  = minimize(v2l if lmax > lmid else v2ml,
+                        0.5, method='Nelder-Mead')
+        vmid = opt.x[0]
+        lmid = v2l(vmid)
+
+    if lmax > lmid: # v-shape
+        b = min(lmin, lmax)
+        L = np.absolute(np.linspace(-b, b, N))
+    else:           # ^-shape
+        b = lmid - max(lmin, lmax)
+        L = lmid - np.absolute(np.linspace(-b, b, N))
+
+    def l2vL(l):
+        try:
+            return bisect(lambda v: v2l(v) - l, vmin, vmid)
+        except:
+            print(l)
+            return 100.0
+    def l2vR(l):
+        try:
+            return bisect(lambda v: v2l(v) - l, vmid, vmax)
+        except:
+            print(l)
+            return 100.0
+
+    return ListedColormap([cm(l2vL(l)) for l in L[:N//2]] +
+                          [cm(l2vR(l)) for l in L[N//2:]])
