@@ -32,7 +32,7 @@ def add_scale(ax, label='$50 \mu $arcsec', length=10, color='gold', padding=0.15
         ax.text((lims[0]+factor)+1.5,(lims[0]+factor)*.95, label, fontsize=font, color=color)
 
 def plot_image(ax, img, name=None,
-               imgsz=64, zoom=True,
+               imgsz=None, pxsz=None, zoom=True,
                length_scale=True,
                norm=1, scale='lin', vlim=None):
     """!@brief Makes a plot of an image.
@@ -92,10 +92,13 @@ def plot_image(ax, img, name=None,
 
     ax.set_axis_off()
 
-    x   = img.shape[0]
-    r0  = x * np.sqrt(27) / imgsz # radius of the black hole shadow in pixels
-    r0M = r0 * imgsz / x          # BH shadow in units of GM/c**2
-    bb  = [-0.5*imgsz, 0.5*imgsz, -0.5*imgsz, 0.5*imgsz]
+    if imgsz is not None and pxsz is not None:
+        raise ValueError("imgsz and pxsz cannot be set simultaneously")
+    elif pxsz is not None:
+        imgsz = img.shape[0] * pxsz
+    elif imgsz is None:
+        imgsz = 64
+    bb = [-0.5*imgsz, 0.5*imgsz, -0.5*imgsz, 0.5*imgsz]
 
     if norm is not False:
         img *= norm / np.max(img)
@@ -112,10 +115,11 @@ def plot_image(ax, img, name=None,
     ax.tick_params(axis='both', which='major', width=1.5, direction='in')
 
     if zoom is True: # flip_x = False, zoom=True
-        ax.set_xlim([-r0M*2, r0M*2])
-        ax.set_ylim([-r0M*2, r0M*2])
-        ax.set_xticks([-10,-5,0,5,10])
-        ax.set_yticks([-10,-5,0,5,10])
+        r0 = np.sqrt(27) # BH shadow in units of GM/c**2
+        ax.set_xlim([-2 * r0, 2 * r0])
+        ax.set_ylim([-2 * r0, 2 * r0])
+        ax.set_xticks([-10, -5, 0, 5, 10])
+        ax.set_yticks([-10, -5, 0, 5, 10])
         if name != None:
             ax.text(-9,-9, name, color='w') #makes the text label
     else: # flip_x = False, zoom=False
