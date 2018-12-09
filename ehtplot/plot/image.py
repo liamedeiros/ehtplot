@@ -117,16 +117,12 @@ def plot_image(ax, img, name=None,
     if zoom is True: # flip_x = False, zoom=True
         r0 = np.sqrt(27) # BH shadow in units of GM/c**2
         ax.set_xlim([-2 * r0, 2 * r0])
-        ax.set_ylim([-2 * r0, 2 * r0])
         ax.set_xticks([-10, -5, 0, 5, 10])
-        ax.set_yticks([-10, -5, 0, 5, 10])
-        if name != None:
-            ax.text(-9,-9, name, color='w') #makes the text label
-    else: # flip_x = False, zoom=False
-        ax.set_yticks(ax.get_xticks())
-        ax.set_ylim(ax.get_xlim())
-        if name !=None:
-            ax.text(-0.47*M,-0.47*M, name, color='w') #makes the text label
+
+    ax.set_ylim(ax.get_xlim())
+    ax.set_yticks(ax.get_xticks())
+    if name is not None:
+        ax.text(0.26,0.26, name, color='w', transform=ax.transAxes)
 
     if length_scale:
         add_scale(ax)
