@@ -18,7 +18,7 @@
 
 from math import sqrt, degrees
 
-from colormath.color_objects     import LCHabColor, sRGBColor
+from colormath.color_objects     import LabColor, LCHabColor, sRGBColor
 from colormath.color_conversions import convert_color
 
 from matplotlib.colors import ListedColormap
@@ -43,3 +43,6 @@ def convert(i, N,
 
 def colormap(N=256, **kwargs):
     return ListedColormap([convert(i, N, **kwargs) for i in range(N)])
+
+def lightness(r, g, b, a=1.0):
+    return convert_color(sRGBColor(r, g, b), LabColor).lab_l
