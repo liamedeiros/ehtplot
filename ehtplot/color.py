@@ -60,5 +60,4 @@ def linearize(cm, N=256,
 
     L = np.linspace(v2l(vmin) if lmin is None else lmin,
                     v2l(vmax) if lmax is None else lmax, N)
-    V = [l2v(l) for l in L]
-    return ListedColormap([cm(v) for v in V])
+    return ListedColormap([cm(l2v(l)) for l in L])
