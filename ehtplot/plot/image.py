@@ -31,11 +31,10 @@ def add_scale(ax, label='$50 \mu $arcsec', length=10, color='gold', padding=0.15
     if label != None:
         ax.text((lims[0]+factor)+1.5,(lims[0]+factor)*.95, label, fontsize=font, color=color)
 
-def plot_image(ax1, array, length_scale=True,
-               name=None, norm=True, scale='lin',
-               norm_num=1, lim_lin=np.array([0,1]), lim_log=False,
-               M=64,
-               zoom=True):
+def plot_image(ax, img, name=None,
+               imgsz=None, pxsz=None, zoom=True,
+               length_scale=True,
+               norm=1, scale='lin', vlim=None):
     """!@brief Makes a plot of an image.
 
     This can be used for a single image or for multiple subplots,
@@ -55,79 +54,75 @@ def plot_image(ax1, array, length_scale=True,
     Note that for multiple subplots you might want to omit color bars,
     and only include the model name in one of the subplots.
 
-    @param ax1 optional keyword, default set to None this keyword is
+    @param ax optional keyword, default set to None this keyword is
     closely tied with fig, either they both must be None or
     neither. If None will create a figure of size columnwidth by
     columnwidth with one subplot. If not None this should be the name
     of the subplot (where applicable) where you want to plot your
     image, see the example code above.
 
-    @param array 2D numpy array of the image to be plotted.
+    @param img 2D numpy array of the image to be plotted.
 
     @param name optional keyword, default set to None. If not None
     must be a string and will add a text label to the plot equal to
     this string.
 
-    @param norm optional keyword, default set to True, if True will
-    normalize image so that the maximum is 1, if false does not
-    normalize image.
-
-    @param scale optional keyword, default set to 'lin', 'log' is also
-    supported, this sets the scale of the color map.
-
-    @param norm_num optional keyword, default set to 1, this is in
-    case normalizing to 1 doesn't give the desired image, you can
-    control a more specific normalization with norm_num, for example,
-    if norm_num=1.2, the maximum value in the image will be 1.2, but
-    the color bar will go from 0 to 1 (assuming scale='lin').
-
-    @param lim_lin optional keyword, default set to np.array([0,1]),
-    this is the limits for the color bar if scale='lin'.
-
-    @param lim_log optional keyword, default set to False, this is the
-    limits for the color bar if scale='log'.
-
-    @param M int, optional keyword, default set to 64, size the array
-    in units of \f$ GM/c^2 \f$.
+    @param imgsz float, optional keyword, default set to 64, size of
+    the array in units of \f$ GM/c^2 \f$.
 
     @param zoom optional keyword, default set to True. If set to True
     will zoom in to about 20 \f$ GM/c^2 \f$ on each side, if not set
     to True, will leave the full array visible.
 
+    @param length_scale optional keyword, default set to True.
+
+    @param scale optional keyword, default set to 'lin', 'log' is also
+    supported, this sets the scale of the color map.
+
+    @param norm optional keyword, default set to 1, this is in case
+    normalizing to 1 doesn't give the desired image, you can control a
+    more specific normalization with norm_num, for example, if
+    norm_num=1.2, the maximum value in the image will be 1.2, but the
+    color bar will go from 0 to 1 (assuming scale='lin').
+
+    @param vlim optional keyword, default set to [0, 1], this is the
+    limits for the color bar.
+
     """
 
-    ax1.set_axis_off()
+    ax.set_axis_off()
 
-    x   = np.shape(array)[0]
-    r0  = x*np.sqrt(27)/M # this is the radius of the black hole shadow
-    r0M = r0*M/x # this gives the BH shadow in units of GM/c**2
-    if norm == True:
-        array = array/(np.max(array))*norm_num
+    if imgsz is not None and pxsz is not None:
+        raise ValueError("imgsz and pxsz cannot be set simultaneously")
+    elif pxsz is not None:
+        imgsz = img.shape[0] * pxsz
+    elif imgsz is None:
+        imgsz = 64
+    bb = [-0.5*imgsz, 0.5*imgsz, -0.5*imgsz, 0.5*imgsz]
+
+    if norm is not False:
+        img *= norm / np.max(img)
 
     if scale == 'lin':
-        im1   = ax1.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
-                           vmin=lim_lin[0], vmax=lim_lin[1])
+        if vlim is None:
+            vlim = [0, 1]
+        scale_kwargs = {'vmin': vlim[0], 'vmax': vlim[1]}
     elif scale == 'log':
-        if type(lim_log) == bool:
-            im1=ax1.imshow(array, extent=[M/2.0,-M/2.0,-M/2.0,M/2.0],
-                           norm=LogNorm())
-        else:
-            im1=ax1.imshow(array, extent=[-M/2.0,M/2.0,-M/2.0,M/2.0],
-                           norm=LogNorm(vmin=lim_log[0], vmax=lim_log[1]))
-    ax1.tick_params(axis='both', which='major',width=1.5, direction='in')
+        scale_kwargs = {'norm': (LogNorm() if vlim is None else
+                                 LogNorm(vmin=vlim[0], vmax=vlim[1]))}
 
-    if zoom == True: # flip_x = False, zoom=True
-        ax1.set_xlim([-r0M*2, r0M*2])
-        ax1.set_ylim([-r0M*2, r0M*2])
-        ax1.set_xticks([-10,-5,0,5,10])
-        ax1.set_yticks([-10,-5,0,5,10])
-        if name != None:
-            ax1.text(-9,-9, name, color='w') #makes the text label
-    else:# flip_x = False, zoom=False
-        ax1.set_yticks(ax1.get_xticks())
-        ax1.set_ylim(ax1.get_xlim())
-        if name !=None:
-            ax1.text(-0.47*M,-0.47*M, name, color='w') #makes the text label
+    ax.imshow(img, extent=bb, **scale_kwargs)
+    ax.tick_params(axis='both', which='major', width=1.5, direction='in')
+
+    if zoom is True: # flip_x = False, zoom=True
+        r0 = np.sqrt(27) # BH shadow in units of GM/c**2
+        ax.set_xlim([-2 * r0, 2 * r0])
+        ax.set_xticks([-10, -5, 0, 5, 10])
+
+    ax.set_ylim(ax.get_xlim())
+    ax.set_yticks(ax.get_xticks())
+    if name is not None:
+        ax.text(0.26,0.26, name, color='w', transform=ax.transAxes)
 
     if length_scale:
-        add_scale(ax1)
+        add_scale(ax)
