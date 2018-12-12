@@ -32,9 +32,8 @@ def add_scale(ax, label='$50 \mu $arcsec', length=10, color='gold', padding=0.15
         ax.text((lims[0]+factor)+1.5,(lims[0]+factor)*.95, label, fontsize=font, color=color)
 
 def plot_image(ax, img, name=None,
-               imgsz=64, zoom=True, unit='$GMc^{-2}$',
-               length_scale=None,
-               norm=1, scale='lin', vlim=None):
+               imgsz=64, zoom=True, unit='$GMc^{-2}$', length_scale=None,
+               norm=1, scale='lin', vlim=None, colorbar=True):
     """!@brief Makes a plot of an image.
 
     This can be used for a single image or for multiple subplots,
@@ -101,12 +100,12 @@ def plot_image(ax, img, name=None,
     if scale == 'lin':
         if vlim is None:
             vlim = [0, 1]
-        ax.imshow(img, extent=bb, vmin=vlim[0], vmax=vlim[1])
+        im = ax.imshow(img, extent=bb, vmin=vlim[0], vmax=vlim[1])
     elif scale == 'log':
         if vlim is None:
-            ax.imshow(img, extent=bb, norm=LogNorm())
+            im = ax.imshow(img, extent=bb, norm=LogNorm())
         else:
-            ax.imshow(img, extent=bb, norm=LogNorm(vmin=vlim[0], vmax=vlim[1]))
+            im = ax.imshow(img, extent=bb, norm=LogNorm(vmin=vlim[0], vmax=vlim[1]))
     ax.tick_params(axis='both', which='major', width=1.5, direction='in')
 
     if zoom is True: # flip_x = False, zoom=True
@@ -131,3 +130,11 @@ def plot_image(ax, img, name=None,
     else:
         ax.set_xlabel('X ({})'.format(unit))
         ax.set_ylabel('Y ({})'.format(unit))
+
+    if colorbar is True:
+        colorbar = 't'
+
+    if colorbar is not False:
+        divider = make_axes_locatable(ax)
+        cax     = divider.append_axes('right', size='7%', pad=0.05)
+        cbar    = plt.colorbar(im, cax=cax)
