@@ -90,8 +90,6 @@ def plot_image(ax, img, name=None,
 
     """
 
-    ax.set_axis_off()
-
     x   = img.shape[0]
     r0  = x * np.sqrt(27) / imgsz # radius of the black hole shadow in pixels
     r0M = r0 * imgsz / x          # BH shadow in units of GM/c**2
@@ -125,4 +123,5 @@ def plot_image(ax, img, name=None,
             ax.text(-0.47*M,-0.47*M, name, color='w') #makes the text label
 
     if length_scale:
+        ax.set_axis_off()
         add_scale(ax)
