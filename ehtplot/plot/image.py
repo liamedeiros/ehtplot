@@ -73,10 +73,9 @@ def plot_image(ax, img, name=None,
     will zoom in to about 20 \f$ GM/c^2 \f$ on each side, if not set
     to True, will leave the full array visible.
 
-    @param length_scale optional keyword, default set to True.
+    @param unit optional keyword, default set to `GM/c^2`.
 
-    @param scale optional keyword, default set to 'lin', 'log' is also
-    supported, this sets the scale of the color map.
+    @param length_scale optional keyword, default set to True.
 
     @param norm optional keyword, default set to 1, this is in case
     normalizing to 1 doesn't give the desired image, you can control a
@@ -84,8 +83,13 @@ def plot_image(ax, img, name=None,
     norm_num=1.2, the maximum value in the image will be 1.2, but the
     color bar will go from 0 to 1 (assuming scale='lin').
 
+    @param scale optional keyword, default set to 'lin', 'log' is also
+    supported, this sets the scale of the color map.
+
     @param vlim optional keyword, default set to [0, 1], this is the
     limits for the color bar.
+
+    @param colorbar optional keyword, default set to True.
 
     """
 
