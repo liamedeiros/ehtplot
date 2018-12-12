@@ -132,9 +132,15 @@ def plot_image(ax, img, name=None,
         ax.set_ylabel('Y ({})'.format(unit))
 
     if colorbar is True:
-        colorbar = 't'
+        colorbar = 'top'
 
     if colorbar is not False:
+        if colorbar == 'top' or colorbar =='bottom':
+            orientation = 'horizontal'
+        else:
+            orientation = 'vertical'
+
         divider = make_axes_locatable(ax)
-        cax     = divider.append_axes('right', size='7%', pad=0.05)
-        cbar    = plt.colorbar(im, cax=cax)
+        cax     = divider.append_axes(colorbar, size='7%', pad=0.05)
+        cbar    = plt.colorbar(im, cax=cax, orientation=orientation)
+        cbar.ax.xaxis.set_ticks_position(colorbar)
