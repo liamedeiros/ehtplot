@@ -32,7 +32,7 @@ def add_scale(ax, label='$50 \mu $arcsec', length=10, color='gold', padding=0.15
         ax.text((lims[0]+factor)+1.5,(lims[0]+factor)*.95, label, fontsize=font, color=color)
 
 def plot_image(ax, img, name=None,
-               imgsz=64, zoom=True, unit='M',
+               imgsz=64, zoom=True, unit='$GMc^{-2}$',
                length_scale=None,
                norm=1, scale='lin', vlim=None):
     """!@brief Makes a plot of an image.
@@ -123,7 +123,11 @@ def plot_image(ax, img, name=None,
             ax.text(-0.47*M,-0.47*M, name, color='w') #makes the text label
 
     if length_scale is None: #decide base on unit
-        length_scale = (unit != 'M')
+        length_scale = unit.endswith('arcsec')
+
     if length_scale:
         ax.set_axis_off()
         add_scale(ax)
+    else:
+        ax.set_xlabel('X ({})'.format(unit))
+        ax.set_ylabel('Y ({})'.format(unit))
