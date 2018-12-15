@@ -16,4 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-from .core import plot
+import importlib.util as iu
+from os.path import join, dirname
+
+def plot(type):
+    file   = join(dirname(__file__), type.split("_", 1)[-1]+".py")
+    spec   = iu.spec_from_file_location(type, file)
+    module = iu.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    return module.__dict__[type]
