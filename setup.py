@@ -55,6 +55,6 @@ setup(
         "matplotlib",
         "numpy",
         "scipy",
-        "skimage",
+        "scikit-image",
     ],
 )
