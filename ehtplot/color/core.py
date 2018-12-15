@@ -18,7 +18,8 @@
 
 import numpy as np
 
-from os.path import dirname, join
+from os.path import dirname, join, splitext, basename
+from glob    import glob
 from math    import sqrt, degrees
 
 from scipy.optimize import bisect, minimize
@@ -28,6 +29,9 @@ from colormath.color_conversions import convert_color
 
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap, register_cmap
+
+def lsnames(path, ext):
+    return [splitext(basename(f))[0] for f in glob(join(path, '*'+ext))]
 
 def convert(i, N,
             darkest=0.0, lightest=1.0,
@@ -121,13 +125,13 @@ def symmetrize(cm, N=256,
         np.savetxt(save, carr)
 
 def register(name=None, cmap=None):
+    path = dirname(__file__)
+    ext  = ".txt"
     if name is None:
-        names = ['ehthot', 'ehtRdBu']
-        for name in names:
+        for name in lsnames(path, ext):
             register(name=name) # recursion
     else:
         if cmap is None:
-            path = dirname(__file__)
-            data = np.loadtxt(join(path, name+".txt"))
+            data = np.loadtxt(join(path, name+ext))
             cmap = ListedColormap(data)
         register_cmap(name=name, cmap=cmap)
