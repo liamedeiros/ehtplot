@@ -25,6 +25,7 @@ from colormath.color_objects     import LabColor, LCHabColor, sRGBColor
 from colormath.color_conversions import convert_color
 
 from matplotlib.colors import ListedColormap
+from matplotlib.cm     import get_cmap, register_cmap
 
 def convert(i, N,
             darkest=0.0, lightest=1.0,
@@ -105,3 +106,8 @@ def symmetrize(cm, N=256,
 
     return ListedColormap([cm(l2vL(l)) for l in L[:N//2]] +
                           [cm(l2vR(l)) for l in L[N//2:]])
+
+def register(name=None, cmap=None):
+    if name is None or cmap is None:
+        register_cmap(name='ehthot',  cmap=linearize(get_cmap('afmhot')))
+        register_cmap(name='ehtRdBu', cmap=symmetrize(get_cmap('RdBu')))
