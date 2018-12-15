@@ -16,23 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-import importlib.util as iu
-from os.path import dirname
+from .plot import plot
 
 try:
     basestring
 except NameError:
     basestring = str # so that we can always test strings as in python2
-
-def load(method):
-    dir, name = method.split('_', 1)
-
-    file   = dirname(__file__) + "/" + dir + "/" + name + ".py"
-    spec   = iu.spec_from_file_location(method, file)
-    module = iu.module_from_spec(spec)
-    spec.loader.exec_module(module)
-
-    return module.__dict__[method]
 
 class Panel:
     """The "node" class for hierarchically organizing subplots in ehtplot
@@ -83,9 +72,9 @@ class Panel:
     def __iter__(self):
         return iter(self.subpanels)
 
-    def stage(self, method, *args, **kwargs):
-        if isinstance(method, basestring):
-            method = load(method)
-        if not callable(method):
-            raise TypeError('method should be a callable')
-        self.plots += [lambda ax: method(ax, *args, **kwargs)]
+    def stage(self, type, *args, **kwargs):
+        if isinstance(type, basestring):
+            type = plot(type)
+        if not callable(type):
+            raise TypeError('type should be a callable')
+        self.plots += [lambda ax: type(ax, *args, **kwargs)]
