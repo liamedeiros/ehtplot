@@ -32,9 +32,8 @@ def add_scale(ax, label='$50 \mu $arcsec', length=10, color='gold', padding=0.15
         ax.text((lims[0]+factor)+1.5,(lims[0]+factor)*.95, label, fontsize=font, color=color)
 
 def plot_image(ax, img, name=None,
-               imgsz=None, pxsz=None, zoom=True,
-               length_scale=True,
-               norm=1, scale='lin', vlim=None):
+               imgsz=None, pxsz=None, zoom=True, unit='$GMc^{-2}$', length_scale=None,
+               norm=1, scale='lin', vlim=None, colorbar=True):
     """!@brief Makes a plot of an image.
 
     This can be used for a single image or for multiple subplots,
@@ -74,10 +73,9 @@ def plot_image(ax, img, name=None,
     will zoom in to about 20 \f$ GM/c^2 \f$ on each side, if not set
     to True, will leave the full array visible.
 
-    @param length_scale optional keyword, default set to True.
+    @param unit optional keyword, default set to `GM/c^2`.
 
-    @param scale optional keyword, default set to 'lin', 'log' is also
-    supported, this sets the scale of the color map.
+    @param length_scale optional keyword, default set to True.
 
     @param norm optional keyword, default set to 1, this is in case
     normalizing to 1 doesn't give the desired image, you can control a
@@ -85,12 +83,15 @@ def plot_image(ax, img, name=None,
     norm_num=1.2, the maximum value in the image will be 1.2, but the
     color bar will go from 0 to 1 (assuming scale='lin').
 
+    @param scale optional keyword, default set to 'lin', 'log' is also
+    supported, this sets the scale of the color map.
+
     @param vlim optional keyword, default set to [0, 1], this is the
     limits for the color bar.
 
-    """
+    @param colorbar optional keyword, default set to True.
 
-    ax.set_axis_off()
+    """
 
     if imgsz is not None and pxsz is not None:
         raise ValueError("imgsz and pxsz cannot be set simultaneously")
@@ -111,7 +112,7 @@ def plot_image(ax, img, name=None,
         scale_kwargs = {'norm': (LogNorm() if vlim is None else
                                  LogNorm(vmin=vlim[0], vmax=vlim[1]))}
 
-    ax.imshow(img, extent=bb, **scale_kwargs)
+    im = ax.imshow(img, extent=bb, **scale_kwargs)
     ax.tick_params(axis='both', which='major', width=1.5)
 
     if zoom is True: # flip_x = False, zoom=True
@@ -124,5 +125,26 @@ def plot_image(ax, img, name=None,
     if name is not None:
         ax.text(0.26,0.26, name, color='w', transform=ax.transAxes)
 
+    if length_scale is None: #decide base on unit
+        length_scale = unit.endswith('arcsec')
+
     if length_scale:
+        ax.set_axis_off()
         add_scale(ax)
+    else:
+        ax.set_xlabel('X ({})'.format(unit))
+        ax.set_ylabel('Y ({})'.format(unit))
+
+    if colorbar is True:
+        colorbar = 'top'
+
+    if colorbar is not False:
+        if colorbar == 'top' or colorbar =='bottom':
+            orientation = 'horizontal'
+        else:
+            orientation = 'vertical'
+
+        divider = make_axes_locatable(ax)
+        cax     = divider.append_axes(colorbar, size='7%', pad=0.05)
+        cbar    = plt.colorbar(im, cax=cax, orientation=orientation)
+        cbar.ax.xaxis.set_ticks_position(colorbar)
