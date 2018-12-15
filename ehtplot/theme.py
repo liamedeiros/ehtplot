@@ -38,7 +38,7 @@ def get_themes(style=None):
     if style is None or style == 'default':
         style = 'ehtplot'
 
-    file = os.path.join(os.path.dirname(__file__), style+".mplstyle")
+    file = os.path.join(os.path.splitext(__file__)[0], style+".mplstyle")
     if os.path.isfile(file):
         return mpl.rc_params_from_file(file, use_default_template=False)
     else:
