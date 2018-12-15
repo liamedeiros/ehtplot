@@ -112,7 +112,7 @@ def plot_image(ax, img, name=None,
                                  LogNorm(vmin=vlim[0], vmax=vlim[1]))}
 
     ax.imshow(img, extent=bb, **scale_kwargs)
-    ax.tick_params(axis='both', which='major', width=1.5, direction='in')
+    ax.tick_params(axis='both', which='major', width=1.5)
 
     if zoom is True: # flip_x = False, zoom=True
         r0 = np.sqrt(27) # BH shadow in units of GM/c**2

@@ -23,8 +23,14 @@ font.size: 10.56
 font.family: STIXGeneral
 mathtext.fontset: stix
 
+xtick.top: True
+xtick.bottom: True
+ytick.left: True
+ytick.right: True
 xtick.color: white
 ytick.color: white
+xtick.direction: in
+ytick.direction: in
 
 image.interpolation: bilinear
 image.origin: lower
