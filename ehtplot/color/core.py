@@ -53,7 +53,8 @@ def lightness(r, g, b, a=1.0):
 
 def linearize(cm, N=256,
               lmin=None, lmax=None,
-              vmin=0.0,  vmax=1.0):
+              vmin=0.0,  vmax=1.0,
+              save=None):
     def v2l(v):
         return lightness(*cm(v))
     def l2v(l):
@@ -61,11 +62,17 @@ def linearize(cm, N=256,
 
     L = np.linspace(v2l(vmin) if lmin is None else lmin,
                     v2l(vmax) if lmax is None else lmax, N)
-    return ListedColormap([cm(l2v(l)) for l in L])
+
+    carr = [cm(l2v(l)) for l in L]
+    if save is None:
+        return ListedColormap(carr)
+    else:
+        np.savetxt(save, carr)
 
 def symmetrize(cm, N=256,
                lmin=None, lmid=None, lmax=None,
-               vmin=0.0,  vmid=None, vmax=1.0):
+               vmin=0.0,  vmid=None, vmax=1.0,
+               save=None):
     def v2l(v):
         return  lightness(*cm(v[0] if isinstance(v, np.ndarray) else v))
     def v2ml(v):
@@ -104,8 +111,12 @@ def symmetrize(cm, N=256,
             print(l)
             return 100.0
 
-    return ListedColormap([cm(l2vL(l)) for l in L[:N//2]] +
-                          [cm(l2vR(l)) for l in L[N//2:]])
+    carr = ([cm(l2vL(l)) for l in L[:N//2]] +
+            [cm(l2vR(l)) for l in L[N//2:]])
+    if save is None:
+        return ListedColormap(carr)
+    else:
+        np.savetxt(save, carr)
 
 def register(name=None, cmap=None):
     if name is None or cmap is None:
