@@ -18,7 +18,9 @@
 
 import numpy as np
 
-from math import sqrt, degrees
+from os.path import dirname, join
+from math    import sqrt, degrees
+
 from scipy.optimize import bisect, minimize
 
 from colormath.color_objects     import LabColor, LCHabColor, sRGBColor
@@ -120,5 +122,9 @@ def symmetrize(cm, N=256,
 
 def register(name=None, cmap=None):
     if name is None or cmap is None:
-        register_cmap(name='ehthot',  cmap=linearize(get_cmap('afmhot')))
-        register_cmap(name='ehtRdBu', cmap=symmetrize(get_cmap('RdBu')))
+        path  = dirname(__file__)
+        names = ['ehthot', 'ehtRdBu']
+        for name in names:
+            data = np.loadtxt(join(path, name+".txt"))
+            cmap = ListedColormap(data)
+            register_cmap(name=name, cmap=cmap)
