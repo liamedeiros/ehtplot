@@ -17,12 +17,10 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 import importlib.util as iu
-from os.path import dirname
+from os.path import join, dirname
 
 def plot(type):
-    dir, name = type.split('_', 1)
-
-    file   = dirname(__file__) + "/" + dir + "/" + name + ".py"
+    file   = join(dirname(__file__), type.split("_", 1)[-1]+".py")
     spec   = iu.spec_from_file_location(type, file)
     module = iu.module_from_spec(spec)
     spec.loader.exec_module(module)
