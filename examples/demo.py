@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 import ehtplot as ep
+from ehtplot import io
 
-img = ep.Panel(image=ep.open("sample"))
+img = ep.Panel(image=io.open("sample"))
 row = ep.Panel(subpanels=[img, img, img])
 fig = ep.Figure([row, row], inrow=False)
 
