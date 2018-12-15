@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import ehtplot as ep
-from ehtplot import io
+from ehtplot.extra import io
 
 img = ep.Panel(image=io.open("sample"))
 row = ep.Panel(subpanels=[img, img, img])
