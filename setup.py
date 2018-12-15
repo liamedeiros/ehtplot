@@ -27,6 +27,7 @@ with open(path.join(here, "README.md"), encoding='utf-8') as f:
 setup(
     name="ehtplot",
     version="0.9.0",
+
     description="Plotting functions for EHT",
     long_description=long_description,
 
@@ -49,5 +50,11 @@ setup(
 
     packages=find_packages(exclude=["doc*", "test*"]),
 
-    package_data={'ehtplot': ["data/*.npy"]}
+    install_requires=[
+      # "colormath",
+        "matplotlib",
+        "numpy",
+        "scipy",
+        "skimage",
+    ],
 )
