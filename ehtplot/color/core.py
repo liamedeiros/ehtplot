@@ -121,10 +121,13 @@ def symmetrize(cm, N=256,
         np.savetxt(save, carr)
 
 def register(name=None, cmap=None):
-    if name is None or cmap is None:
-        path  = dirname(__file__)
+    if name is None:
         names = ['ehthot', 'ehtRdBu']
         for name in names:
+            register(name=name) # recursion
+    else:
+        if cmap is None:
+            path = dirname(__file__)
             data = np.loadtxt(join(path, name+".txt"))
             cmap = ListedColormap(data)
-            register_cmap(name=name, cmap=cmap)
+        register_cmap(name=name, cmap=cmap)
