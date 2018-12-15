@@ -17,7 +17,11 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 import matplotlib as mpl
+from matplotlib.style.core import USER_LIBRARY_PATHS
 from os.path import join, dirname, isfile
+
+USER_LIBRARY_PATHS += [dirname(__file__)]
+mpl.style.reload_library()
 
 def get_themes(style=None):
     """Getting a theme for ehtplot
@@ -36,10 +40,6 @@ def get_themes(style=None):
     """
 
     if style is None or style == 'default':
-        style = 'ehtplot'
-
-    file = join(dirname(__file__), style+".mplstyle")
-    if isfile(file):
-        return mpl.rc_params_from_file(file, use_default_template=False)
+        return 'ehtplot'
     else:
         return style
