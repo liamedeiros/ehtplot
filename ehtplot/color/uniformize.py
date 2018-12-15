@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+#
 # Copyright (C) 2018 Chi-kwan Chan
 # Copyright (C) 2018 Steward Observatory
 #
@@ -25,6 +27,7 @@ from colormath.color_objects     import LabColor, LCHabColor, sRGBColor
 from colormath.color_conversions import convert_color
 
 from matplotlib.colors import ListedColormap
+from matplotlib.cm     import get_cmap
 
 def convert(i, N,
             darkest=0.0, lightest=1.0,
@@ -116,3 +119,7 @@ def symmetrize(cm, N=256,
         return ListedColormap(carr)
     else:
         np.savetxt(save, carr)
+
+if __name__ == "__main__":
+    linearize(get_cmap('afmhot'), save='ehthot.txt')
+    symmetrize(get_cmap('RdBu'),  save='ehtRdBu.txt')
