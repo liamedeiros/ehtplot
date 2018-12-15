@@ -43,7 +43,7 @@ class Figure:
     def __call__(self, *args, **kwargs):
         fig = plt.figure()
         ax  = fig.add_axes([0, 0, 1, 1])
-        with plt.style.context(get_themes(kwargs.pop('style', None))):
+        with plt.style.context(kwargs.pop('style', 'ehtplot')):
             self.panel(ax, *args, **kwargs)
         return fig
 

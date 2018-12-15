@@ -18,28 +18,7 @@
 
 import matplotlib as mpl
 from matplotlib.style.core import USER_LIBRARY_PATHS
-from os.path import join, dirname, isfile
+from os.path import dirname
 
 USER_LIBRARY_PATHS += [dirname(__file__)]
 mpl.style.reload_library()
-
-def get_themes(style=None):
-    """Getting a theme for ehtplot
-
-    get_themes() is used to get the theme for rendering to screen,
-    export to vector graphics formats (such as eps and pdf), and
-    export to raster/bitmap formats (such as jpg and png).
-
-    In principle, we can have a ehtplot Theme class to manage themes.
-    This seems overkill at the moment and we simply use a plain python
-    dictionary to store themes for now.
-
-    Args:
-        style: matplotlib style
-
-    """
-
-    if style is None or style == 'default':
-        return 'ehtplot'
-    else:
-        return style
