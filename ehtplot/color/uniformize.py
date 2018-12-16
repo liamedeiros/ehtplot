@@ -18,7 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-from math import sqrt, sin, cos
 import numpy as np
 
 from scipy.optimize    import bisect, minimize
@@ -26,23 +25,19 @@ from colorspacious     import cspace_convert
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
 
-def convert(i, N,
+def colormap(N=256,
             darkest=0.0, lightest=100.0,
             saturation=None, hue=None):
-    f = i / (N - 1.0)
+    f  = np.linspace(0, 1, num=N)
 
-    s  = sqrt(0.5) if saturation is None else saturation(f)
-    hp = 0.0       if hue        is None else hue(f)
-
+    s  = np.sqrt(0.5) if saturation is None else saturation(f)
+    hp = 0.0          if hue        is None else hue(f)
     Jp = darkest + f * (lightest - darkest)
-    Cp = Jp * s / sqrt(1.0 - s*s)
+    Cp = Jp * s / np.sqrt(1.0 - s*s)
 
-    Jabp = [Jp, Cp * cos(hp), Cp * sin(hp)]
-    sRGB = cspace_convert(Jabp, "CAM02-UCS", "sRGB1")
-    return np.clip(sRGB, 0, 1)
-
-def colormap(N=256, **kwargs):
-    return ListedColormap([convert(i, N, **kwargs) for i in range(N)])
+    Jabp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
+    sRGB = np.clip(cspace_convert(Jabp, "CAM02-UCS", "sRGB1"), 0, 1)
+    return ListedColormap(sRGB)
 
 def lightness(r, g, b, a=1.0):
     return cspace_convert([r, g, b], "sRGB1", "CAM02-UCS")[0]
