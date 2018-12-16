@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-from math import sqrt, degrees
+from math import sqrt, sin, cos
 import numpy as np
 
 from scipy.optimize import bisect, minimize
@@ -31,22 +31,19 @@ from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
 
 def convert(i, N,
-            darkest=0.0, lightest=1.0,
+            darkest=0.0, lightest=100.0,
             saturation=None, hue=None):
     f = i / (N - 1.0)
 
-    s = sqrt(0.5) if saturation is None else saturation(f)
-    h = 0.0       if hue        is None else hue(f)
+    s  = sqrt(0.5) if saturation is None else saturation(f)
+    hp = 0.0       if hue        is None else hue(f)
 
-    l = darkest + f * (lightest-darkest)
-    c = l*s / sqrt(1.0 - s*s)
+    Jp = darkest + f * (lightest - darkest)
+    Cp = Jp * s / sqrt(1.0 - s*s)
 
-    lch = LCHabColor(100.0 * l, 100 * c, degrees(h))
-    rgb = convert_color(lch, sRGBColor)
-
-    return [rgb.clamped_rgb_r,
-            rgb.clamped_rgb_g,
-            rgb.clamped_rgb_b]
+    Jabp = [Jp, Cp * cos(hp), Cp * sin(hp)]
+    sRGB = cspace_convert(Jabp, "CAM02-UCS", "sRGB1")
+    return np.clip(sRGB, 0, 1)
 
 def colormap(N=256, **kwargs):
     return ListedColormap([convert(i, N, **kwargs) for i in range(N)])
