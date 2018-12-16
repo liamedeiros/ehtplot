@@ -21,12 +21,8 @@
 from math import sqrt, sin, cos
 import numpy as np
 
-from scipy.optimize import bisect, minimize
-
-from colormath.color_objects     import LabColor, LCHabColor, sRGBColor
-from colormath.color_conversions import convert_color
-from colorspacious               import cspace_convert
-
+from scipy.optimize    import bisect, minimize
+from colorspacious     import cspace_convert
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
 

@@ -51,7 +51,6 @@ setup(
     packages=find_packages(exclude=["doc*", "test*"]),
 
     install_requires=[
-      # "colormath",
       # "colorspacious",
         "matplotlib",
         "numpy",
