@@ -18,4 +18,10 @@
 
 from .core import register
 
+# "colormap.py" and "uniformize.py" depend on optional libraries and
+# are not imported by default:
+#
+# from .colormap   import colormap
+# from .uniformize import *
+
 register()
