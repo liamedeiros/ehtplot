@@ -25,6 +25,7 @@ from scipy.optimize import bisect, minimize
 
 from colormath.color_objects     import LabColor, LCHabColor, sRGBColor
 from colormath.color_conversions import convert_color
+from colorspacious               import cspace_convert
 
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
@@ -51,7 +52,7 @@ def colormap(N=256, **kwargs):
     return ListedColormap([convert(i, N, **kwargs) for i in range(N)])
 
 def lightness(r, g, b, a=1.0):
-    return convert_color(sRGBColor(r, g, b), LabColor).lab_l
+    return cspace_convert([r, g, b], "sRGB1", "CAM02-UCS")[0]
 
 def linearize(cm, N=256,
               lmin=None, lmax=None,
@@ -104,14 +105,14 @@ def symmetrize(cm, N=256,
         try:
             return bisect(lambda v: v2l(v) - l, vmin, vmid)
         except:
-            print(l)
-            return 100.0
+            print('Warning: unable to solve for value in l2vL()', l)
+            return 0.5 if l > 75 else 0.0
     def l2vR(l):
         try:
             return bisect(lambda v: v2l(v) - l, vmid, vmax)
         except:
-            print(l)
-            return 100.0
+            print('Warning: unable to solve for value in l2vR()', l)
+            return 0.5 if l > 75 else 1.0
 
     carr = ([cm(l2vL(l)) for l in L[:N//2]] +
             [cm(l2vR(l)) for l in L[N//2:]])

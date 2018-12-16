@@ -52,6 +52,7 @@ setup(
 
     install_requires=[
       # "colormath",
+      # "colorspacious",
         "matplotlib",
         "numpy",
         "scipy",
