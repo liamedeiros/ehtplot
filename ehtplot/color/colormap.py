@@ -19,7 +19,12 @@
 import numpy as np
 
 from colorspacious     import cspace_convert
-from matplotlib.colors import ListedColormap
+from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+
+def colorremap(cm, N=4096):
+    name   = '{}_{}'.format(cm.name, N)
+    colors = cm(np.arange(cm.N))
+    return LinearSegmentedColormap.from_list(name, colors, N=N)
 
 def colormap(N=256,
             darkest=0.0, lightest=100.0,
