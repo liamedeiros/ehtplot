@@ -22,16 +22,23 @@ import numpy as np
 
 from scipy.optimize    import bisect, minimize
 from colorspacious     import cspace_convert
-from matplotlib.colors import ListedColormap
+from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 from matplotlib.cm     import get_cmap
 
 def lightness(r, g, b, a=1.0):
     return cspace_convert([r, g, b], "sRGB1", "CAM02-UCS")[0]
 
+def cremap(cm, N=4096):
+    name   = '{}_{}'.format(cm.name, N)
+    colors = cm(np.arange(cm.N))
+    return LinearSegmentedColormap.from_list(name, colors, N=N)
+
 def linearize(cm, N=256,
               lmin=None, lmax=None,
               vmin=0.0,  vmax=1.0,
               save=None):
+    cm = cremap(cm)
+
     def v2l(v):
         return lightness(*cm(v))
     def l2v(l):
@@ -50,6 +57,8 @@ def symmetrize(cm, N=256,
                lmin=None, lmid=None, lmax=None,
                vmin=0.0,  vmid=None, vmax=1.0,
                save=None):
+    cm = cremap(cm)
+
     def v2l(v):
         return  lightness(*cm(v[0] if isinstance(v, np.ndarray) else v))
     def v2ml(v):
