@@ -53,6 +53,8 @@ def linearize(cm, N=None,
     if save is None:
         return ListedColormap(carr)
     else:
+        if carr.shape[1] == 4 and np.all(carr[:,3] == 1.0):
+            carr = carr[:,:3]
         np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
 
 def symmetrize(cm, N=None,
@@ -106,6 +108,8 @@ def symmetrize(cm, N=None,
     if save is None:
         return ListedColormap(carr)
     else:
+        if carr.shape[1] == 4 and np.all(carr[:,3] == 1.0):
+            carr = carr[:,:3]
         np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
 
 if __name__ == "__main__":

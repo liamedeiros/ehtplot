@@ -36,7 +36,8 @@ def register(name=None, cmap=None):
             register(name=splitext(basename(f))[0]) # recursion
     else:
         if cmap is None:
-            cnrm = 1.0 / (Nc - 1.0)
-            ctab = np.loadtxt(join(path, name+ext)) * cnrm
-            cmap = ListedColormap(ctab)
+            ctab = np.loadtxt(join(path, name+ext))
+            if ctab.shape[1] == 3:
+                ctab = np.append(ctab, np.full((ctab.shape[0], 1), Nc), axis=1)
+            cmap = ListedColormap(ctab / (Nc - 1.0))
         register_cmap(name=name, cmap=cmap)
