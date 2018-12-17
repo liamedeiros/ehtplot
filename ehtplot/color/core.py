@@ -38,6 +38,6 @@ def register(name=None, cmap=None):
         if cmap is None:
             ctab = np.loadtxt(join(path, name+ext))
             if ctab.shape[1] == 3:
-                ctab = np.append(ctab, np.full((ctab.shape[0], 1), Nc), axis=1)
+                ctab = np.append(ctab, np.full((ctab.shape[0], 1), Nc-1), axis=1)
             cmap = ListedColormap(ctab / (Nc - 1.0))
         register_cmap(name=name, cmap=cmap)
