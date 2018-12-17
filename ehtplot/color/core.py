@@ -26,7 +26,7 @@ from matplotlib.cm     import register_cmap
 
 Nq = 256     # number of quantization levels in a colormap
 Nc = 1024    # nubber of quantization levels in a channel (10bit default)
-Ns = 1048576 # number of quantization levels in sampling colors during remap
+Ns = 4194304 # number of quantization levels in sampling colors during remap
 
 def register(name=None, cmap=None):
     path = dirname(__file__)
