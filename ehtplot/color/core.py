@@ -41,3 +41,9 @@ def register(name=None, cmap=None):
                 ctab = np.append(ctab, np.full((ctab.shape[0], 1), Nc-1), axis=1)
             cmap = ListedColormap(ctab / (Nc - 1.0))
         register_cmap(name=name, cmap=cmap)
+
+        if '_' not in name or not set(name.rsplit('_', 1)[1]) <= set('u'):
+            rname = name + '_r'
+        else:
+            rname = name + 'r'
+        register_cmap(name=rname, cmap=cmap.reversed())
