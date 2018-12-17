@@ -44,11 +44,11 @@ def linearize(cm, N=256,
     L = np.linspace(v2l(vmin) if lmin is None else lmin,
                     v2l(vmax) if lmax is None else lmax, N)
 
-    carr = [cm(l2v(l)) for l in L]
+    carr = np.array([cm(l2v(l)) for l in L])
     if save is None:
         return ListedColormap(carr)
     else:
-        np.savetxt(save, carr)
+        np.savetxt(save, np.rint(carr * 255).astype(int), fmt="%i")
 
 def symmetrize(cm, N=256,
                lmin=None, lmid=None, lmax=None,
@@ -94,12 +94,12 @@ def symmetrize(cm, N=256,
             print('Warning: unable to solve for value in l2vR()', l)
             return 0.5 if l > 75 else 1.0
 
-    carr = ([cm(l2vL(l)) for l in L[:N//2]] +
-            [cm(l2vR(l)) for l in L[N//2:]])
+    carr = np.array([cm(l2vL(l)) for l in L[:N//2]] +
+                    [cm(l2vR(l)) for l in L[N//2:]])
     if save is None:
         return ListedColormap(carr)
     else:
-        np.savetxt(save, carr)
+        np.savetxt(save, np.rint(carr * 255).astype(int), fmt="%i")
 
 if __name__ == "__main__":
     linearize(get_cmap('afmhot'), save='ehthot.txt')
