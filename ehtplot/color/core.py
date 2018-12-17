@@ -24,6 +24,10 @@ import numpy as np
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import register_cmap
 
+Nq = 256  # number of quantization levels in a colormap
+Nc = 256  # nubber of quantization levels in a channel
+Ns = 4096 # number of quantization levels in sampling colors during remap
+
 def register(name=None, cmap=None):
     path = dirname(__file__)
     ext  = ".txt"
@@ -32,6 +36,7 @@ def register(name=None, cmap=None):
             register(name=splitext(basename(f))[0]) # recursion
     else:
         if cmap is None:
-            ctab = np.loadtxt(join(path, name+ext)) / 255
+            cnrm = 1.0 / (Nc - 1.0)
+            ctab = np.loadtxt(join(path, name+ext)) * cnrm
             cmap = ListedColormap(ctab)
         register_cmap(name=name, cmap=cmap)

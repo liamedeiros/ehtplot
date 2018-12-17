@@ -25,15 +25,20 @@ from colorspacious     import cspace_convert
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
 
+from ehtplot.color.core     import Nc
 from ehtplot.color.colormap import colorremap
+
+cscale = Nc - 1.0
 
 def lightness(r, g, b, a=1.0):
     return cspace_convert([r, g, b], "sRGB1", "CAM02-UCS")[0]
 
-def linearize(cm, N=256,
+def linearize(cm, N=None,
               lmin=None, lmax=None,
               vmin=0.0,  vmax=1.0,
               save=None):
+    if N is None:
+        N = cm.N
     cm = colorremap(cm)
 
     def v2l(v):
@@ -48,12 +53,14 @@ def linearize(cm, N=256,
     if save is None:
         return ListedColormap(carr)
     else:
-        np.savetxt(save, np.rint(carr * 255).astype(int), fmt="%i")
+        np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
 
-def symmetrize(cm, N=256,
+def symmetrize(cm, N=None,
                lmin=None, lmid=None, lmax=None,
                vmin=0.0,  vmid=None, vmax=1.0,
                save=None):
+    if N is None:
+        N = cm.N
     cm = colorremap(cm)
 
     def v2l(v):
@@ -99,7 +106,7 @@ def symmetrize(cm, N=256,
     if save is None:
         return ListedColormap(carr)
     else:
-        np.savetxt(save, np.rint(carr * 255).astype(int), fmt="%i")
+        np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
 
 if __name__ == "__main__":
     linearize(get_cmap('afmhot'), save='ehthot.txt')

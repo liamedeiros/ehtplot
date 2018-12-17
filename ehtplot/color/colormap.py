@@ -21,12 +21,14 @@ import numpy as np
 from colorspacious     import cspace_convert
 from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 
-def colorremap(cm, N=4096):
+from ehtplot.color.core import Nq, Ns
+
+def colorremap(cm, N=Ns):
     name   = '{}_{}'.format(cm.name, N)
     colors = cm(np.arange(cm.N))
     return LinearSegmentedColormap.from_list(name, colors, N=N)
 
-def colormap(N=256,
+def colormap(N=Nq,
             darkest=0.0, lightest=100.0,
             saturation=None, hue=None):
     f  = np.linspace(0, 1, num=N)
