@@ -113,5 +113,22 @@ def symmetrize(cm, N=None,
         np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
 
 if __name__ == "__main__":
-    linearize(get_cmap('afmhot'), save='ehthot.txt')
-    symmetrize(get_cmap('RdBu'),  save='ehtRdBu.txt')
+    lmaps = [
+        'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds',
+        'YlOrBr', 'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu',
+        'GnBu', 'PuBu', 'YlGnBu', 'PuBuGn', 'BuGn', 'YlGn',
+        'binary', 'gist_yarg', 'gist_gray', 'gray', 'bone', 'pink',
+        'spring', 'summer', 'autumn', 'winter', 'cool', 'Wistia',
+        'hot', 'afmhot', 'gist_heat', 'copper']
+
+    smaps = [
+        'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu',
+        'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr', 'seismic']
+
+    for cm in lmaps:
+        print(cm)
+        linearize(get_cmap(cm), save=cm+'_u.txt')
+
+    for cm in smaps:
+        print(cm)
+        symmetrize(get_cmap(cm), save=cm+'_u.txt')
