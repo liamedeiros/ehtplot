@@ -118,8 +118,8 @@ if __name__ == "__main__":
         'YlOrBr', 'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu',
         'GnBu', 'PuBu', 'YlGnBu', 'PuBuGn', 'BuGn', 'YlGn',
         'binary', 'gist_yarg', 'gist_gray', 'gray', 'bone', 'pink',
-        'spring', 'summer', 'autumn', 'winter', 'cool', 'Wistia',
-        'hot', 'afmhot', 'gist_heat', 'copper']
+        'spring', 'summer', 'autumn', 'winter', 'Wistia',
+        'hot', 'afmhot', 'gist_heat', 'copper', 'gnuplot2']
 
     smaps = [
         'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu',
