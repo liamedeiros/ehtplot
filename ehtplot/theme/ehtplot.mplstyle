@@ -31,7 +31,7 @@ ytick.direction: in
 
 image.interpolation: bilinear
 image.origin: lower
-image.cmap: ehthot
+image.cmap: afmhot_u
 
 savefig.dpi: 300
 savefig.transparent: True
