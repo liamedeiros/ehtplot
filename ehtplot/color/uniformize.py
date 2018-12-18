@@ -33,41 +33,16 @@ cscale = Nc - 1.0
 def lightness(r, g, b, a=1.0):
     return cspace_convert([r, g, b], "sRGB1", "CAM02-UCS")[0]
 
-def linearize(cm, N=None,
-              lmin=None, lmax=None,
-              vmin=0.0,  vmax=1.0,
-              save=None):
-    if N is None:
-        N = cm.N
-    cm = colorremap(cm)
+def linearize(cm, JpL=None, JpR=None, save=None):
+    ctab = np.array([cm(i) for i in range(cm.N)])
+    Jabp = cspace_convert(ctab[:,:3], "sRGB1", "CAM02-UCS")
 
-    def v2l(v):
-        return lightness(*cm(v))
+    Jp = np.linspace(Jabp[ 0,0] if JpL is None else JpL,
+                     Jabp[-1,0] if JpR is None else JpR, cm.N)
+    ap = np.interp(Jp, Jabp[:,0], Jabp[:,1])
+    bp = np.interp(Jp, Jabp[:,0], Jabp[:,2])
 
-    if lmin is None:
-        lmin = v2l(vmin)
-    elif lmin < v2l(vmin):
-        print("lmin is less than the minimal lightness; DONE")
-        return
-    if lmax is None:
-        lmax = v2l(vmax)
-    elif lmax < v2l(vmax):
-        print("lmax is less than the minimal lightness; DONE")
-        return
-
-    L = np.linspace(lmin, lmax, N)
-
-    def l2v(l):
-        try:
-            return bisect(lambda v: v2l(v) - l, vmin, vmax)
-        except:
-            print('Warning: unable to solve for value in l2v()', l)
-            if lmin < lmax:
-                return 0.0 if l < 50 else 1.0
-            else:
-                return 1.0 if l < 50 else 0.0
-
-    carr = np.array([cm(l2v(l)) for l in L])
+    carr = cspace_convert(np.stack([Jp,ap,bp], axis=-1), "CAM02-UCS", "sRGB1")
     if save is None:
         return ListedColormap(carr)
     else:
@@ -158,13 +133,13 @@ if __name__ == "__main__":
 
     for cm in lmaps:
         print(cm)
-        linearize(get_cmap(cm),          save=cm+'_u.txt')
-        linearize(get_cmap(cm), lmax=25, save=cm+'_lu.txt')
+        linearize(get_cmap(cm),         save=cm+'_u.txt')
+        linearize(get_cmap(cm), JpR=25, save=cm+'_lu.txt')
 
     for cm in umaps:
         print(cm)
-        linearize(get_cmap(cm),          save=cm+'_u.txt')
-        linearize(get_cmap(cm), lmin=25, save=cm+'_lu.txt')
+        linearize(get_cmap(cm),         save=cm+'_u.txt')
+        linearize(get_cmap(cm), JpL=25, save=cm+'_lu.txt')
 
     for cm in smaps:
         print(cm)
