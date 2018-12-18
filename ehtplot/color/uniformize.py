@@ -43,11 +43,29 @@ def linearize(cm, N=None,
 
     def v2l(v):
         return lightness(*cm(v))
-    def l2v(l):
-        return bisect(lambda v: v2l(v) - l, vmin, vmax)
 
-    L = np.linspace(v2l(vmin) if lmin is None else lmin,
-                    v2l(vmax) if lmax is None else lmax, N)
+    if lmin is None:
+        lmin = v2l(vmin)
+    elif lmin < v2l(vmin):
+        print("lmin is less than the minimal lightness; DONE")
+        return
+    if lmax is None:
+        lmax = v2l(vmax)
+    elif lmax < v2l(vmax):
+        print("lmax is less than the minimal lightness; DONE")
+        return
+
+    L = np.linspace(lmin, lmax, N)
+
+    def l2v(l):
+        try:
+            return bisect(lambda v: v2l(v) - l, vmin, vmax)
+        except:
+            print('Warning: unable to solve for value in l2v()', l)
+            if lmin < lmax:
+                return 0.0 if l < 50 else 1.0
+            else:
+                return 1.0 if l < 50 else 0.0
 
     carr = np.array([cm(l2v(l)) for l in L])
     if save is None:
@@ -70,9 +88,21 @@ def symmetrize(cm, N=None,
     def v2ml(v):
         return -lightness(*cm(v[0] if isinstance(v, np.ndarray) else v))
 
-    if lmin is None: lmin = v2l(vmin)
-    if lmid is None: lmid = v2l(0.5 if vmid is None else vmid)
-    if lmax is None: lmax = v2l(vmax)
+    if lmin is None:
+        lmin = v2l(vmin)
+    elif lmin < v2l(vmin):
+        print("lmin is less than the minimal lightness; DONE")
+        return
+    if lmid is None:
+        lmid = v2l(0.5 if vmid is None else vmid)
+    elif lmid < v2l(0.5 if vmid is None else vmid):
+        print("lmid is less than the minimal lightness; DONE")
+        return
+    if lmax is None:
+        lmax = v2l(vmax)
+    elif lmax < v2l(vmax):
+        print("lmax is less than the minimal lightness; DONE")
+        return
 
     if (lmax - lmid) * (lmid - lmin) >= 0.0:
         raise ValueError('colormap does not seem to diverge')
@@ -114,21 +144,29 @@ def symmetrize(cm, N=None,
 
 if __name__ == "__main__":
     lmaps = [
-        'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds',
-        'YlOrBr', 'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu',
-        'GnBu', 'PuBu', 'YlGnBu', 'PuBuGn', 'BuGn', 'YlGn',
-        'binary', 'gist_yarg', 'gist_gray', 'gray', 'bone', 'pink',
-        'summer', 'autumn', 'Wistia',
-        'hot', 'afmhot', 'gist_heat', 'copper', 'gnuplot2']
+        'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds', 'YlOrBr',
+        'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu', 'GnBu', 'PuBu', 'YlGnBu',
+        'PuBuGn', 'BuGn', 'YlGn', 'binary', 'gist_yarg', 'Wistia']
+
+    umaps = [
+        'gist_gray', 'gray', 'bone', 'pink', 'summer', 'autumn', 'hot',
+        'afmhot', 'gist_heat', 'copper', 'gnuplot2']
 
     smaps = [
-        'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu',
-        'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr', 'seismic']
+        'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu', 'RdYlBu', 'RdYlGn',
+        'Spectral', 'coolwarm', 'bwr', 'seismic']
 
     for cm in lmaps:
         print(cm)
-        linearize(get_cmap(cm), save=cm+'_u.txt')
+        linearize(get_cmap(cm),          save=cm+'_u.txt')
+        linearize(get_cmap(cm), lmax=25, save=cm+'_lu.txt')
+
+    for cm in umaps:
+        print(cm)
+        linearize(get_cmap(cm),          save=cm+'_u.txt')
+        linearize(get_cmap(cm), lmin=25, save=cm+'_lu.txt')
 
     for cm in smaps:
         print(cm)
-        symmetrize(get_cmap(cm), save=cm+'_u.txt')
+        symmetrize(get_cmap(cm),                   save=cm+'_u.txt')
+        symmetrize(get_cmap(cm), lmin=25, lmax=25, save=cm+'_lu.txt')
