@@ -33,14 +33,20 @@ cscale = Nc - 1.0
 def lightness(r, g, b, a=1.0):
     return cspace_convert([r, g, b], "sRGB1", "CAM02-UCS")[0]
 
+def interp(x, xp, yp):
+    if xp[0] < xp[-1]:
+        return np.interp(x, xp, yp)
+    else:
+        return np.interp(x, np.flip(xp,0), np.flip(yp,0))
+
 def linearize(cm, JpL=None, JpR=None, save=None):
     ctab = np.array([cm(i) for i in range(cm.N)])
     Jabp = cspace_convert(ctab[:,:3], "sRGB1", "CAM02-UCS")
 
     Jp = np.linspace(Jabp[ 0,0] if JpL is None else JpL,
                      Jabp[-1,0] if JpR is None else JpR, cm.N)
-    ap = np.interp(Jp, Jabp[:,0], Jabp[:,1])
-    bp = np.interp(Jp, Jabp[:,0], Jabp[:,2])
+    ap = interp(Jp, Jabp[:,0], Jabp[:,1])
+    bp = interp(Jp, Jabp[:,0], Jabp[:,2])
 
     carr = cspace_convert(np.stack([Jp,ap,bp], axis=-1), "CAM02-UCS", "sRGB1")
     if save is None:
