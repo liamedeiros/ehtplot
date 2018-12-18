@@ -56,66 +56,38 @@ def linearize(cm, JpL=None, JpR=None, save=None):
             carr = carr[:,:3]
         np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
 
-def symmetrize(cm, N=None,
-               lmin=None, lmid=None, lmax=None,
-               vmin=0.0,  vmid=None, vmax=1.0,
-               save=None):
-    if N is None:
-        N = cm.N
-    cm = colorremap(cm)
+def symmetrize(cm, JpL=None, JpM=None, JpR=None, save=None):
+    ctab = np.array([cm(i) for i in range(cm.N)])
+    Jabp = cspace_convert(ctab[:,:3], "sRGB1", "CAM02-UCS")
 
-    def v2l(v):
-        return  lightness(*cm(v[0] if isinstance(v, np.ndarray) else v))
-    def v2ml(v):
-        return -lightness(*cm(v[0] if isinstance(v, np.ndarray) else v))
+    N = cm.N
+    H = N//2
+    if JpL is None:
+        JpL = Jabp[0,0]
+    if JpM is None:
+        JpM = Jabp[H,0]
+    if JpR is None:
+        JpR = Jabp[-1,0]
 
-    if lmin is None:
-        lmin = v2l(vmin)
-    elif lmin < v2l(vmin):
-        print("lmin is less than the minimal lightness; DONE")
-        return
-    if lmid is None:
-        lmid = v2l(0.5 if vmid is None else vmid)
-    elif lmid < v2l(0.5 if vmid is None else vmid):
-        print("lmid is less than the minimal lightness; DONE")
-        return
-    if lmax is None:
-        lmax = v2l(vmax)
-    elif lmax < v2l(vmax):
-        print("lmax is less than the minimal lightness; DONE")
-        return
-
-    if (lmax - lmid) * (lmid - lmin) >= 0.0:
+    if (JpR - JpM) * (JpM - JpL) >= 0.0:
         raise ValueError('colormap does not seem to diverge')
 
-    if vmid is None:
-        opt  = minimize(v2l if lmax > lmid else v2ml,
-                        0.5, method='Nelder-Mead')
-        vmid = opt.x[0]
-        lmid = v2l(vmid)
-
-    if lmax > lmid: # v-shape
-        b = min(lmin, lmax)
-        L = np.absolute(np.linspace(-b, b, N))
+    if JpR > JpM: # v-shape
+        b  = min(JpL, JpR)
+        Jp = np.absolute(np.linspace(-b, b, N))
     else:           # ^-shape
-        b = lmid - max(lmin, lmax)
-        L = lmid - np.absolute(np.linspace(-b, b, N))
+        b  = JpM - max(JpL, JpR)
+        Jp = JpM - np.absolute(np.linspace(-b, b, N))
 
-    def l2vL(l):
-        try:
-            return bisect(lambda v: v2l(v) - l, vmin, vmid)
-        except:
-            print('Warning: unable to solve for value in l2vL()', l)
-            return 0.5 if l > 75 else 0.0
-    def l2vR(l):
-        try:
-            return bisect(lambda v: v2l(v) - l, vmid, vmax)
-        except:
-            print('Warning: unable to solve for value in l2vR()', l)
-            return 0.5 if l > 75 else 1.0
+    apL = interp(Jp[:H], Jabp[:H,0], Jabp[:H,1])
+    apR = interp(Jp[H:], Jabp[H:,0], Jabp[H:,1])
+    bpL = interp(Jp[:H], Jabp[:H,0], Jabp[:H,2])
+    bpR = interp(Jp[H:], Jabp[H:,0], Jabp[H:,2])
 
-    carr = np.array([cm(l2vL(l)) for l in L[:N//2]] +
-                    [cm(l2vR(l)) for l in L[N//2:]])
+    carr = cspace_convert(np.stack([Jp,
+                                    np.append(apL, apR),
+                                    np.append(bpL, bpR)], axis=-1),
+                          "CAM02-UCS", "sRGB1")
     if save is None:
         return ListedColormap(carr)
     else:
@@ -149,5 +121,5 @@ if __name__ == "__main__":
 
     for cm in smaps:
         print(cm)
-        symmetrize(get_cmap(cm),                   save=cm+'_u.txt')
-        symmetrize(get_cmap(cm), lmin=25, lmax=25, save=cm+'_lu.txt')
+        symmetrize(get_cmap(cm),                 save=cm+'_u.txt')
+        symmetrize(get_cmap(cm), JpL=25, JpR=25, save=cm+'_lu.txt')
