@@ -29,8 +29,15 @@ from ehtplot.color.core import Nc
 
 cscale = Nc - 1.0
 
+def colortable(cm):
+    cm = get_cmap(cm)
+    return np.array([cm(i) for i in range(cm.N)])
+
 def lightness(r, g, b, a=1.0):
     return cspace_convert([r, g, b], "sRGB1", "CAM02-UCS")[0]
+
+def uniq(a):
+    return a[np.r_[True, a[:-1] != a[1:]]]
 
 def interp(x, xp, yp):
     if xp[0] < xp[-1]:
@@ -94,31 +101,41 @@ def symmetrize(cm, JpL=None, JpM=None, JpR=None, save=None):
             carr = carr[:,:3]
         np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
 
+def uniformize(cm, N=256):
+    Jabp = cspace_convert(colortable(cm)[:,:3], "sRGB1", "CAM02-UCS")
+    Jp   = Jabp[:,0]
+    sgn  = uniq(np.sign(Jp[1:] - Jp[:-1]).astype(int))
+
+    if np.array_equal(sgn, [1]):
+        print(cm, sgn, 'up')
+        linearize(get_cmap(cm),         save=cm+'_u.txt')
+        linearize(get_cmap(cm), JpR=25, save=cm+'_lu.txt')
+    elif np.array_equal(sgn, [-1]):
+        print(cm, sgn, 'down')
+        linearize(get_cmap(cm),         save=cm+'_u.txt')
+        linearize(get_cmap(cm), JpL=25, save=cm+'_lu.txt')
+    elif np.array_equal(sgn, [1,-1]):
+        print(cm, sgn, 'hill')
+        symmetrize(get_cmap(cm),                 save=cm+'_u.txt')
+        symmetrize(get_cmap(cm), JpL=25, JpR=25, save=cm+'_lu.txt')
+    elif np.array_equal(sgn, [-1,1]):
+        print(cm, sgn, 'valley')
+        symmetrize(get_cmap(cm),                 save=cm+'_u.txt')
+        symmetrize(get_cmap(cm), JpL=25, JpR=25, save=cm+'_lu.txt')
+    else:
+        print(cm, sgn, '?')
+
 if __name__ == "__main__":
-    lmaps = [
+    cmaps = [
         'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds', 'YlOrBr',
         'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu', 'GnBu', 'PuBu', 'YlGnBu',
-        'PuBuGn', 'BuGn', 'YlGn', 'binary', 'gist_yarg', 'Wistia']
+        'PuBuGn', 'BuGn', 'YlGn', 'binary', 'gist_yarg', 'Wistia',
 
-    umaps = [
         'gist_gray', 'gray', 'bone', 'pink', 'summer', 'autumn', 'hot',
-        'afmhot', 'gist_heat', 'copper', 'gnuplot2']
+        'afmhot', 'gist_heat', 'copper', 'gnuplot2',
 
-    smaps = [
         'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu', 'RdYlBu', 'RdYlGn',
         'Spectral', 'coolwarm', 'bwr', 'seismic']
 
-    for cm in lmaps:
-        print(cm)
-        linearize(get_cmap(cm),         save=cm+'_u.txt')
-        linearize(get_cmap(cm), JpR=25, save=cm+'_lu.txt')
-
-    for cm in umaps:
-        print(cm)
-        linearize(get_cmap(cm),         save=cm+'_u.txt')
-        linearize(get_cmap(cm), JpL=25, save=cm+'_lu.txt')
-
-    for cm in smaps:
-        print(cm)
-        symmetrize(get_cmap(cm),                 save=cm+'_u.txt')
-        symmetrize(get_cmap(cm), JpL=25, JpR=25, save=cm+'_lu.txt')
+    for cmap in cmaps:
+        uniformize(cmap)
