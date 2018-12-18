@@ -23,11 +23,6 @@ from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 
 from ehtplot.color.core import Nq, Ns
 
-def colorremap(cm, N=Ns):
-    name   = '{}_{}'.format(cm.name, N)
-    colors = cm(np.arange(cm.N))
-    return LinearSegmentedColormap.from_list(name, colors, N=N)
-
 def colormap(N=Nq,
             darkest=0.0, lightest=100.0,
             saturation=None, hue=None):

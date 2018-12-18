@@ -25,8 +25,7 @@ from colorspacious     import cspace_convert
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
 
-from ehtplot.color.core     import Nc
-from ehtplot.color.colormap import colorremap
+from ehtplot.color.core import Nc
 
 cscale = Nc - 1.0
 
