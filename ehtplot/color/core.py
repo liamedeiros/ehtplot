@@ -33,12 +33,13 @@ def register(name=None, cmap=None):
     ext  = ".txt"
     if name is None:
         for f in glob(join(path, '*'+ext)):
-            register(name=splitext(basename(f))[0]) # recursion
+            register(name=splitext(basename(f))[0], cmap=cmap) # recursion
     else:
         if cmap is None:
             ctab = np.loadtxt(join(path, name+ext))
             if ctab.shape[1] == 3:
-                ctab = np.append(ctab, np.full((ctab.shape[0], 1), Nc-1), axis=1)
+                alpha = np.full((ctab.shape[0], 1), Nc-1)
+                ctab  = np.append(ctab, alpha, axis=1)
             cmap = ListedColormap(ctab / (Nc - 1.0))
         register_cmap(name=name, cmap=cmap)
 
