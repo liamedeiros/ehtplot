@@ -42,7 +42,7 @@ def register(name=None, cmap=None):
             cmap = ListedColormap(ctab / (Nc - 1.0))
         register_cmap(name=name, cmap=cmap)
 
-        if '_' not in name or not set(name.rsplit('_', 1)[1]) <= set('u'):
+        if '_' not in name or not set(name.rsplit('_', 1)[1]) <= set('lu'):
             rname = name + '_r'
         else:
             rname = name + 'r'
