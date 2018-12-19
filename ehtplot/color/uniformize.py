@@ -20,19 +20,17 @@
 
 import numpy as np
 
-from colorspacious     import cspace_convert
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
 
 from ehtplot.color.ctab   import get_ctab, save_ctab
-from ehtplot.color.adjust import interp, linearizeJp
+from ehtplot.color.adjust import transform, interp, linearizeJp
 
 def uniq(a):
     return a[np.r_[True, a[:-1] != a[1:]]]
 
 def linearize(Jabp, JpL=None, JpR=None, save=None):
-    carr = cspace_convert(linearizeJp(Jabp, JpL=JpL, JpR=JpR),
-                          'CAM02-UCS', 'sRGB1')
+    carr = transform(linearizeJp(Jabp, JpL=JpL, JpR=JpR), inverse=True)
     if save is None:
         return ListedColormap(carr)
     else:
@@ -63,10 +61,9 @@ def symmetrize(Jabp, JpL=None, JpM=None, JpR=None, save=None):
     bpL = interp(Jp[:H], Jabp[:H,0], Jabp[:H,2])
     bpR = interp(Jp[H:], Jabp[H:,0], Jabp[H:,2])
 
-    carr = cspace_convert(np.stack([Jp,
-                                    np.append(apL, apR),
-                                    np.append(bpL, bpR)], axis=-1),
-                          'CAM02-UCS', 'sRGB1')
+    carr = transform(np.stack([Jp,
+                               np.append(apL, apR),
+                               np.append(bpL, bpR)], axis=-1), inverse=True)
     if save is None:
         return ListedColormap(carr)
     else:
@@ -74,7 +71,7 @@ def symmetrize(Jabp, JpL=None, JpM=None, JpR=None, save=None):
 
 def uniformize(cname, N=256):
     cmap = get_cmap(cname)
-    Jabp = get_ctab(cmap, cspace='CAM02-UCS')
+    Jabp = transform(get_ctab(cmap))
     Jp   = Jabp[:,0]
     sgn  = uniq(np.sign(Jp[1:] - Jp[:-1]).astype(int))
 

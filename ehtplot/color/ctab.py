@@ -21,19 +21,14 @@ from glob    import glob
 
 import numpy as np
 
-from colorspacious import cspace_convert
-
 Nc  = 1024 # nubber of quantization levels in a channel (10bit default)
 ext = ".txt"
 
 path   = dirname(__file__)
 cscale = Nc - 1.0
 
-def get_ctab(cmap, cspace='sRGB1'):
-    ctab = np.array([cmap(i) for i in range(cmap.N)])
-    if cspace != 'sRGB1':
-        ctab[:,:3] = cspace_convert(ctab[:,:3], 'sRGB1', cspace)
-    return ctab
+def get_ctab(cmap):
+    return np.array([cmap(i) for i in range(cmap.N)])
 
 def list_ctab():
     return [splitext(basename(f))[0] for f in glob(join(path, '*'+ext))]

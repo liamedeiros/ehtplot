@@ -18,7 +18,6 @@
 
 import numpy as np
 
-from colorspacious     import cspace_convert
 from matplotlib.colors import ListedColormap
 
 from ehtplot.color.core import Nq
@@ -34,5 +33,5 @@ def new_cmap(N=Nq,
     Cp = Jp * s / np.sqrt(1.0 - s*s)
 
     Jabp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
-    sRGB = np.clip(cspace_convert(Jabp, 'CAM02-UCS', 'sRGB1'), 0, 1)
+    sRGB = np.clip(transform(Jabp, inverse=True), 0, 1)
     return ListedColormap(sRGB)

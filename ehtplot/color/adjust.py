@@ -20,6 +20,16 @@
 
 import numpy as np
 
+from colorspacious import cspace_convert
+
+def transform(ctab, src='sRGB1', dst='CAM02-UCS', inverse=False):
+    out = ctab.copy()
+    if not inverse:
+        out[:,:3] = cspace_convert(out[:,:3], src, dst)
+    else:
+        out[:,:3] = cspace_convert(out[:,:3], dst, src)
+    return out
+
 def interp(x, xp, yp):
     if xp[0] < xp[-1]:
         return np.interp(x, xp, yp)
