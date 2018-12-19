@@ -37,5 +37,5 @@ def new_cmap(N=Nq,
     sRGB = np.clip(cspace_convert(Jabp, "CAM02-UCS", "sRGB1"), 0, 1)
     return ListedColormap(sRGB)
 
-def get_ctab(cm):
-    return np.array([cm(i) for i in range(cm.N)])
+def get_ctab(cmap):
+    return np.array([cmap(i) for i in range(cmap.N)])

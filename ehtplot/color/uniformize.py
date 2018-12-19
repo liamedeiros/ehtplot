@@ -38,12 +38,12 @@ def interp(x, xp, yp):
     else:
         return np.interp(x, np.flip(xp,0), np.flip(yp,0))
 
-def linearize(cm, JpL=None, JpR=None, save=None):
-    ctab = np.array([cm(i) for i in range(cm.N)])
+def linearize(cmap, JpL=None, JpR=None, save=None):
+    ctab = np.array([cmap(i) for i in range(cmap.N)])
     Jabp = cspace_convert(ctab[:,:3], "sRGB1", "CAM02-UCS")
 
     Jp = np.linspace(Jabp[ 0,0] if JpL is None else JpL,
-                     Jabp[-1,0] if JpR is None else JpR, cm.N)
+                     Jabp[-1,0] if JpR is None else JpR, cmap.N)
     ap = interp(Jp, Jabp[:,0], Jabp[:,1])
     bp = interp(Jp, Jabp[:,0], Jabp[:,2])
 
@@ -55,11 +55,11 @@ def linearize(cm, JpL=None, JpR=None, save=None):
             carr = carr[:,:3]
         np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
 
-def symmetrize(cm, JpL=None, JpM=None, JpR=None, save=None):
-    ctab = np.array([cm(i) for i in range(cm.N)])
+def symmetrize(cmap, JpL=None, JpM=None, JpR=None, save=None):
+    ctab = np.array([cmap(i) for i in range(cmap.N)])
     Jabp = cspace_convert(ctab[:,:3], "sRGB1", "CAM02-UCS")
 
-    N = cm.N
+    N = cmap.N
     H = N//2
     if JpL is None:
         JpL = Jabp[0,0]
