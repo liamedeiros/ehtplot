@@ -20,7 +20,7 @@ import numpy as np
 
 from matplotlib.colors import ListedColormap
 
-from ehtplot.color.core import Nq
+Nq = 256 # number of quantization levels in a colormap
 
 def new_cmap(N=Nq,
              darkest=0.0, lightest=100.0,
