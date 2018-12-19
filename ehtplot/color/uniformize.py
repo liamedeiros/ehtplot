@@ -102,19 +102,19 @@ def uniformize(cname, N=256):
     if np.array_equal(sgn, [1]):
         print(cname, sgn, "up")
         linearize(cmap,         save=cname+"_u.txt")
-        linearize(cmap, JpR=25, save=cname+"_lu.txt")
+        linearize(cmap, JpL=25, save=cname+"_lu.txt")
     elif np.array_equal(sgn, [-1]):
         print(cname, sgn, "down")
         linearize(cmap,         save=cname+"_u.txt")
-        linearize(cmap, JpL=25, save=cname+"_lu.txt")
+        linearize(cmap, JpR=25, save=cname+"_lu.txt")
     elif np.array_equal(sgn, [1,-1]):
         print(cname, sgn, "hill")
         symmetrize(cmap,                 save=cname+"_u.txt")
         symmetrize(cmap, JpL=25, JpR=25, save=cname+"_lu.txt")
     elif np.array_equal(sgn, [-1,1]):
         print(cname, sgn, "valley")
-        symmetrize(cmap,                 save=cname+"_u.txt")
-        symmetrize(cmap, JpL=25, JpR=25, save=cname+"_lu.txt")
+        symmetrize(cmap,         save=cname+"_u.txt")
+        symmetrize(cmap, JpM=25, save=cname+"_lu.txt")
     else:
         print(cname, sgn, "?")
 
