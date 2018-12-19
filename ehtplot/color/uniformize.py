@@ -24,16 +24,12 @@ from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
 
 from ehtplot.color.ctab   import get_ctab, save_ctab
-from ehtplot.color.adjust import transform, interp, linearizeJp
+from ehtplot.color.adjust import transform, interp, linearize
 
 def uniq(a):
     return a[np.r_[True, a[:-1] != a[1:]]]
 
-def linearize(Jabp, JpL=None, JpR=None, save=None):
-    carr = transform(linearizeJp(Jabp, JpL=JpL, JpR=JpR), inverse=True)
-    save_ctab(carr, save)
-
-def symmetrize(Jabp, JpL=None, JpM=None, JpR=None, save=None):
+def symmetrize(Jabp, JpL=None, JpM=None, JpR=None):
     N = Jabp.shape[0]
     H = (N-1)//2
     if JpL is None:
@@ -45,17 +41,16 @@ def symmetrize(Jabp, JpL=None, JpM=None, JpR=None, save=None):
 
     if JpR > JpM: # v-shape
         b = min(JpL, JpR)
-        L = linearizeJp(Jabp[:H,:], JpL=b,   JpR=JpM)
-        R = linearizeJp(Jabp[H:,:], JpL=JpM, JpR=b)
+        L = linearize(Jabp[:H,:], JpL=b,   JpR=JpM)
+        R = linearize(Jabp[H:,:], JpL=JpM, JpR=b)
     else:         # ^-shape
         b = max(JpL, JpR)
-        L = linearizeJp(Jabp[:H,:], JpL=b,   JpR=JpM)
-        R = linearizeJp(Jabp[H:,:], JpL=JpM, JpR=b)
+        L = linearize(Jabp[:H,:], JpL=b,   JpR=JpM)
+        R = linearize(Jabp[H:,:], JpL=JpM, JpR=b)
 
-    carr = transform(np.append(L, R, axis=0), inverse=True)
-    save_ctab(carr, save)
+    return np.append(L, R, axis=0)
 
-def uniformize(cname, N=256):
+def uniformize(cname, N=256, Jpmin=None, postfix=None):
     cmap = get_cmap(cname)
     Jabp = transform(get_ctab(cmap))
     Jp   = Jabp[:,0]
@@ -63,22 +58,20 @@ def uniformize(cname, N=256):
 
     if np.array_equal(sgn, [1]):
         print(cname, sgn, "up")
-        linearize(Jabp,         save=cname+"_u.txt")
-        linearize(Jabp, JpL=25, save=cname+"_lu.txt")
+        ctab = linearize(Jabp, JpL=Jpmin)
     elif np.array_equal(sgn, [-1]):
         print(cname, sgn, "down")
-        linearize(Jabp,         save=cname+"_u.txt")
-        linearize(Jabp, JpR=25, save=cname+"_lu.txt")
+        ctab = linearize(Jabp, JpR=Jpmin)
     elif np.array_equal(sgn, [1,-1]):
         print(cname, sgn, "hill")
-        symmetrize(Jabp,                 save=cname+"_u.txt")
-        symmetrize(Jabp, JpL=25, JpR=25, save=cname+"_lu.txt")
+        ctab = symmetrize(Jabp, JpL=Jpmin, JpR=Jpmin)
     elif np.array_equal(sgn, [-1,1]):
         print(cname, sgn, "valley")
-        symmetrize(Jabp,         save=cname+"_u.txt")
-        symmetrize(Jabp, JpM=25, save=cname+"_lu.txt")
+        ctab = symmetrize(Jabp, JpM=Jpmin)
     else:
         print(cname, sgn, "?")
+
+    save_ctab(transform(ctab, inverse=True), cname+"_"+postfix+".txt")
 
 if __name__ == "__main__":
     cnames = [
@@ -94,4 +87,5 @@ if __name__ == "__main__":
         'Spectral', 'coolwarm', 'bwr', 'seismic']
 
     for cname in cnames:
-        uniformize(cname)
+        uniformize(cname,           postfix='u')
+        uniformize(cname, Jpmin=25, postfix='lu')

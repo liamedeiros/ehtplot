@@ -36,7 +36,7 @@ def interp(x, xp, yp):
     else:
         return np.interp(x, np.flip(xp,0), np.flip(yp,0))
 
-def linearizeJp(Jabp, JpL=None, JpR=None):
+def linearize(Jabp, JpL=None, JpR=None):
     if JpL is None: JpL = Jabp[ 0,0]
     if JpR is None: JpR = Jabp[-1,0]
     out = Jabp.copy()
