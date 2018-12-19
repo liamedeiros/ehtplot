@@ -30,9 +30,6 @@ from ehtplot.color.color import get_ctab
 
 cscale = Nc - 1.0
 
-def lightness(r, g, b, a=1.0):
-    return cspace_convert([r, g, b], "sRGB1", "CAM02-UCS")[0]
-
 def uniq(a):
     return a[np.r_[True, a[:-1] != a[1:]]]
 
