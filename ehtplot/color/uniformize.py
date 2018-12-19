@@ -39,7 +39,7 @@ def interp(x, xp, yp):
         return np.interp(x, np.flip(xp,0), np.flip(yp,0))
 
 def linearize(cmap, JpL=None, JpR=None, save=None):
-    ctab = np.array([cmap(i) for i in range(cmap.N)])
+    ctab = get_ctab(cmap)
     Jabp = cspace_convert(ctab[:,:3], "sRGB1", "CAM02-UCS")
 
     Jp = np.linspace(Jabp[ 0,0] if JpL is None else JpL,
@@ -56,7 +56,7 @@ def linearize(cmap, JpL=None, JpR=None, save=None):
         np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
 
 def symmetrize(cmap, JpL=None, JpM=None, JpR=None, save=None):
-    ctab = np.array([cmap(i) for i in range(cmap.N)])
+    ctab = get_ctab(cmap)
     Jabp = cspace_convert(ctab[:,:3], "sRGB1", "CAM02-UCS")
 
     N = cmap.N
@@ -96,7 +96,8 @@ def symmetrize(cmap, JpL=None, JpM=None, JpR=None, save=None):
 
 def uniformize(cname, N=256):
     cmap = get_cmap(cname)
-    Jabp = cspace_convert(get_ctab(cmap)[:,:3], "sRGB1", "CAM02-UCS")
+    ctab = get_ctab(cmap)
+    Jabp = cspace_convert(ctab[:,:3], "sRGB1", "CAM02-UCS")
     Jp   = Jabp[:,0]
     sgn  = uniq(np.sign(Jp[1:] - Jp[:-1]).astype(int))
 
