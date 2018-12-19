@@ -33,7 +33,7 @@ def register(cname=None, cmap=None):
     ext  = ".txt"
     if cname is None:
         for f in glob(join(path, '*'+ext)):
-            register(name=splitext(basename(f))[0], cmap=cmap) # recursion
+            register(name=splitext(basename(f))[0], cmap=cmap) # self-call
     else:
         if cmap is None:
             ctab = np.loadtxt(join(path, cname+ext))
