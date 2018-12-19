@@ -18,10 +18,14 @@
 
 from .core import register
 
-# "colormap.py" and "uniformize.py" depend on optional libraries and
-# are not imported by default:
+# Note that "adjust.py" requires the optional library "colorspacious"
+# and hence is not imported by default.  We use matplotlib's
+# core-pattern and here and only import the necessary symbols in
+# "core.py" to avoid namespace pollution.
 #
-# from .colormap   import colormap
+# from .adjust     import *
+# from .cmap       import *
+# from .ctab       import *
 # from .uniformize import *
 
 register()
