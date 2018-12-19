@@ -31,14 +31,11 @@ def uniq(a):
 
 def linearize(Jabp, JpL=None, JpR=None, save=None):
     carr = transform(linearizeJp(Jabp, JpL=JpL, JpR=JpR), inverse=True)
-    if save is None:
-        return ListedColormap(carr)
-    else:
-        save_ctab(carr, save)
+    save_ctab(carr, save)
 
 def symmetrize(Jabp, JpL=None, JpM=None, JpR=None, save=None):
     N = Jabp.shape[0]
-    H = N//2
+    H = (N-1)//2
     if JpL is None:
         JpL = Jabp[0,0]
     if JpM is None:
@@ -46,28 +43,17 @@ def symmetrize(Jabp, JpL=None, JpM=None, JpR=None, save=None):
     if JpR is None:
         JpR = Jabp[-1,0]
 
-    if (JpR - JpM) * (JpM - JpL) >= 0.0:
-        raise ValueError('colormap does not seem to diverge')
-
     if JpR > JpM: # v-shape
-        b  = min(JpL, JpR)
-        Jp = np.absolute(np.linspace(-b, b, N))
-    else:           # ^-shape
-        b  = JpM - max(JpL, JpR)
-        Jp = JpM - np.absolute(np.linspace(-b, b, N))
+        b = min(JpL, JpR)
+        L = linearizeJp(Jabp[:H,:], JpL=b,   JpR=JpM)
+        R = linearizeJp(Jabp[H:,:], JpL=JpM, JpR=b)
+    else:         # ^-shape
+        b = max(JpL, JpR)
+        L = linearizeJp(Jabp[:H,:], JpL=b,   JpR=JpM)
+        R = linearizeJp(Jabp[H:,:], JpL=JpM, JpR=b)
 
-    apL = interp(Jp[:H], Jabp[:H,0], Jabp[:H,1])
-    apR = interp(Jp[H:], Jabp[H:,0], Jabp[H:,1])
-    bpL = interp(Jp[:H], Jabp[:H,0], Jabp[:H,2])
-    bpR = interp(Jp[H:], Jabp[H:,0], Jabp[H:,2])
-
-    carr = transform(np.stack([Jp,
-                               np.append(apL, apR),
-                               np.append(bpL, bpR)], axis=-1), inverse=True)
-    if save is None:
-        return ListedColormap(carr)
-    else:
-        save_ctab(carr, save)
+    carr = transform(np.append(L, R, axis=0), inverse=True)
+    save_ctab(carr, save)
 
 def uniformize(cname, N=256):
     cmap = get_cmap(cname)
