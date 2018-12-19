@@ -23,14 +23,14 @@ from matplotlib.colors import ListedColormap
 
 from ehtplot.color.core import Nq
 
-def colormap(N=Nq,
-            darkest=0.0, lightest=100.0,
-            saturation=None, hue=None):
-    f  = np.linspace(0, 1, num=N)
+def new_cmap(N=Nq,
+             darkest=0.0, lightest=100.0,
+             saturation=None, hue=None):
+    v  = np.linspace(0, 1, num=N)
 
     s  = np.sqrt(0.5) if saturation is None else saturation(f)
     hp = 0.0          if hue        is None else hue(f)
-    Jp = darkest + f * (lightest - darkest)
+    Jp = np.linspace(darkest, lightest, num=N)
     Cp = Jp * s / np.sqrt(1.0 - s*s)
 
     Jabp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
