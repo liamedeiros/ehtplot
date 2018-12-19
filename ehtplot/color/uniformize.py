@@ -25,7 +25,7 @@ from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
 
 from ehtplot.color.core   import save_ctab
-from ehtplot.color.color  import get_ctab
+from ehtplot.color.ctab   import get_ctab
 from ehtplot.color.adjust import interp, linearizeJp
 
 def uniq(a):

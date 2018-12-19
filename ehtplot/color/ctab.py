@@ -18,24 +18,7 @@
 
 import numpy as np
 
-from colorspacious     import cspace_convert
-from matplotlib.colors import ListedColormap
-
-from ehtplot.color.core import Nq
-
-def new_cmap(N=Nq,
-             darkest=0.0, lightest=100.0,
-             saturation=None, hue=None):
-    v  = np.linspace(0, 1, num=N)
-
-    s  = np.sqrt(0.5) if saturation is None else saturation(f)
-    hp = 0.0          if hue        is None else hue(f)
-    Jp = np.linspace(darkest, lightest, num=N)
-    Cp = Jp * s / np.sqrt(1.0 - s*s)
-
-    Jabp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
-    sRGB = np.clip(cspace_convert(Jabp, 'CAM02-UCS', 'sRGB1'), 0, 1)
-    return ListedColormap(sRGB)
+from colorspacious import cspace_convert
 
 def get_ctab(cmap, cspace='sRGB1'):
     ctab = np.array([cmap(i) for i in range(cmap.N)])
