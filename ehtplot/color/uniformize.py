@@ -24,28 +24,14 @@ from colorspacious     import cspace_convert
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
 
-from ehtplot.color.core  import Nc
-from ehtplot.color.color import get_ctab
+from ehtplot.color.core   import Nc
+from ehtplot.color.color  import get_ctab
+from ehtplot.color.adjust import interp, linearizeJp
 
 cscale = Nc - 1.0
 
 def uniq(a):
     return a[np.r_[True, a[:-1] != a[1:]]]
-
-def interp(x, xp, yp):
-    if xp[0] < xp[-1]:
-        return np.interp(x, xp, yp)
-    else:
-        return np.interp(x, np.flip(xp,0), np.flip(yp,0))
-
-def linearizeJp(Jabp, JpL=None, JpR=None):
-    if JpL is None: JpL = Jabp[ 0,0]
-    if JpR is None: JpR = Jabp[-1,0]
-    out = Jabp.copy()
-    out[:,0] = np.linspace(JpL, JpR, out.shape[0])
-    out[:,1] = interp(out[:,0], Jabp[:,0], Jabp[:,1])
-    out[:,2] = interp(out[:,0], Jabp[:,0], Jabp[:,2])
-    return out
 
 def linearize(Jabp, JpL=None, JpR=None, save=None):
     carr = cspace_convert(linearizeJp(Jabp, JpL=JpL, JpR=JpR),
