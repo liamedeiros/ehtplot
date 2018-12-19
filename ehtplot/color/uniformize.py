@@ -125,7 +125,7 @@ if __name__ == "__main__":
         'PuBuGn', 'BuGn', 'YlGn', 'binary', 'gist_yarg', 'Wistia',
         # Monotomically increasing lightness
         'gist_gray', 'gray', 'bone', 'pink', 'summer', 'autumn', 'hot',
-        'afmhot', 'gist_heat', 'copper', 'gnuplot2',
+        'afmhot', 'gist_heat', 'copper', 'gnuplot2', 'cubehelix',
         # Diverge colormaps
         'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu', 'RdYlBu', 'RdYlGn',
         'Spectral', 'coolwarm', 'bwr', 'seismic']
