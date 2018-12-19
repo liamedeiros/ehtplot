@@ -20,7 +20,6 @@
 
 import numpy as np
 
-from scipy.optimize    import bisect, minimize
 from colorspacious     import cspace_convert
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
