@@ -27,15 +27,24 @@ from matplotlib.cm     import register_cmap
 Nq = 256  # number of quantization levels in a colormap
 Nc = 1024 # nubber of quantization levels in a channel (10bit default)
 
+cscale = Nc - 1.0
+
+path = dirname(__file__)
+ext  = ".txt"
+
 def save_ctab(ctab, name):
-    cscale = Nc - 1.0
     if ctab.shape[1] == 4 and np.all(ctab[:,3] == 1.0):
         ctab = ctab[:,:3]
     np.savetxt(name, np.rint(ctab * cscale).astype(int), fmt="%i")
 
+def load_ctab(name):
+    ctab = np.loadtxt(join(path, name+ext)) / cscale
+    if ctab.shape[1] == 3:
+        alpha = np.full((ctab.shape[0], 1), 1.0)
+        ctab  = np.append(ctab, alpha, axis=1)
+    return ctab
+
 def register(name=None, cmap=None):
-    path = dirname(__file__)
-    ext  = ".txt"
     if name is None:
         # Self-call to register all colormaps in "ehtplot/color/"
         for f in glob(join(path, '*'+ext)):
@@ -43,11 +52,7 @@ def register(name=None, cmap=None):
     else:
         # Set up and register the colormap
         if cmap is None:
-            ctab = np.loadtxt(join(path, name+ext)) / (Nc-1.0)
-            if ctab.shape[1] == 3:
-                alpha = np.full((ctab.shape[0], 1), 1.0)
-                ctab  = np.append(ctab, alpha, axis=1)
-            cmap = ListedColormap(ctab)
+            cmap = ListedColormap(load_ctab(name))
         register_cmap(name=name, cmap=cmap)
 
         # Set up and register the reversed colormap
