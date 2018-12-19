@@ -19,9 +19,9 @@
 import numpy as np
 
 from colorspacious     import cspace_convert
-from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+from matplotlib.colors import ListedColormap
 
-from ehtplot.color.core import Nq, Ns
+from ehtplot.color.core import Nq
 
 def colormap(N=Nq,
             darkest=0.0, lightest=100.0,
