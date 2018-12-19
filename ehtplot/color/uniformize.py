@@ -38,11 +38,9 @@ def interp(x, xp, yp):
     else:
         return np.interp(x, np.flip(xp,0), np.flip(yp,0))
 
-def linearize(cmap, JpL=None, JpR=None, save=None):
-    Jabp = get_ctab(cmap, cspace='CAM02-UCS')
-
+def linearize(Jabp, JpL=None, JpR=None, save=None):
     Jp = np.linspace(Jabp[ 0,0] if JpL is None else JpL,
-                     Jabp[-1,0] if JpR is None else JpR, cmap.N)
+                     Jabp[-1,0] if JpR is None else JpR, Jabp.shape[0])
     ap = interp(Jp, Jabp[:,0], Jabp[:,1])
     bp = interp(Jp, Jabp[:,0], Jabp[:,2])
 
@@ -54,9 +52,7 @@ def linearize(cmap, JpL=None, JpR=None, save=None):
             carr = carr[:,:3]
         np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
 
-def symmetrize(cmap, JpL=None, JpM=None, JpR=None, save=None):
-    Jabp = get_ctab(cmap, cspace='CAM02-UCS')
-
+def symmetrize(Jabp, JpL=None, JpM=None, JpR=None, save=None):
     N = Jabp.shape[0]
     H = N//2
     if JpL is None:
@@ -100,20 +96,20 @@ def uniformize(cname, N=256):
 
     if np.array_equal(sgn, [1]):
         print(cname, sgn, "up")
-        linearize(cmap,         save=cname+"_u.txt")
-        linearize(cmap, JpL=25, save=cname+"_lu.txt")
+        linearize(Jabp,         save=cname+"_u.txt")
+        linearize(Jabp, JpL=25, save=cname+"_lu.txt")
     elif np.array_equal(sgn, [-1]):
         print(cname, sgn, "down")
-        linearize(cmap,         save=cname+"_u.txt")
-        linearize(cmap, JpR=25, save=cname+"_lu.txt")
+        linearize(Jabp,         save=cname+"_u.txt")
+        linearize(Jabp, JpR=25, save=cname+"_lu.txt")
     elif np.array_equal(sgn, [1,-1]):
         print(cname, sgn, "hill")
-        symmetrize(cmap,                 save=cname+"_u.txt")
-        symmetrize(cmap, JpL=25, JpR=25, save=cname+"_lu.txt")
+        symmetrize(Jabp,                 save=cname+"_u.txt")
+        symmetrize(Jabp, JpL=25, JpR=25, save=cname+"_lu.txt")
     elif np.array_equal(sgn, [-1,1]):
         print(cname, sgn, "valley")
-        symmetrize(cmap,         save=cname+"_u.txt")
-        symmetrize(cmap, JpM=25, save=cname+"_lu.txt")
+        symmetrize(Jabp,         save=cname+"_u.txt")
+        symmetrize(Jabp, JpM=25, save=cname+"_lu.txt")
     else:
         print(cname, sgn, "?")
 
