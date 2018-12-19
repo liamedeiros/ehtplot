@@ -120,13 +120,14 @@ def uniformize(cname, N=256):
 
 if __name__ == "__main__":
     cnames = [
+        # Monotomically decreasing lightness
         'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds', 'YlOrBr',
         'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu', 'GnBu', 'PuBu', 'YlGnBu',
         'PuBuGn', 'BuGn', 'YlGn', 'binary', 'gist_yarg', 'Wistia',
-
+        # Monotomically increasing lightness
         'gist_gray', 'gray', 'bone', 'pink', 'summer', 'autumn', 'hot',
         'afmhot', 'gist_heat', 'copper', 'gnuplot2',
-
+        # Diverge colormaps
         'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu', 'RdYlBu', 'RdYlGn',
         'Spectral', 'coolwarm', 'bwr', 'seismic']
 
