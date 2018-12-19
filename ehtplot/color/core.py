@@ -31,9 +31,11 @@ def register(cname=None, cmap=None):
     path = dirname(__file__)
     ext  = ".txt"
     if cname is None:
+        # Self-call to register all colormaps in "ehtplot/color/"
         for f in glob(join(path, '*'+ext)):
-            register(name=splitext(basename(f))[0], cmap=cmap) # self-call
+            register(name=splitext(basename(f))[0], cmap=cmap)
     else:
+        # Set up and register the colormap
         if cmap is None:
             ctab = np.loadtxt(join(path, cname+ext))
             if ctab.shape[1] == 3:
@@ -42,6 +44,7 @@ def register(cname=None, cmap=None):
             cmap = ListedColormap(ctab / (Nc - 1.0))
         register_cmap(name=cname, cmap=cmap)
 
+        # Set up and register the reversed colormap
         if '_' not in cname or not set(cname.rsplit('_', 1)[1]) <= set('lu'):
             rname = cname + '_r'
         else:
