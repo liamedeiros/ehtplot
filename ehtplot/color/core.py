@@ -27,6 +27,12 @@ from matplotlib.cm     import register_cmap
 Nq = 256  # number of quantization levels in a colormap
 Nc = 1024 # nubber of quantization levels in a channel (10bit default)
 
+def save_ctab(ctab, name):
+    cscale = Nc - 1.0
+    if ctab.shape[1] == 4 and np.all(ctab[:,3] == 1.0):
+        ctab = ctab[:,:3]
+    np.savetxt(name, np.rint(ctab * cscale).astype(int), fmt="%i")
+
 def register(name=None, cmap=None):
     path = dirname(__file__)
     ext  = ".txt"

@@ -24,11 +24,9 @@ from colorspacious     import cspace_convert
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
 
-from ehtplot.color.core   import Nc
+from ehtplot.color.core   import save_ctab
 from ehtplot.color.color  import get_ctab
 from ehtplot.color.adjust import interp, linearizeJp
-
-cscale = Nc - 1.0
 
 def uniq(a):
     return a[np.r_[True, a[:-1] != a[1:]]]
@@ -39,9 +37,7 @@ def linearize(Jabp, JpL=None, JpR=None, save=None):
     if save is None:
         return ListedColormap(carr)
     else:
-        if carr.shape[1] == 4 and np.all(carr[:,3] == 1.0):
-            carr = carr[:,:3]
-        np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
+        save_ctab(carr, save)
 
 def symmetrize(Jabp, JpL=None, JpM=None, JpR=None, save=None):
     N = Jabp.shape[0]
@@ -75,9 +71,7 @@ def symmetrize(Jabp, JpL=None, JpM=None, JpR=None, save=None):
     if save is None:
         return ListedColormap(carr)
     else:
-        if carr.shape[1] == 4 and np.all(carr[:,3] == 1.0):
-            carr = carr[:,:3]
-        np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
+        save_ctab(carr, save)
 
 def uniformize(cname, N=256):
     cmap = get_cmap(cname)
