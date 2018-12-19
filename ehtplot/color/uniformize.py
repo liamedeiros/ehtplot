@@ -94,8 +94,7 @@ def symmetrize(cmap, JpL=None, JpM=None, JpR=None, save=None):
 
 def uniformize(cname, N=256):
     cmap = get_cmap(cname)
-    ctab = get_ctab(cmap)
-    Jabp = cspace_convert(ctab[:,:3], 'sRGB1', 'CAM02-UCS')
+    Jabp = get_ctab(cmap, cspace='CAM02-UCS')
     Jp   = Jabp[:,0]
     sgn  = uniq(np.sign(Jp[1:] - Jp[:-1]).astype(int))
 
