@@ -28,23 +28,23 @@ Nq = 256     # number of quantization levels in a colormap
 Nc = 1024    # nubber of quantization levels in a channel (10bit default)
 Ns = 4194304 # number of quantization levels in sampling colors during remap
 
-def register(name=None, cmap=None):
+def register(cname=None, cmap=None):
     path = dirname(__file__)
     ext  = ".txt"
-    if name is None:
+    if cname is None:
         for f in glob(join(path, '*'+ext)):
             register(name=splitext(basename(f))[0], cmap=cmap) # recursion
     else:
         if cmap is None:
-            ctab = np.loadtxt(join(path, name+ext))
+            ctab = np.loadtxt(join(path, cname+ext))
             if ctab.shape[1] == 3:
                 alpha = np.full((ctab.shape[0], 1), Nc-1)
                 ctab  = np.append(ctab, alpha, axis=1)
             cmap = ListedColormap(ctab / (Nc - 1.0))
-        register_cmap(name=name, cmap=cmap)
+        register_cmap(name=cname, cmap=cmap)
 
-        if '_' not in name or not set(name.rsplit('_', 1)[1]) <= set('lu'):
-            rname = name + '_r'
+        if '_' not in cname or not set(cname.rsplit('_', 1)[1]) <= set('lu'):
+            rname = cname + '_r'
         else:
-            rname = name + 'r'
+            rname = cname + 'r'
         register_cmap(name=rname, cmap=cmap.reversed())

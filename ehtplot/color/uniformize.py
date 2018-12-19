@@ -101,32 +101,32 @@ def symmetrize(cm, JpL=None, JpM=None, JpR=None, save=None):
             carr = carr[:,:3]
         np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
 
-def uniformize(cm, N=256):
-    Jabp = cspace_convert(colortable(cm)[:,:3], "sRGB1", "CAM02-UCS")
+def uniformize(cname, N=256):
+    Jabp = cspace_convert(colortable(cname)[:,:3], "sRGB1", "CAM02-UCS")
     Jp   = Jabp[:,0]
     sgn  = uniq(np.sign(Jp[1:] - Jp[:-1]).astype(int))
 
     if np.array_equal(sgn, [1]):
-        print(cm, sgn, 'up')
-        linearize(get_cmap(cm),         save=cm+'_u.txt')
-        linearize(get_cmap(cm), JpR=25, save=cm+'_lu.txt')
+        print(cname, sgn, 'up')
+        linearize(get_cmap(cname),         save=cname+'_u.txt')
+        linearize(get_cmap(cname), JpR=25, save=cname+'_lu.txt')
     elif np.array_equal(sgn, [-1]):
-        print(cm, sgn, 'down')
-        linearize(get_cmap(cm),         save=cm+'_u.txt')
-        linearize(get_cmap(cm), JpL=25, save=cm+'_lu.txt')
+        print(cname, sgn, 'down')
+        linearize(get_cmap(cname),         save=cname+'_u.txt')
+        linearize(get_cmap(cname), JpL=25, save=cname+'_lu.txt')
     elif np.array_equal(sgn, [1,-1]):
-        print(cm, sgn, 'hill')
-        symmetrize(get_cmap(cm),                 save=cm+'_u.txt')
-        symmetrize(get_cmap(cm), JpL=25, JpR=25, save=cm+'_lu.txt')
+        print(cname, sgn, 'hill')
+        symmetrize(get_cmap(cname),                 save=cname+'_u.txt')
+        symmetrize(get_cmap(cname), JpL=25, JpR=25, save=cname+'_lu.txt')
     elif np.array_equal(sgn, [-1,1]):
-        print(cm, sgn, 'valley')
-        symmetrize(get_cmap(cm),                 save=cm+'_u.txt')
-        symmetrize(get_cmap(cm), JpL=25, JpR=25, save=cm+'_lu.txt')
+        print(cname, sgn, 'valley')
+        symmetrize(get_cmap(cname),                 save=cname+'_u.txt')
+        symmetrize(get_cmap(cname), JpL=25, JpR=25, save=cname+'_lu.txt')
     else:
-        print(cm, sgn, '?')
+        print(cname, sgn, '?')
 
 if __name__ == "__main__":
-    cmaps = [
+    cnames = [
         'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds', 'YlOrBr',
         'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu', 'GnBu', 'PuBu', 'YlGnBu',
         'PuBuGn', 'BuGn', 'YlGn', 'binary', 'gist_yarg', 'Wistia',
@@ -137,5 +137,5 @@ if __name__ == "__main__":
         'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu', 'RdYlBu', 'RdYlGn',
         'Spectral', 'coolwarm', 'bwr', 'seismic']
 
-    for cmap in cmaps:
-        uniformize(cmap)
+    for cname in cnames:
+        uniformize(cname)
