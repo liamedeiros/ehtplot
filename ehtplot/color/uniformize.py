@@ -25,13 +25,10 @@ from colorspacious     import cspace_convert
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
 
-from ehtplot.color.core import Nc
+from ehtplot.color.core  import Nc
+from ehtplot.color.color import get_ctab
 
 cscale = Nc - 1.0
-
-def colortable(cm):
-    cm = get_cmap(cm)
-    return np.array([cm(i) for i in range(cm.N)])
 
 def lightness(r, g, b, a=1.0):
     return cspace_convert([r, g, b], "sRGB1", "CAM02-UCS")[0]
@@ -102,26 +99,27 @@ def symmetrize(cm, JpL=None, JpM=None, JpR=None, save=None):
         np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
 
 def uniformize(cname, N=256):
-    Jabp = cspace_convert(colortable(cname)[:,:3], "sRGB1", "CAM02-UCS")
+    cmap = get_cmap(cname)
+    Jabp = cspace_convert(get_ctab(cmap)[:,:3], "sRGB1", "CAM02-UCS")
     Jp   = Jabp[:,0]
     sgn  = uniq(np.sign(Jp[1:] - Jp[:-1]).astype(int))
 
     if np.array_equal(sgn, [1]):
         print(cname, sgn, 'up')
-        linearize(get_cmap(cname),         save=cname+'_u.txt')
-        linearize(get_cmap(cname), JpR=25, save=cname+'_lu.txt')
+        linearize(cmap,         save=cname+'_u.txt')
+        linearize(cmap, JpR=25, save=cname+'_lu.txt')
     elif np.array_equal(sgn, [-1]):
         print(cname, sgn, 'down')
-        linearize(get_cmap(cname),         save=cname+'_u.txt')
-        linearize(get_cmap(cname), JpL=25, save=cname+'_lu.txt')
+        linearize(cmap,         save=cname+'_u.txt')
+        linearize(cmap, JpL=25, save=cname+'_lu.txt')
     elif np.array_equal(sgn, [1,-1]):
         print(cname, sgn, 'hill')
-        symmetrize(get_cmap(cname),                 save=cname+'_u.txt')
-        symmetrize(get_cmap(cname), JpL=25, JpR=25, save=cname+'_lu.txt')
+        symmetrize(cmap,                 save=cname+'_u.txt')
+        symmetrize(cmap, JpL=25, JpR=25, save=cname+'_lu.txt')
     elif np.array_equal(sgn, [-1,1]):
         print(cname, sgn, 'valley')
-        symmetrize(get_cmap(cname),                 save=cname+'_u.txt')
-        symmetrize(get_cmap(cname), JpL=25, JpR=25, save=cname+'_lu.txt')
+        symmetrize(cmap,                 save=cname+'_u.txt')
+        symmetrize(cmap, JpL=25, JpR=25, save=cname+'_lu.txt')
     else:
         print(cname, sgn, '?')
 
