@@ -38,13 +38,18 @@ def interp(x, xp, yp):
     else:
         return np.interp(x, np.flip(xp,0), np.flip(yp,0))
 
-def linearize(Jabp, JpL=None, JpR=None, save=None):
-    Jp = np.linspace(Jabp[ 0,0] if JpL is None else JpL,
-                     Jabp[-1,0] if JpR is None else JpR, Jabp.shape[0])
-    ap = interp(Jp, Jabp[:,0], Jabp[:,1])
-    bp = interp(Jp, Jabp[:,0], Jabp[:,2])
+def linearizeJp(Jabp, JpL=None, JpR=None):
+    if JpL is None: JpL = Jabp[ 0,0]
+    if JpR is None: JpR = Jabp[-1,0]
+    out = Jabp.copy()
+    out[:,0] = np.linspace(JpL, JpR, out.shape[0])
+    out[:,1] = interp(out[:,0], Jabp[:,0], Jabp[:,1])
+    out[:,2] = interp(out[:,0], Jabp[:,0], Jabp[:,2])
+    return out
 
-    carr = cspace_convert(np.stack([Jp,ap,bp], axis=-1), 'CAM02-UCS', 'sRGB1')
+def linearize(Jabp, JpL=None, JpR=None, save=None):
+    carr = cspace_convert(linearizeJp(Jabp, JpL=JpL, JpR=JpR),
+                          'CAM02-UCS', 'sRGB1')
     if save is None:
         return ListedColormap(carr)
     else:
