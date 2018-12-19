@@ -34,7 +34,7 @@ def new_cmap(N=Nq,
     Cp = Jp * s / np.sqrt(1.0 - s*s)
 
     Jabp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
-    sRGB = np.clip(cspace_convert(Jabp, "CAM02-UCS", "sRGB1"), 0, 1)
+    sRGB = np.clip(cspace_convert(Jabp, 'CAM02-UCS', 'sRGB1'), 0, 1)
     return ListedColormap(sRGB)
 
 def get_ctab(cmap, cspace='sRGB1'):

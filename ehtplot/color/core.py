@@ -45,8 +45,8 @@ def register(name=None, cmap=None):
         register_cmap(name=name, cmap=cmap)
 
         # Set up and register the reversed colormap
-        if '_' not in name or not set(name.rsplit('_', 1)[1]) <= set('lu'):
-            rname = name + '_r'
+        if "_" not in name or not set(name.rsplit("_", 1)[1]) <= set("lu"):
+            rname = name + "_r"
         else:
-            rname = name + 'r'
+            rname = name + "r"
         register_cmap(name=rname, cmap=cmap.reversed())

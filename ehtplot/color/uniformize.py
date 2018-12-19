@@ -39,14 +39,14 @@ def interp(x, xp, yp):
         return np.interp(x, np.flip(xp,0), np.flip(yp,0))
 
 def linearize(cmap, JpL=None, JpR=None, save=None):
-    Jabp = get_ctab(cmap, cspace="CAM02-UCS")
+    Jabp = get_ctab(cmap, cspace='CAM02-UCS')
 
     Jp = np.linspace(Jabp[ 0,0] if JpL is None else JpL,
                      Jabp[-1,0] if JpR is None else JpR, cmap.N)
     ap = interp(Jp, Jabp[:,0], Jabp[:,1])
     bp = interp(Jp, Jabp[:,0], Jabp[:,2])
 
-    carr = cspace_convert(np.stack([Jp,ap,bp], axis=-1), "CAM02-UCS", "sRGB1")
+    carr = cspace_convert(np.stack([Jp,ap,bp], axis=-1), 'CAM02-UCS', 'sRGB1')
     if save is None:
         return ListedColormap(carr)
     else:
@@ -55,7 +55,7 @@ def linearize(cmap, JpL=None, JpR=None, save=None):
         np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
 
 def symmetrize(cmap, JpL=None, JpM=None, JpR=None, save=None):
-    Jabp = get_ctab(cmap, cspace="CAM02-UCS")
+    Jabp = get_ctab(cmap, cspace='CAM02-UCS')
 
     N = Jabp.shape[0]
     H = N//2
@@ -84,7 +84,7 @@ def symmetrize(cmap, JpL=None, JpM=None, JpR=None, save=None):
     carr = cspace_convert(np.stack([Jp,
                                     np.append(apL, apR),
                                     np.append(bpL, bpR)], axis=-1),
-                          "CAM02-UCS", "sRGB1")
+                          'CAM02-UCS', 'sRGB1')
     if save is None:
         return ListedColormap(carr)
     else:
@@ -95,28 +95,28 @@ def symmetrize(cmap, JpL=None, JpM=None, JpR=None, save=None):
 def uniformize(cname, N=256):
     cmap = get_cmap(cname)
     ctab = get_ctab(cmap)
-    Jabp = cspace_convert(ctab[:,:3], "sRGB1", "CAM02-UCS")
+    Jabp = cspace_convert(ctab[:,:3], 'sRGB1', 'CAM02-UCS')
     Jp   = Jabp[:,0]
     sgn  = uniq(np.sign(Jp[1:] - Jp[:-1]).astype(int))
 
     if np.array_equal(sgn, [1]):
-        print(cname, sgn, 'up')
-        linearize(cmap,         save=cname+'_u.txt')
-        linearize(cmap, JpR=25, save=cname+'_lu.txt')
+        print(cname, sgn, "up")
+        linearize(cmap,         save=cname+"_u.txt")
+        linearize(cmap, JpR=25, save=cname+"_lu.txt")
     elif np.array_equal(sgn, [-1]):
-        print(cname, sgn, 'down')
-        linearize(cmap,         save=cname+'_u.txt')
-        linearize(cmap, JpL=25, save=cname+'_lu.txt')
+        print(cname, sgn, "down")
+        linearize(cmap,         save=cname+"_u.txt")
+        linearize(cmap, JpL=25, save=cname+"_lu.txt")
     elif np.array_equal(sgn, [1,-1]):
-        print(cname, sgn, 'hill')
-        symmetrize(cmap,                 save=cname+'_u.txt')
-        symmetrize(cmap, JpL=25, JpR=25, save=cname+'_lu.txt')
+        print(cname, sgn, "hill")
+        symmetrize(cmap,                 save=cname+"_u.txt")
+        symmetrize(cmap, JpL=25, JpR=25, save=cname+"_lu.txt")
     elif np.array_equal(sgn, [-1,1]):
-        print(cname, sgn, 'valley')
-        symmetrize(cmap,                 save=cname+'_u.txt')
-        symmetrize(cmap, JpL=25, JpR=25, save=cname+'_lu.txt')
+        print(cname, sgn, "valley")
+        symmetrize(cmap,                 save=cname+"_u.txt")
+        symmetrize(cmap, JpL=25, JpR=25, save=cname+"_lu.txt")
     else:
-        print(cname, sgn, '?')
+        print(cname, sgn, "?")
 
 if __name__ == "__main__":
     cnames = [
