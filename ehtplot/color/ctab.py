@@ -16,12 +16,36 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+from os.path import dirname, join, splitext, basename
+from glob    import glob
+
 import numpy as np
 
 from colorspacious import cspace_convert
+
+Nc  = 1024 # nubber of quantization levels in a channel (10bit default)
+ext = ".txt"
+
+path   = dirname(__file__)
+cscale = Nc - 1.0
 
 def get_ctab(cmap, cspace='sRGB1'):
     ctab = np.array([cmap(i) for i in range(cmap.N)])
     if cspace != 'sRGB1':
         ctab[:,:3] = cspace_convert(ctab[:,:3], 'sRGB1', cspace)
+    return ctab
+
+def list_ctab():
+    return [splitext(basename(f))[0] for f in glob(join(path, '*'+ext))]
+
+def save_ctab(ctab, name):
+    if ctab.shape[1] == 4 and np.all(ctab[:,3] == 1.0):
+        ctab = ctab[:,:3]
+    np.savetxt(name, np.rint(ctab * cscale).astype(int), fmt="%i")
+
+def load_ctab(name):
+    ctab = np.loadtxt(join(path, name+ext)) / cscale
+    if ctab.shape[1] == 3:
+        alpha = np.full((ctab.shape[0], 1), 1.0)
+        ctab  = np.append(ctab, alpha, axis=1)
     return ctab

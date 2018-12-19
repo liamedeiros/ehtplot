@@ -24,8 +24,7 @@ from colorspacious     import cspace_convert
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
 
-from ehtplot.color.core   import save_ctab
-from ehtplot.color.ctab   import get_ctab
+from ehtplot.color.ctab   import get_ctab, save_ctab
 from ehtplot.color.adjust import interp, linearizeJp
 
 def uniq(a):

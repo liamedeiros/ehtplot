@@ -16,39 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-from os.path import dirname, join, splitext, basename
-from glob    import glob
-
 import numpy as np
 
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import register_cmap
 
+from ehtplot.color.ctab import list_ctab, load_ctab
+
 Nq = 256  # number of quantization levels in a colormap
-Nc = 1024 # nubber of quantization levels in a channel (10bit default)
-
-cscale = Nc - 1.0
-
-path = dirname(__file__)
-ext  = ".txt"
-
-def save_ctab(ctab, name):
-    if ctab.shape[1] == 4 and np.all(ctab[:,3] == 1.0):
-        ctab = ctab[:,:3]
-    np.savetxt(name, np.rint(ctab * cscale).astype(int), fmt="%i")
-
-def load_ctab(name):
-    ctab = np.loadtxt(join(path, name+ext)) / cscale
-    if ctab.shape[1] == 3:
-        alpha = np.full((ctab.shape[0], 1), 1.0)
-        ctab  = np.append(ctab, alpha, axis=1)
-    return ctab
 
 def register(name=None, cmap=None):
     if name is None:
         # Self-call to register all colormaps in "ehtplot/color/"
-        for f in glob(join(path, '*'+ext)):
-            register(name=splitext(basename(f))[0], cmap=cmap)
+        for name in list_ctab():
+            register(name=name, cmap=cmap)
     else:
         # Set up and register the colormap
         if cmap is None:
