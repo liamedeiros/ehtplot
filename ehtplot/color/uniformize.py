@@ -39,8 +39,7 @@ def interp(x, xp, yp):
         return np.interp(x, np.flip(xp,0), np.flip(yp,0))
 
 def linearize(cmap, JpL=None, JpR=None, save=None):
-    ctab = get_ctab(cmap)
-    Jabp = cspace_convert(ctab[:,:3], "sRGB1", "CAM02-UCS")
+    Jabp = get_ctab(cmap, cspace="CAM02-UCS")
 
     Jp = np.linspace(Jabp[ 0,0] if JpL is None else JpL,
                      Jabp[-1,0] if JpR is None else JpR, cmap.N)
@@ -56,10 +55,9 @@ def linearize(cmap, JpL=None, JpR=None, save=None):
         np.savetxt(save, np.rint(carr * cscale).astype(int), fmt="%i")
 
 def symmetrize(cmap, JpL=None, JpM=None, JpR=None, save=None):
-    ctab = get_ctab(cmap)
-    Jabp = cspace_convert(ctab[:,:3], "sRGB1", "CAM02-UCS")
+    Jabp = get_ctab(cmap, cspace="CAM02-UCS")
 
-    N = cmap.N
+    N = Jabp.shape[0]
     H = N//2
     if JpL is None:
         JpL = Jabp[0,0]
