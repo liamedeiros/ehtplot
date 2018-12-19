@@ -37,11 +37,11 @@ def register(name=None, cmap=None):
     else:
         # Set up and register the colormap
         if cmap is None:
-            ctab = np.loadtxt(join(path, name+ext))
+            ctab = np.loadtxt(join(path, name+ext)) / (Nc-1.0)
             if ctab.shape[1] == 3:
-                alpha = np.full((ctab.shape[0], 1), Nc-1)
+                alpha = np.full((ctab.shape[0], 1), 1.0)
                 ctab  = np.append(ctab, alpha, axis=1)
-            cmap = ListedColormap(ctab / (Nc - 1.0))
+            cmap = ListedColormap(ctab)
         register_cmap(name=name, cmap=cmap)
 
         # Set up and register the reversed colormap
