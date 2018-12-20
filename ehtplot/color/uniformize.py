@@ -50,24 +50,21 @@ def symmetrize(Jabp, JpL=None, JpM=None, JpR=None):
 
     return np.append(L, R, axis=0)
 
-def uniformize(cname, N=256, Jpmin=None, postfix=None):
+def uniformize(cname, N=256, Jplower=None, postfix=None):
     cmap = get_cmap(cname)
     Jabp = transform(get_ctab(cmap))
     Jp   = Jabp[:,0]
     sgn  = uniq(np.sign(Jp[1:] - Jp[:-1]).astype(int))
 
-    if np.array_equal(sgn, [1]):
-        print(cname, sgn, "up")
-        ctab = linearize(Jabp, JpL=Jpmin)
-    elif np.array_equal(sgn, [-1]):
-        print(cname, sgn, "down")
-        ctab = linearize(Jabp, JpR=Jpmin)
+    if len(sgn) == 1:
+        print(cname, sgn, "monotonic")
+        ctab = linearize(Jabp, Jplower=Jplower)
     elif np.array_equal(sgn, [1,-1]):
         print(cname, sgn, "hill")
-        ctab = symmetrize(Jabp, JpL=Jpmin, JpR=Jpmin)
+        ctab = symmetrize(Jabp, JpL=Jplower, JpR=Jplower)
     elif np.array_equal(sgn, [-1,1]):
         print(cname, sgn, "valley")
-        ctab = symmetrize(Jabp, JpM=Jpmin)
+        ctab = symmetrize(Jabp, JpM=Jplower)
     else:
         print(cname, sgn, "?")
 
@@ -87,5 +84,5 @@ if __name__ == "__main__":
         'Spectral', 'coolwarm', 'bwr', 'seismic']
 
     for cname in cnames:
-        uniformize(cname,           postfix='u')
-        uniformize(cname, Jpmin=25, postfix='lu')
+        uniformize(cname,             postfix='u')
+        uniformize(cname, Jplower=25, postfix='lu')

@@ -36,9 +36,13 @@ def interp(x, xp, yp):
     else:
         return np.interp(x, np.flip(xp,0), np.flip(yp,0))
 
-def linearize(Jabp, JpL=None, JpR=None):
+def linearize(Jabp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
     if JpL is None: JpL = Jabp[ 0,0]
     if JpR is None: JpR = Jabp[-1,0]
+
+    if Jplower is not None: JpL, JpR = max(JpL, Jplower), max(JpR, Jplower)
+    if Jpupper is not None: JpL, JpR = min(JpL, Jpupper), min(JpR, Jpupper)
+
     out = Jabp.copy()
     out[:,0] = np.linspace(JpL, JpR, out.shape[0])
     out[:,1] = interp(out[:,0], Jabp[:,0], Jabp[:,1])
