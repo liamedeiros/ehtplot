@@ -36,16 +36,22 @@ def uniformize(cmap, Jplower=None, postfix=None):
     Jp   = Jabp[:,0]
     x    = extrema(Jp)
     N    = cmap.N
-    h    = (N+1)//2-1
+    h    = (N+1)//2-1 # == H-1 if even; == H if odd
     H    = N//2
 
     if len(x) == 0:
         print(cname, x, "monotonic")
         ctab = linearize(Jabp, Jplower=Jplower)
     elif len(x) == 1 and x[0] in {h, H}:
-        print(cname, x, "divergent")
-        L = linearize(Jabp[:h+1,:], Jplower=Jplower)
-        R = linearize(Jabp[H:,  :], Jplower=Jplower)
+        if Jp[1] > Jp[0]: # hill
+            Jplower = max(Jp[0], Jp[-1])
+            Jpupper = min(Jp[h], Jp[H])
+        else: # valley
+            Jplower = max(Jp[h], Jp[H])
+            Jpupper = min(Jp[0], Jp[-1])
+        print(cname, x, "divergent", Jplower, Jpupper)
+        L = linearize(Jabp[:h+1,:], Jplower=Jplower, Jpupper=Jpupper)
+        R = linearize(Jabp[H:,  :], Jplower=Jplower, Jpupper=Jpupper)
         ctab = np.append(L, R[N%2:,:], axis=0)
     else:
         print(cname, x, "?")
