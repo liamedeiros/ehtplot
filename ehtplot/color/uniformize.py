@@ -26,47 +26,27 @@ from matplotlib.cm     import get_cmap
 from ehtplot.color.ctab   import get_ctab, save_ctab
 from ehtplot.color.adjust import transform, interp, linearize
 
-def uniq(a):
-    return a[np.r_[True, a[:-1] != a[1:]]]
-
-def symmetrize(Jabp, JpL=None, JpM=None, JpR=None):
-    N = Jabp.shape[0]
-    H = (N-1)//2
-    if JpL is None:
-        JpL = Jabp[0,0]
-    if JpM is None:
-        JpM = Jabp[H,0]
-    if JpR is None:
-        JpR = Jabp[-1,0]
-
-    if JpR > JpM: # v-shape
-        b = min(JpL, JpR)
-        L = linearize(Jabp[:H,:], JpL=b,   JpR=JpM)
-        R = linearize(Jabp[H:,:], JpL=JpM, JpR=b)
-    else:         # ^-shape
-        b = max(JpL, JpR)
-        L = linearize(Jabp[:H,:], JpL=b,   JpR=JpM)
-        R = linearize(Jabp[H:,:], JpL=JpM, JpR=b)
-
-    return np.append(L, R, axis=0)
+def extrema(a):
+    da =  a[1:] -  a[:-1]
+    xa = da[1:] * da[:-1]
+    return np.argwhere(xa <= 0.0)[:,0]+1
 
 def uniformize(cname, N=256, Jplower=None, postfix=None):
     cmap = get_cmap(cname)
     Jabp = transform(get_ctab(cmap))
     Jp   = Jabp[:,0]
-    sgn  = uniq(np.sign(Jp[1:] - Jp[:-1]).astype(int))
+    x    = extrema(Jp)
 
-    if len(sgn) == 1:
-        print(cname, sgn, "monotonic")
+    if len(x) == 0:
+        print(cname, x, "monotonic")
         ctab = linearize(Jabp, Jplower=Jplower)
-    elif np.array_equal(sgn, [1,-1]):
-        print(cname, sgn, "hill")
-        ctab = symmetrize(Jabp, JpL=Jplower, JpR=Jplower)
-    elif np.array_equal(sgn, [-1,1]):
-        print(cname, sgn, "valley")
-        ctab = symmetrize(Jabp, JpM=Jplower)
+    elif len(x) == 1 and x[0] in {(N+1)//2-1, N//2}:
+        print(cname, x, "divergent")
+        L = linearize(Jabp[:(N+1)//2,:], Jplower=Jplower)
+        R = linearize(Jabp[N//2:,    :], Jplower=Jplower)
+        ctab = np.append(L, R[N%2:,:], axis=0)
     else:
-        print(cname, sgn, "?")
+        print(cname, x, "?")
 
     save_ctab(transform(ctab, inverse=True), cname+"_"+postfix+".txt")
 
