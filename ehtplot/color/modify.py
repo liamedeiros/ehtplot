@@ -26,7 +26,7 @@ from matplotlib.cm     import get_cmap
 from ehtplot.color.ctab   import get_ctab, save_ctab
 from ehtplot.color.adjust import transform, classify, adjust
 
-def modify_sequential(Jabp, roundup):
+def adjust_sequential(Jabp, roundup=None):
     Jp = Jabp[:,0]
 
     Jplower = min(Jp[0], Jp[-1])
@@ -35,7 +35,7 @@ def modify_sequential(Jabp, roundup):
 
     return adjust(Jabp, Jplower=Jplower)
 
-def modify_divergent(Jabp, roundup):
+def adjust_divergent(Jabp, roundup=None):
     Jp = Jabp[:,0]
     N  = Jabp.shape[0]
     h  = (N+1)//2-1 # == H-1 if even; == H if odd
@@ -54,31 +54,85 @@ def modify_divergent(Jabp, roundup):
     R = adjust(Jabp[H:,  :], Jplower=Jplower, Jpupper=Jpupper)
     return np.append(L, R[N%2:,:], axis=0)
 
-if __name__ == "__main__":
-    cnames = [
-        # Monotomically decreasing lightness
-        'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds', 'YlOrBr',
-        'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu', 'GnBu', 'PuBu', 'YlGnBu',
-        'PuBuGn', 'BuGn', 'YlGn', 'binary', 'gist_yarg', 'Wistia',
-        # Monotomically increasing lightness
-        'gist_gray', 'gray', 'bone', 'pink', 'summer', 'autumn', 'hot',
-        'afmhot', 'gist_heat', 'copper', 'gnuplot2', 'cubehelix',
-        # Diverge colormaps
-        'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu', 'RdYlBu', 'RdYlGn',
-        'Spectral', 'coolwarm', 'bwr', 'seismic']
+def pre(cname):
+    return transform(get_ctab(get_cmap(cname)))
+
+def post(Jabp, adjust, roundup, fname):
+    save_ctab(transform(adjust(Jabp, roundup), inverse=True), fname)
+    print("    Rounded up to {}; saved to \"{}\"".format(roundup, fname))
+
+def modify(category, cnames, roundups, postfix=None):
+    if roundups is None:
+        roundups = []
+    elif not isinstance(roundups, list):
+        roundups = [roundups]
+
+    print("================")
+    print(category)
 
     for cname in cnames:
-
-        Jabp = transform(get_ctab(get_cmap(cname)))
+        Jabp = pre(cname)
         cls  = classify(Jabp)
 
-        print("Working on {} colormap \"{}\":".format(cls, cname))
+        print("----------------")
+        print(cls + " colormap " + cname)
+
         if cls == 'unknown':
-            print("do nothing, no modification is made")
+            print("    Do nothing, no modification is made")
             continue
         else:
-            print("modifying the colormap")
-            modify = globals()['modify_'+cls]
+            print("    Jp in [{:.2f}, {:.2f}]". format(Jabp[0,0], Jabp[-1,0]))
+            adjust = globals()['adjust_'+cls]
 
-        save_ctab(transform(modify(Jabp, None), inverse=True), cname+'_u.txt')
-        save_ctab(transform(modify(Jabp, 25),   inverse=True), cname+'_lu.txt')
+        post(Jabp, adjust, None, cname+"_u.txt")
+        for roundup in roundups:
+            if postfix is None or len(roundups) > 1:
+                fname = "{}_{:.0f}u.txt".format(cname, roundup)
+            else:
+                fname = "{}_{}u.txt".format(cname, postfix)
+            post(Jabp, adjust, roundup, fname)
+
+if __name__ == "__main__":
+    matplotlib_cmap_sets = {
+        # Monotomically decreasing lightness
+        'one-color decreasing': (
+            ['Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds'],
+            100.0/3),
+        'two-color decreasing': (
+            ['OrRd', 'PuRd', 'RdPu', 'BuPu', 'GnBu', 'PuBu', 'BuGn', 'YlGn'],
+            100.0/3),
+        'three-color decreasing': (
+            ['YlOrBr', 'YlOrRd', 'YlGnBu', 'PuBuGn'],
+            100.0/3),
+        'misc decreasing': (
+            ['binary', 'gist_yarg', 'Wistia'],
+            None),
+
+        # Monotomically increasing lightness
+        'boring increasing': (
+            ['gist_gray', 'gray', 'bone', 'pink'],
+            None),
+        'seasons increasing': (
+            ['summer', 'autumn'],
+            None),
+        'redish increasing': (
+            ['hot', 'afmhot', 'gist_heat', 'copper'],
+            None),
+        'misc increasing': (
+            ['gnuplot2', 'cubehelix'],
+            None),
+
+        # Divergent "hill" colormaps
+        'two-color hill': (
+            ['PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu'],
+            40.0),
+        'three-color hill': (
+            ['RdYlBu', 'RdYlGn'],
+            40.0),
+        'misc hill': (
+            ['Spectral', 'coolwarm', 'bwr', 'seismic'],
+            None),
+        }
+
+    for category, (cnames, roundups) in matplotlib_cmap_sets.items():
+        modify(category, cnames, roundups, 'l')
