@@ -24,14 +24,14 @@ from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
 
 from ehtplot.color.ctab   import get_ctab, save_ctab
-from ehtplot.color.adjust import transform, interp, linearize
+from ehtplot.color.adjust import transform, adjust
 
 def extrema(a):
     da =  a[1:] -  a[:-1]
     xa = da[1:] * da[:-1]
     return np.argwhere(xa <= 0.0)[:,0]+1
 
-def uniformize(ctab, roundup=None):
+def modify(ctab, roundup=None):
     Jabp = transform(ctab)
 
     Jp = Jabp[:,0]
@@ -50,7 +50,7 @@ def uniformize(ctab, roundup=None):
 
         print("{}: {} => sequential colormap".format(cname, x))
 
-        ctab = linearize(Jabp, Jplower=Jplower)
+        ctab = adjust(Jabp, Jplower=Jplower)
     elif len(x) == 1 and x[0] in {h, H}:
         if Jp[1] > Jp[0]: # hill
             Jplower = max(Jp[0], Jp[-1])
@@ -63,12 +63,12 @@ def uniformize(ctab, roundup=None):
 
         print("{}: {} => divergent colormap".format(cname, x))
 
-        L = linearize(Jabp[:h+1,:], Jplower=Jplower, Jpupper=Jpupper)
-        R = linearize(Jabp[H:,  :], Jplower=Jplower, Jpupper=Jpupper)
+        L = adjust(Jabp[:h+1,:], Jplower=Jplower, Jpupper=Jpupper)
+        R = adjust(Jabp[H:,  :], Jplower=Jplower, Jpupper=Jpupper)
         ctab = np.append(L, R[N%2:,:], axis=0)
     else:
         print("{}: {} => unknown colormap".format(cname, x))
-        raise ValueError("do not know to uniformize the color map")
+        raise ValueError("do not know to modify the color map")
 
     return transform(ctab, inverse=True)
 
@@ -87,5 +87,5 @@ if __name__ == "__main__":
 
     for cname in cnames:
         ctab = get_ctab(get_cmap(cname))
-        save_ctab(uniformize(ctab),             cname+"_u.txt")
-        save_ctab(uniformize(ctab, roundup=25), cname+"_lu.txt")
+        save_ctab(modify(ctab),             cname+"_u.txt")
+        save_ctab(modify(ctab, roundup=25), cname+"_lu.txt")
