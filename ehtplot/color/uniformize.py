@@ -31,7 +31,7 @@ def extrema(a):
     xa = da[1:] * da[:-1]
     return np.argwhere(xa <= 0.0)[:,0]+1
 
-def uniformize(cmap, Jplower=None, postfix=None):
+def uniformize(cmap, roundup=None, postfix=None):
     Jabp = transform(get_ctab(cmap))
     Jp   = Jabp[:,0]
     x    = extrema(Jp)
@@ -39,8 +39,13 @@ def uniformize(cmap, Jplower=None, postfix=None):
     h    = (N+1)//2-1 # == H-1 if even; == H if odd
     H    = N//2
 
+    Jplower = None
+    Jpupper = None
+
     if len(x) == 0:
-        print(cname, x, "monotonic")
+        if roundup is not None:
+            Jplower = np.ceil(min(Jp[0], Jp[-1]) / roundup) * roundup
+        print(cname, x, "monotonic", Jplower, Jpupper)
         ctab = linearize(Jabp, Jplower=Jplower)
     elif len(x) == 1 and x[0] in {h, H}:
         if Jp[1] > Jp[0]: # hill
@@ -49,6 +54,8 @@ def uniformize(cmap, Jplower=None, postfix=None):
         else: # valley
             Jplower = max(Jp[h], Jp[H])
             Jpupper = min(Jp[0], Jp[-1])
+        if roundup is not None:
+            Jplower = np.ceil(Jplower / roundup) * roundup
         print(cname, x, "divergent", Jplower, Jpupper)
         L = linearize(Jabp[:h+1,:], Jplower=Jplower, Jpupper=Jpupper)
         R = linearize(Jabp[H:,  :], Jplower=Jplower, Jpupper=Jpupper)
@@ -75,4 +82,4 @@ if __name__ == "__main__":
         cmap = get_cmap(cname)
 
         uniformize(cmap,             postfix='u')
-        uniformize(cmap, Jplower=25, postfix='lu')
+        uniformize(cmap, roundup=25, postfix='lu')
