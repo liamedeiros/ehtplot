@@ -36,7 +36,9 @@ def interp(x, xp, yp):
     else:
         return np.interp(x, np.flip(xp,0), np.flip(yp,0))
 
-def linearize(Jabp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
+def linearize(Jabp,
+              JpL=None, JpR=None, Jplower=None, Jpupper=None,
+              desaturate=False):
     if JpL is None: JpL = Jabp[ 0,0]
     if JpR is None: JpR = Jabp[-1,0]
 
@@ -47,4 +49,15 @@ def linearize(Jabp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
     out[:,0] = np.linspace(JpL, JpR, out.shape[0])
     out[:,1] = interp(out[:,0], Jabp[:,0], Jabp[:,1])
     out[:,2] = interp(out[:,0], Jabp[:,0], Jabp[:,2])
+
+    if desaturate:
+        s = np.linspace(0.0, np.sqrt(0.5), num=out.shape[0])
+        s = s / np.sqrt(1.0 - s * s)
+
+        if JpL > JpR:
+            s = np.flip(s)
+
+        out[:,1] *= s
+        out[:,2] *= s
+
     return out
