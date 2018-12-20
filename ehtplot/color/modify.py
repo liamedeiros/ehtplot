@@ -24,53 +24,35 @@ from matplotlib.colors import ListedColormap
 from matplotlib.cm     import get_cmap
 
 from ehtplot.color.ctab   import get_ctab, save_ctab
-from ehtplot.color.adjust import transform, adjust
+from ehtplot.color.adjust import transform, classify, adjust
 
-def extrema(a):
-    da =  a[1:] -  a[:-1]
-    xa = da[1:] * da[:-1]
-    return np.argwhere(xa <= 0.0)[:,0]+1
-
-def modify(ctab, roundup=None):
-    Jabp = transform(ctab)
-
+def modify_sequential(Jabp, roundup):
     Jp = Jabp[:,0]
-    x  = extrema(Jp)
 
-    N = ctab.shape[0]
-    h = (N+1)//2-1 # == H-1 if even; == H if odd
-    H = N//2
+    Jplower = min(Jp[0], Jp[-1])
+    if roundup is not None:
+        Jplower = np.ceil(Jplower / roundup) * roundup
 
-    Jplower = None
-    Jpupper = None
+    return adjust(Jabp, Jplower=Jplower)
 
-    if len(x) == 0:
-        if roundup is not None:
-            Jplower = np.ceil(min(Jp[0], Jp[-1]) / roundup) * roundup
+def modify_divergent(Jabp, roundup):
+    Jp = Jabp[:,0]
+    N  = Jabp.shape[0]
+    h  = (N+1)//2-1 # == H-1 if even; == H if odd
+    H  = N//2
 
-        print("{}: {} => sequential colormap".format(cname, x))
+    if Jp[1] > Jp[0]: # hill
+        Jplower = max(Jp[0], Jp[-1])
+        Jpupper = min(Jp[h], Jp[H])
+    else: # valley
+        Jplower = max(Jp[h], Jp[H])
+        Jpupper = min(Jp[0], Jp[-1])
+    if roundup is not None:
+        Jplower = np.ceil(Jplower / roundup) * roundup
 
-        ctab = adjust(Jabp, Jplower=Jplower)
-    elif len(x) == 1 and x[0] in {h, H}:
-        if Jp[1] > Jp[0]: # hill
-            Jplower = max(Jp[0], Jp[-1])
-            Jpupper = min(Jp[h], Jp[H])
-        else: # valley
-            Jplower = max(Jp[h], Jp[H])
-            Jpupper = min(Jp[0], Jp[-1])
-        if roundup is not None:
-            Jplower = np.ceil(Jplower / roundup) * roundup
-
-        print("{}: {} => divergent colormap".format(cname, x))
-
-        L = adjust(Jabp[:h+1,:], Jplower=Jplower, Jpupper=Jpupper)
-        R = adjust(Jabp[H:,  :], Jplower=Jplower, Jpupper=Jpupper)
-        ctab = np.append(L, R[N%2:,:], axis=0)
-    else:
-        print("{}: {} => unknown colormap".format(cname, x))
-        raise ValueError("do not know to modify the color map")
-
-    return transform(ctab, inverse=True)
+    L = adjust(Jabp[:h+1,:], Jplower=Jplower, Jpupper=Jpupper)
+    R = adjust(Jabp[H:,  :], Jplower=Jplower, Jpupper=Jpupper)
+    return np.append(L, R[N%2:,:], axis=0)
 
 if __name__ == "__main__":
     cnames = [
@@ -86,6 +68,17 @@ if __name__ == "__main__":
         'Spectral', 'coolwarm', 'bwr', 'seismic']
 
     for cname in cnames:
-        ctab = get_ctab(get_cmap(cname))
-        save_ctab(modify(ctab),             cname+"_u.txt")
-        save_ctab(modify(ctab, roundup=25), cname+"_lu.txt")
+
+        Jabp = transform(get_ctab(get_cmap(cname)))
+        cls  = classify(Jabp)
+
+        print("Working on {} colormap \"{}\":".format(cls, cname))
+        if cls == 'unknown':
+            print("do nothing, no modification is made")
+            continue
+        else:
+            print("modifying the colormap")
+            modify = globals()['modify_'+cls]
+
+        save_ctab(transform(modify(Jabp, None), inverse=True), cname+'_u.txt')
+        save_ctab(transform(modify(Jabp, 25),   inverse=True), cname+'_lu.txt')

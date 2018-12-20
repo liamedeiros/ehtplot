@@ -22,6 +22,17 @@ import numpy as np
 
 from colorspacious import cspace_convert
 
+def interp(x, xp, yp):
+    if xp[0] < xp[-1]:
+        return np.interp(x, xp, yp)
+    else:
+        return np.interp(x, np.flip(xp,0), np.flip(yp,0))
+
+def extrema(a):
+    da =  a[1:] -  a[:-1]
+    xa = da[1:] * da[:-1]
+    return np.argwhere(xa <= 0.0)[:,0]+1
+
 def transform(ctab, src='sRGB1', dst='CAM02-UCS', inverse=False):
     out = ctab.copy()
     if not inverse:
@@ -30,11 +41,15 @@ def transform(ctab, src='sRGB1', dst='CAM02-UCS', inverse=False):
         out[:,:3] = cspace_convert(out[:,:3], dst, src)
     return out
 
-def interp(x, xp, yp):
-    if xp[0] < xp[-1]:
-        return np.interp(x, xp, yp)
+def classify(Jabp):
+    N = Jabp.shape[0]
+    x = extrema(Jabp[:,0])
+    if len(x) == 0:
+        return 'sequential'
+    elif len(x) == 1 and x[0] in {(N+1)//2-1, N//2}:
+        return 'divergent'
     else:
-        return np.interp(x, np.flip(xp,0), np.flip(yp,0))
+        return 'unknown'
 
 def linearize(Jabp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
     if JpL is None: JpL = Jabp[ 0,0]
