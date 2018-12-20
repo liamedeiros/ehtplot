@@ -31,19 +31,21 @@ def extrema(a):
     xa = da[1:] * da[:-1]
     return np.argwhere(xa <= 0.0)[:,0]+1
 
-def uniformize(cname, N=256, Jplower=None, postfix=None):
-    cmap = get_cmap(cname)
+def uniformize(cmap, Jplower=None, postfix=None):
     Jabp = transform(get_ctab(cmap))
     Jp   = Jabp[:,0]
     x    = extrema(Jp)
+    N    = cmap.N
+    h    = (N+1)//2-1
+    H    = N//2
 
     if len(x) == 0:
         print(cname, x, "monotonic")
         ctab = linearize(Jabp, Jplower=Jplower)
-    elif len(x) == 1 and x[0] in {(N+1)//2-1, N//2}:
+    elif len(x) == 1 and x[0] in {h, H}:
         print(cname, x, "divergent")
-        L = linearize(Jabp[:(N+1)//2,:], Jplower=Jplower)
-        R = linearize(Jabp[N//2:,    :], Jplower=Jplower)
+        L = linearize(Jabp[:h+1,:], Jplower=Jplower)
+        R = linearize(Jabp[H:,  :], Jplower=Jplower)
         ctab = np.append(L, R[N%2:,:], axis=0)
     else:
         print(cname, x, "?")
@@ -64,5 +66,7 @@ if __name__ == "__main__":
         'Spectral', 'coolwarm', 'bwr', 'seismic']
 
     for cname in cnames:
-        uniformize(cname,             postfix='u')
-        uniformize(cname, Jplower=25, postfix='lu')
+        cmap = get_cmap(cname)
+
+        uniformize(cmap,             postfix='u')
+        uniformize(cmap, Jplower=25, postfix='lu')
