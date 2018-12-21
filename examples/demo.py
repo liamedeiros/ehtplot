@@ -4,8 +4,8 @@ import ehtplot as ep
 from ehtplot.extra import io
 
 img = ep.Panel(image=io.open("sample", component="pca0"))
-row = ep.Panel([img, img, img])
-fig = ep.Figure([row, row], inrow=False)
+row = ep.Panel(img, img, img)
+fig = ep.Figure(row, row, inrow=False)
 
 fig.save("demo-seaborn.png", style='seaborn')
 fig.save("demo-ggplot.png",  style='ggplot')
