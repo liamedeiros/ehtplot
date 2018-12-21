@@ -75,5 +75,30 @@ def desaturate(Jabp):
     out[:,2] *= s
     return out
 
-def adjust(Jabp, **kwargs):
-    return linearize(Jabp, **kwargs)
+def adjust_sequential(Jabp, roundup=None):
+    Jp = Jabp[:,0]
+
+    Jplower = min(Jp[0], Jp[-1])
+    if roundup is not None:
+        Jplower = np.ceil(Jplower / roundup) * roundup
+
+    return linearize(Jabp, Jplower=Jplower)
+
+def adjust_divergent(Jabp, roundup=None):
+    Jp = Jabp[:,0]
+    N  = Jabp.shape[0]
+    h  = (N+1)//2-1 # == H-1 if even; == H if odd
+    H  = N//2
+
+    if Jp[1] > Jp[0]: # hill
+        Jplower = max(Jp[0], Jp[-1])
+        Jpupper = min(Jp[h], Jp[H])
+    else: # valley
+        Jplower = max(Jp[h], Jp[H])
+        Jpupper = min(Jp[0], Jp[-1])
+    if roundup is not None:
+        Jplower = np.ceil(Jplower / roundup) * roundup
+
+    L = linearize(Jabp[:h+1,:], Jplower=Jplower, Jpupper=Jpupper)
+    R = linearize(Jabp[H:,  :], Jplower=Jplower, Jpupper=Jpupper)
+    return np.append(L, R[N%2:,:], axis=0)

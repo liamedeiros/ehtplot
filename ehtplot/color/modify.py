@@ -18,41 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-import numpy as np
-
-from matplotlib.colors import ListedColormap
-from matplotlib.cm     import get_cmap
+from matplotlib.cm import get_cmap
 
 from ehtplot.color.ctab   import get_ctab, save_ctab
-from ehtplot.color.adjust import transform, classify, adjust
-
-def adjust_sequential(Jabp, roundup=None):
-    Jp = Jabp[:,0]
-
-    Jplower = min(Jp[0], Jp[-1])
-    if roundup is not None:
-        Jplower = np.ceil(Jplower / roundup) * roundup
-
-    return adjust(Jabp, Jplower=Jplower)
-
-def adjust_divergent(Jabp, roundup=None):
-    Jp = Jabp[:,0]
-    N  = Jabp.shape[0]
-    h  = (N+1)//2-1 # == H-1 if even; == H if odd
-    H  = N//2
-
-    if Jp[1] > Jp[0]: # hill
-        Jplower = max(Jp[0], Jp[-1])
-        Jpupper = min(Jp[h], Jp[H])
-    else: # valley
-        Jplower = max(Jp[h], Jp[H])
-        Jpupper = min(Jp[0], Jp[-1])
-    if roundup is not None:
-        Jplower = np.ceil(Jplower / roundup) * roundup
-
-    L = adjust(Jabp[:h+1,:], Jplower=Jplower, Jpupper=Jpupper)
-    R = adjust(Jabp[H:,  :], Jplower=Jplower, Jpupper=Jpupper)
-    return np.append(L, R[N%2:,:], axis=0)
+from ehtplot.color.adjust import transform, classify, adjust_sequential, adjust_divergent
 
 def pre(cname):
     return transform(get_ctab(get_cmap(cname)))
