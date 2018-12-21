@@ -33,6 +33,28 @@ class Figure:
     """
 
     def __init__(self, *args, **kwargs):
+        """Figure initializer
+
+        The Figure class can be initialized in two different ways.
+        The first way takes a single argument with type Panel:
+
+            fig = Figure(pnl)
+
+        this makes `pnl` the builtin panel of `fig`.  The second way
+        takes arbitrary arguments and keywards,
+
+            fig = Figure(arg1, arg2, ..., kw1=..., kw2=..., ...)
+
+        As long as the type of `arg1` is not Panel, Figure will
+        automatically create a Panel class with the arguments and
+        keywords.  That this, the above statement is equvilient to
+
+            fig = Figure(Panel(arg1, arg2, ..., kw1=..., kw2=..., ...))
+
+        If the type of arg1 is Panel, the initializer will raise a
+        type error.
+
+        """
         if not args or not isinstance(args[0], Panel):
             self.panel = Panel(*args, **kwargs)
         elif len(args) == 1 and len(kwargs) == 0:
