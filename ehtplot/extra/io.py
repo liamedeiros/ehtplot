@@ -45,7 +45,7 @@ class MultipleImplementationError(Exception):
 def fullname(cls):
     return cls.__module__ + "." + cls.__name__
 
-def open(name):
+def open(name, *args, **kwargs):
     """Open a data file/bundle for mockservation according to extensions
 
     Args:
@@ -75,9 +75,9 @@ def open(name):
     else:
         raise NameError("path \"{}\" is invalid".format(name))
 
-    return open_x(name)
+    return open_x(name, *args, **kwargs)
 
-def open_bundle(name):
+def open_bundle(name, *args, **kwargs):
     """Open a folder as a data bundle
 
     Args:
@@ -109,9 +109,9 @@ def open_bundle(name):
             mk = [obj for _, obj in inspect.getmembers(loader, inspect.isclass)
                       if abcname in [fullname(c) for c in obj.__bases__]]
             if not mk:
-                return loader.load(name)
+                return loader.load(name, *args, **kwargs)
             if len(mk) == 1:
-                return mk[0](name)
+                return mk[0](name, *args, **kwargs)
 
             raise MultipleImplementationError(
                 "{} subclasses of {} are implemented for data bundle \"{}\"".
