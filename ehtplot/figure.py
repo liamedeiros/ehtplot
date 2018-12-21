@@ -55,10 +55,12 @@ class Figure:
         type error.
 
         """
-        if not args or not isinstance(args[0], Panel):
-            self.panel = Panel(*args, **kwargs)
-        elif len(args) == 1 and len(kwargs) == 0:
-            self.panel = args[0]
+        panels, args = pickPanels(args)
+
+        if len(panels) != 1:
+            self.panel = Panel(*(tuple(panels)+args), **kwargs)
+        elif not args and not kwargs:
+            self.panel = panels[0]
         else:
             raise TypeError("no argument or keyword is allowed "+
                             "when passing ehtplot.Panel")
