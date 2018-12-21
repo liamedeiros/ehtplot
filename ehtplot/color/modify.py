@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+import re
+
 from matplotlib.cm import get_cmap
 
 from ehtplot.color.ctab   import get_ctab, save_ctab, path, ext
@@ -65,51 +67,19 @@ def modify_many(category, cnames, roundups, prefix=path, postfix=None):
             post(Jabp, cls, roundup, fname)
 
 if __name__ == "__main__":
-    matplotlib_cmap_sets = {
-        # Monotomically decreasing lightness
-        'one-color decreasing': (
-            ['Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds'],
-            100.0/3),
-        'two-color decreasing': (
-            ['OrRd', 'PuRd', 'RdPu', 'BuPu', 'GnBu', 'PuBu', 'BuGn', 'YlGn'],
-            100.0/3),
-        'three-color decreasing': (
-            ['YlOrBr', 'YlOrRd', 'YlGnBu', 'PuBuGn'],
-            100.0/3),
-        'misc decreasing': (
-            ['binary', 'gist_yarg', 'Wistia'],
-            None),
+    with open("modify.cfg") as file:
+        for line in file:
+            line = re.sub(r"([ ,:]) +", r"\1", line.strip())
+            if line == "" or  line[0] == "#":
+                continue
 
-        # Monotomically increasing lightness
-        'boring increasing': (
-            ['gist_gray', 'gray', 'bone', 'pink'],
-            None),
-        'seasons increasing': (
-            ['summer', 'autumn'],
-            None),
-        'redish increasing': (
-            ['hot', 'afmhot', 'gist_heat', 'copper'],
-            None),
-        'misc increasing': (
-            ['gnuplot2', 'cubehelix'],
-            None),
+            temp = line.split(":", 2)
 
-        # Divergent "hill" colormaps
-        'two-color hill': (
-            ['PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu'],
-            40.0),
-        'three-color hill': (
-            ['RdYlBu', 'RdYlGn'],
-            40.0),
-        'misc hill': (
-            ['Spectral', 'coolwarm', 'bwr', 'seismic'],
-            None),
+            category = temp[0]
+            cnames   = temp[1].split(",")
+            if len(temp) > 2:
+                roundups = [eval(s) for s in temp[2].split(",")]
+            else:
+                roundups = None
 
-        # Manual adjustments
-        'EHT demos': (
-            ['gray', 'hot', 'afmhot', 'gist_heat'],
-            [10.0, 20.0, 30.0, 40.0, 50.0])
-        }
-
-    for category, (cnames, roundups) in matplotlib_cmap_sets.items():
-        modify_many(category, cnames, roundups, 'l')
+            modify_many(category, cnames, roundups, postfix='l')
