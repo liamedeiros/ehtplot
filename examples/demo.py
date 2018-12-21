@@ -3,7 +3,7 @@
 import ehtplot as ep
 from ehtplot.extra import io
 
-img = ep.Panel(image=io.open("sample"))
+img = ep.Panel(image=io.open("sample", component="pca0"))
 row = ep.Panel(subpanels=[img, img, img])
 fig = ep.Figure([row, row], inrow=False)
 
