@@ -32,13 +32,14 @@ class Figure:
 
     """
 
-    def __init__(self, root, *args, **kwargs):
-        if not isinstance(root, Panel):
-            self.panel = Panel(subpanels=root, *args, **kwargs)
-        elif args is None and kwargs is None:
-            self.panel = root
+    def __init__(self, *args, **kwargs):
+        if not args or not isinstance(args[0], Panel):
+            self.panel = Panel(*args, **kwargs)
+        elif len(args) == 1 and len(kwargs) == 0:
+            self.panel = args[0]
         else:
-            raise ValueError('no argument allowed when passing ehtplot.Panel')
+            raise TypeError("no argument or keyword is allowed "+
+                            "when passing ehtplot.Panel")
 
     def __call__(self, *args, **kwargs):
         fig = plt.figure()
