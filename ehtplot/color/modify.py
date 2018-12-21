@@ -104,6 +104,11 @@ if __name__ == "__main__":
         'misc hill': (
             ['Spectral', 'coolwarm', 'bwr', 'seismic'],
             None),
+
+        # Manual adjustments
+        'EHT demos': (
+            ['gray', 'hot', 'afmhot', 'gist_heat'],
+            [10.0, 20.0, 30.0, 40.0, 50.0])
         }
 
     for category, (cnames, roundups) in matplotlib_cmap_sets.items():
