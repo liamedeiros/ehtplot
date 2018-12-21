@@ -78,6 +78,13 @@ class Panel:
                 self.stage('plot_'+type, kwargs.pop(type), *args, **kwargs)
 
     def __call__(self, ax):
+        """Panel realizer
+
+        Realize (replot) all plots in the `self.plots[]` array and
+        then recursively realize all panels in the `self.subpanels[]`
+        array.
+
+        """
         if not self.plots:
             ax.axis('off')
         for plot in self.plots:
