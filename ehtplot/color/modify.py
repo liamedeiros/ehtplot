@@ -20,7 +20,7 @@
 
 from matplotlib.cm import get_cmap
 
-from ehtplot.color.ctab   import get_ctab, save_ctab, ext
+from ehtplot.color.ctab   import get_ctab, save_ctab, path, ext
 from ehtplot.color.adjust import transform, classify, adjust_sequential, adjust_divergent
 
 def pre(cname):
@@ -46,7 +46,7 @@ def modify(cname, roundup, fname):
 
     return Jabp, cls
 
-def modify_many(category, cnames, roundups, postfix=None):
+def modify_many(category, cnames, roundups, prefix=path, postfix=None):
     if roundups is None:
         roundups = []
     elif not isinstance(roundups, list):
@@ -56,12 +56,12 @@ def modify_many(category, cnames, roundups, postfix=None):
     print(category)
 
     for cname in cnames:
-        Jabp, cls = modify(cname, None, cname+"_u"+ext)
+        Jabp, cls = modify(cname, None, path+"/"+cname+"_u"+ext)
         for roundup in roundups:
             if postfix is None or len(roundups) > 1:
-                fname = "{}_{:.0f}u{}".format(cname, roundup, ext)
+                fname = "{}/{}_{:.0f}u{}".format(path, cname, roundup, ext)
             else:
-                fname = "{}_{}u{}".format(cname, postfix, ext)
+                fname = "{}/{}_{}u{}".format(path, cname, postfix, ext)
             post(Jabp, cls, roundup, fname)
 
 if __name__ == "__main__":

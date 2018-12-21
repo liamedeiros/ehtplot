@@ -24,7 +24,7 @@ import numpy as np
 Nc  = 1024 # nubber of quantization levels in a channel (10bit default)
 ext = ".ctab"
 
-path   = dirname(__file__)
+path   = dirname(__file__) + "/ctabs"
 cscale = Nc - 1.0
 
 def get_ctab(cmap):
