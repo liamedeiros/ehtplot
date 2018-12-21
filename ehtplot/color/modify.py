@@ -57,11 +57,27 @@ def adjust_divergent(Jabp, roundup=None):
 def pre(cname):
     return transform(get_ctab(get_cmap(cname)))
 
-def post(Jabp, adjust, roundup, fname):
+def post(Jabp, cls, roundup, fname):
+    adjust = globals()['adjust_'+cls]
     save_ctab(transform(adjust(Jabp, roundup), inverse=True), fname)
     print("    Rounded up to {}; saved to \"{}\"".format(roundup, fname))
 
-def modify(category, cnames, roundups, postfix=None):
+def modify(cname, roundup, fname):
+    Jabp = pre(cname)
+    cls  = classify(Jabp)
+
+    print("----------------")
+    print(cls + " colormap " + cname)
+
+    if cls == 'unknown':
+        print("    Do nothing, no modification is made")
+    else:
+        print("    Jp in [{:.2f}, {:.2f}]". format(Jabp[0,0], Jabp[-1,0]))
+        post(Jabp, cls, roundup, fname)
+
+    return Jabp, cls
+
+def modify_many(category, cnames, roundups, postfix=None):
     if roundups is None:
         roundups = []
     elif not isinstance(roundups, list):
@@ -71,26 +87,13 @@ def modify(category, cnames, roundups, postfix=None):
     print(category)
 
     for cname in cnames:
-        Jabp = pre(cname)
-        cls  = classify(Jabp)
-
-        print("----------------")
-        print(cls + " colormap " + cname)
-
-        if cls == 'unknown':
-            print("    Do nothing, no modification is made")
-            continue
-        else:
-            print("    Jp in [{:.2f}, {:.2f}]". format(Jabp[0,0], Jabp[-1,0]))
-            adjust = globals()['adjust_'+cls]
-
-        post(Jabp, adjust, None, cname+"_u.txt")
+        Jabp, cls = modify(cname, None, cname+"_u.txt")
         for roundup in roundups:
             if postfix is None or len(roundups) > 1:
                 fname = "{}_{:.0f}u.txt".format(cname, roundup)
             else:
                 fname = "{}_{}u.txt".format(cname, postfix)
-            post(Jabp, adjust, roundup, fname)
+            post(Jabp, cls, roundup, fname)
 
 if __name__ == "__main__":
     matplotlib_cmap_sets = {
@@ -135,4 +138,4 @@ if __name__ == "__main__":
         }
 
     for category, (cnames, roundups) in matplotlib_cmap_sets.items():
-        modify(category, cnames, roundups, 'l')
+        modify_many(category, cnames, roundups, 'l')
