@@ -52,6 +52,21 @@ class Panel:
     types = ['image']
 
     def __init__(self, *args, **kwargs):
+        """Panel initializer
+
+        The Panel class can be initialized with both subpanels and
+        plots.  To create subpanels, pass multiple arguments with type
+        Panel or a list of Panels:
+
+            pnl = Panel( p1, p2, ...,  arg1, arg2, ..., kw1=..., kw2=..., ...)
+            pnl = Panel([p1, p2, ...], arg1, arg2, ..., kw1=..., kw2=..., ...)
+
+        this makes `p1`, `p2`, etc the subpanel of `pnl`.  To create
+        plots, one can pass the data with proper keywords, e.g.,
+
+            pnl = Panel(image=img_array)
+
+        """
         panels, args = pickPanels(args)
         self.inrow = kwargs.pop('inrow', True)
 
