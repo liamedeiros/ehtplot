@@ -64,6 +64,14 @@ class Figure:
                             "when passing ehtplot.Panel")
 
     def __call__(self, *args, **kwargs):
+        """Figure realizer
+
+        The Figure class only keeps track of a root panel.  It does
+        not contain a actual matplotlib Figure instance.  Whenever a
+        drawing needs to be made, Figure creates a new matplotlib
+        Figure in order to render the figure.
+
+        """
         fig = plt.figure()
         ax  = fig.add_axes([0, 0, 1, 1])
         with plt.style.context(kwargs.pop('style', 'ehtplot')):
