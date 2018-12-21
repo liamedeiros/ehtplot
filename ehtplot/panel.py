@@ -23,14 +23,20 @@ try:
 except NameError:
     basestring = str # so that we can always test strings as in python2
 
-def split(args):
-    c = 0
-    for a in args:
-        if isinstance(a, Panel):
-            c += 1
-        else:
-            break
-    return args[:c], args[c:]
+def arePanels(l):
+    return isinstance(l, list) and all(isinstance(x, Panel) for x in l)
+
+def pickPanels(args):
+    if args and arePanels(args[0]):
+        return args[0], args[1:]
+    else:
+        c = 0
+        for a in args:
+            if isinstance(a, Panel):
+                c += 1
+            else:
+                break
+        return list(args[:c]), args[c:]
 
 class Panel:
     """The "node" class for hierarchically organizing subplots in ehtplot
@@ -46,11 +52,11 @@ class Panel:
     types = ['image']
 
     def __init__(self, *args, **kwargs):
-        panels, args = split(args)
+        panels, args = pickPanels(args)
         self.inrow = kwargs.pop('inrow', True)
 
         self.plots     = []
-        self.subpanels = list(panels)
+        self.subpanels = panels
 
         for type in self.types:
             if type in kwargs:
