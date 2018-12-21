@@ -58,10 +58,10 @@ class Panel:
         plots.  To create subpanels, pass multiple arguments with type
         Panel or a list of Panels:
 
-            pnl = Panel( p1, p2, ...,  arg1, arg2, ..., kw1=..., kw2=..., ...)
-            pnl = Panel([p1, p2, ...], arg1, arg2, ..., kw1=..., kw2=..., ...)
+            pnl = Panel( p0, p1, ...,  arg0, ..., kw0=..., ...)
+            pnl = Panel([p0, p1, ...], arg0, ..., kw0=..., ...)
 
-        this makes `p1`, `p2`, etc the subpanel of `pnl`.  To create
+        this makes `p0`, `p1`, etc the subpanel of `pnl`.  To create
         plots, one can pass the data with proper keywords, e.g.,
 
             pnl = Panel(image=img_array)

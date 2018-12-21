@@ -36,23 +36,27 @@ class Figure:
         """Figure initializer
 
         The Figure class can be initialized in two different ways.
-        The first way takes a single argument with type Panel:
+        The first way takes a single argument with type Panel, or a
+        single list of one Panel:
 
-            fig = Figure(pnl)
+            fig = Figure( p0 )
+            fig = Figure([p0])
 
         this makes `pnl` the builtin panel of `fig`.  The second way
         takes arbitrary arguments and keywards,
 
-            fig = Figure(arg1, arg2, ..., kw1=..., kw2=..., ...)
+            fig = Figure( p0, p1, ...,  arg0, ..., kw0=..., ...)
+            fig = Figure([p0, p1, ...], arg0, ..., kw0=..., ...)
 
-        As long as the type of `arg1` is not Panel, Figure will
+        As long as the number of panel is not one, Figure will
         automatically create a Panel class with the arguments and
-        keywords.  That this, the above statement is equvilient to
+        keywords.  That this, the above statements are equvilient to
 
-            fig = Figure(Panel(arg1, arg2, ..., kw1=..., kw2=..., ...))
+            fig = Figure(Panel( p0, p1, ...,  arg0, ..., kw0=..., ...))
+            fig = Figure(Panel([p0, p1, ...], arg0, ..., kw0=..., ...))
 
-        If the type of arg1 is Panel, the initializer will raise a
-        type error.
+        If there is only one panel and none zero additional arguments
+        and keywords, the initializer will raise a type error.
 
         """
         panels, args = pickPanels(args)
@@ -62,8 +66,8 @@ class Figure:
         elif not args and not kwargs:
             self.panel = panels[0]
         else:
-            raise TypeError("no argument or keyword is allowed "+
-                            "when passing ehtplot.Panel")
+            raise TypeError("no argument or keyword is allowed when "+
+                            "passing a single ehtplot.Panel argument")
 
     def __call__(self, *args, **kwargs):
         """Figure realizer
