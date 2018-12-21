@@ -22,7 +22,7 @@ from glob    import glob
 import numpy as np
 
 Nc  = 1024 # nubber of quantization levels in a channel (10bit default)
-ext = ".txt"
+ext = ".ctab"
 
 path   = dirname(__file__)
 cscale = Nc - 1.0
