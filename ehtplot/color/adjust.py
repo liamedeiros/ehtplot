@@ -51,7 +51,7 @@ def classify(Jabp):
     else:
         return 'unknown'
 
-def linearize(Jabp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
+def uniformize(Jabp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
     if JpL is None: JpL = Jabp[ 0,0]
     if JpR is None: JpR = Jabp[-1,0]
 
@@ -82,7 +82,7 @@ def adjust_sequential(Jabp, roundup=None):
     if roundup is not None:
         Jplower = np.ceil(Jplower / roundup) * roundup
 
-    return linearize(Jabp, Jplower=Jplower)
+    return uniformize(Jabp, Jplower=Jplower)
 
 def adjust_divergent(Jabp, roundup=None):
     Jp = Jabp[:,0]
@@ -99,6 +99,6 @@ def adjust_divergent(Jabp, roundup=None):
     if roundup is not None:
         Jplower = np.ceil(Jplower / roundup) * roundup
 
-    L = linearize(Jabp[:h+1,:], Jplower=Jplower, Jpupper=Jpupper)
-    R = linearize(Jabp[H:,  :], Jplower=Jplower, Jpupper=Jpupper)
+    L = uniformize(Jabp[:h+1,:], Jplower=Jplower, Jpupper=Jpupper)
+    R = uniformize(Jabp[H:,  :], Jplower=Jplower, Jpupper=Jpupper)
     return np.append(L, R[N%2:,:], axis=0)

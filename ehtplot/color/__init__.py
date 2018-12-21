@@ -23,9 +23,9 @@ from .core import register
 # core-pattern and here and only import the necessary symbols in
 # "core.py" to avoid namespace pollution.
 #
-# from .adjust     import *
-# from .cmap       import *
-# from .ctab       import *
-# from .uniformize import *
+# from .adjust import *
+# from .cmap   import *
+# from .ctab   import *
+# from .modify import *
 
 register()
