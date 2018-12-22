@@ -70,7 +70,7 @@ class Panel:
 
         for type in self.types:
             if type in kwargs:
-                self.stage('plot_'+type, kwargs.pop(type), *args, **kwargs)
+                self.stage(type, kwargs.pop(type), *args, **kwargs)
 
     def __call__(self, ax, *args, **kwargs):
         """Panel realizer

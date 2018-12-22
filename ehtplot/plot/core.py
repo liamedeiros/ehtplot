@@ -43,11 +43,11 @@ class Plot:
 
         """
         if isinstance(plot, basestring):
-            file   = join(dirname(__file__), plot.split("_", 1)[-1]+".py")
-            spec   = iu.spec_from_file_location(plot, file)
+            file   = join(dirname(__file__), plot+".py")
+            spec   = iu.spec_from_file_location("plot_"+plot, file)
             module = iu.module_from_spec(spec)
             spec.loader.exec_module(module)
-            plot = module.__dict__[plot]
+            plot   = module.__dict__["plot_"+plot]
 
         self.plot   = plot
         self.args   = args
