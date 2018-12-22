@@ -1,6 +1,12 @@
 *
 !*/
+
 !*.*py
-!*.?sv*
 !*file
+
 !*.mplstyle
+!*.ctab*
+!*.?sv*
+
+!*.ipynb
+.ipynb_checkpoints/
