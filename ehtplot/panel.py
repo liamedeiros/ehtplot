@@ -16,12 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-from .plot import plot
-
-try:
-    basestring
-except NameError:
-    basestring = str # so that we can always test strings as in python2
+from .plot import *
 
 def arePanels(l):
     return isinstance(l, list) and all(isinstance(x, Panel) for x in l)
@@ -111,9 +106,5 @@ class Panel:
     def __iter__(self):
         return iter(self.subpanels)
 
-    def stage(self, type, *args, **kwargs):
-        if isinstance(type, basestring):
-            type = plot(type)
-        if not callable(type):
-            raise TypeError('type should be a callable')
-        self.plots += [lambda ax: type(ax, *args, **kwargs)]
+    def stage(self, plot, *args, **kwargs):
+        self.plots += [Plot(plot, *args, **kwargs)]

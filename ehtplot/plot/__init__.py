@@ -16,4 +16,4 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-from .core import plot
+from .core import Plot

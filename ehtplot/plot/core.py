@@ -19,10 +19,45 @@
 import importlib.util as iu
 from os.path import join, dirname
 
-def plot(type):
-    file   = join(dirname(__file__), type.split("_", 1)[-1]+".py")
-    spec   = iu.spec_from_file_location(type, file)
-    module = iu.module_from_spec(spec)
-    spec.loader.exec_module(module)
+try:
+    basestring
+except NameError:
+    basestring = str # so that we can always test strings as in python2
 
-    return module.__dict__[type]
+class Plot:
+    """The Plot class has similar behavior compare to a function closure
+
+    The Plot class saves the plotting function, arguments, and
+    keywords together so that a plot can be redrawn.  Its behavior is
+    very similar to a funciton closure.  The only difference is that
+    the keyworded arguments can be modified at "plot time".
+
+    """
+
+    def __init__(self, plot, *args, **kwargs):
+        """Plot initializer
+
+        The Panel class saves the plotter, args, and kwargs so that a
+        plot can be redrawn multiple times by calling the class as a
+        function.
+
+        """
+        if isinstance(plot, basestring):
+            file   = join(dirname(__file__), plot.split("_", 1)[-1]+".py")
+            spec   = iu.spec_from_file_location(plot, file)
+            module = iu.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            plot = module.__dict__[plot]
+
+        self.plot   = plot
+        self.args   = args
+        self.kwargs = kwargs
+
+    def __call__(self, ax, *args, **kwargs):
+        """Plot realizer
+
+        Realize a plot, i.e., redraw a plot, by combining the saved
+        and new args and kwargs.
+
+        """
+        self.plot(ax, *(self.args + args), **{**self.kwargs, **kwargs})
