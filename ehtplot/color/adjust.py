@@ -20,7 +20,13 @@
 
 import numpy as np
 
-from colorspacious import cspace_convert
+try:
+    from colorspacious import cspace_convert
+except ImportError:
+    missing = ("`colorspacious` not found; "+
+               "only limited function of `ehtplot.color.adjust` is available.")
+else:
+    missing = None
 
 def interp(x, xp, yp):
     if xp[0] < xp[-1]:
@@ -34,6 +40,9 @@ def extrema(a):
     return np.argwhere(xa <= 0.0)[:,0]+1
 
 def transform(ctab, src='sRGB1', dst='CAM02-UCS', inverse=False):
+    if missing:
+        raise ImportError(missing)
+
     out = ctab.copy()
     if not inverse:
         out[:,:3] = cspace_convert(out[:,:3], src, dst)
