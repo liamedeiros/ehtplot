@@ -18,11 +18,19 @@
 
 from .plot import *
 
+try:
+    basestring
+except NameError:
+    basestring = str # so that we can always test strings as in python2
+
 _plots = ['image']
 _props = ['inrow']
 
+def loadable(a):
+    return isinstance(a, basestring) and (a in _plots)
+
 def validarg(a):
-    return isinstance(a, (Panel, Plot)) or callable(a) or (a in _plots)
+    return isinstance(a, (Panel, Plot)) or callable(a) or loadable(a)
 
 def validlist(l):
     return isinstance(l, list) and all(validarg(a) for a in l)
