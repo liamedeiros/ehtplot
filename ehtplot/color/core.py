@@ -22,7 +22,8 @@ from matplotlib.cm     import register_cmap
 from ehtplot.color.ctab import list_ctab, load_ctab
 
 def unmodified(name):
-    return "_" not in name or not set(name.rsplit("_", 1)[1]) <= set("lu")
+    chars = set("0123456789u")
+    return "_" not in name or not set(name.rsplit("_", 1)[1]) <= chars
 
 def register(name=None, cmap=None):
     if name is None:
