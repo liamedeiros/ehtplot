@@ -20,6 +20,9 @@
 
 import numpy as np
 
+from .ctab   import get_ctab
+from .modify import transform
+
 def pyramid(N=513):
     s    = np.linspace(-1.0, 1.0, N)
     x, y = np.meshgrid(s, s)
