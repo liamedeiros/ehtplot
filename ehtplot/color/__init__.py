@@ -19,13 +19,20 @@
 from .core import register
 
 # Note that "adjust.py" requires the optional library "colorspacious"
-# and hence is not imported by default.  We use matplotlib's
-# core-pattern and here and only import the necessary symbols in
-# "core.py" to avoid namespace pollution.
-#
-# from .adjust import *
-# from .cmap   import *
-# from .ctab   import *
-# from .modify import *
+# and hence is not always imported.  We use matplotlib's core-pattern
+# and here and only import the necessary symbols to avoid namespace
+# pollution.
+try:
+    import colorspacious
+except ImportError:
+    #print("`colorspacious` not found; "+
+    #      "only limited function of `ehtplot.color` is available.")
+    pass
+else:
+    print("`colorspacious` found; `ehtplot.color` is fully loaded.")
+    from .adjust import transform, classify, uniformize, desaturate
+    from .cmap   import new_cmap
+    from .ctab   import get_ctab
+    from .modify import modify
 
 register()
