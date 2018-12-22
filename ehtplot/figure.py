@@ -17,7 +17,6 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 import matplotlib.pyplot as plt
-from .theme import *
 from .panel import *
 
 class Figure:
@@ -59,15 +58,16 @@ class Figure:
         and keywords, the initializer will raise a type error.
 
         """
-        panels, args = pickPanels(args)
+        plots, args = splitargs(args)
 
-        if len(panels) != 1:
-            self.panel = Panel(*(tuple(panels)+args), **kwargs)
-        elif not args and not kwargs:
-            self.panel = panels[0]
+        if len(plots) == 1 and isinstance(plots[0], Panel):
+            if not args and not kwargs:
+                self.panel = plots[0]
+            else:
+                raise TypeError("no argument or keyword is allowed when "+
+                                "passing a single ehtplot.Panel argument")
         else:
-            raise TypeError("no argument or keyword is allowed when "+
-                            "passing a single ehtplot.Panel argument")
+            self.panel = Panel(*(tuple(plots)+args), **kwargs)
 
     def __call__(self, *args, **kwargs):
         """Figure realizer

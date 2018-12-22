@@ -18,35 +18,37 @@
 
 from .plot import *
 
-def arePanels(l):
-    return isinstance(l, list) and all(isinstance(x, Panel) for x in l)
+_plots = ['image']
+_props = ['inrow']
 
-def areFunctions(l):
-    return isinstance(l, list) and all(callable(x) for x in l)
+def validarg(a):
+    return isinstance(a, (Panel, Plot)) or callable(a) or (a in _plots)
 
-def pickPanels(args):
-    if args and arePanels(args[0]):
-        return args[0], args[1:]
-    else:
-        c = 0
-        for a in args:
-            if isinstance(a, Panel):
-                c += 1
-            else:
-                break
-        return list(args[:c]), args[c:]
+def validlist(l):
+    return isinstance(l, list) and all(validarg(a) for a in l)
 
-def pickFunctions(args):
-    if args and areFunctions(args[0]):
-        return args[0], args[1:]
-    else:
-        c = 0
-        for a in args:
-            if callable(a):
-                c += 1
-            else:
-                break
-        return list(args[:c]), args[c:]
+def splitargs(args):
+    l, c = [], 0
+    for a in args:
+        if validlist(a):
+            l += a
+        elif validarg(a):
+            l += [a]
+        else:
+            break
+        c += 1
+    return l, args[c:]
+
+def splitkwargs(kwargs):
+    a, b, c = {}, {}, {}
+    for k, v in kwargs.items():
+        if k in _plots:
+            a.update({k: v})
+        elif k in _props:
+            b.update({k: v})
+        else:
+            c.update({k: v})
+    return a, b, c
 
 class Panel:
     """The "node" class for hierarchically organizing subplots in ehtplot
@@ -58,8 +60,6 @@ class Panel:
     set of subpanels.
 
     """
-
-    types = ['image']
 
     def __init__(self, *args, **kwargs):
         """Panel initializer
@@ -77,27 +77,21 @@ class Panel:
             pnl = Panel(image=img_array)
 
         """
-        panels, args = pickPanels(args)
-        plots,  args = pickFunctions(args)
-
-        d1 = {}
-        d2 = {}
-        for k, v in kwargs.items():
-            if k in self.types:
-                d1.update({k: v})
-            else:
-                d2.update({k: v})
-        kwplot = d1
-        kwargs = d2
-
-        self.inrow = kwargs.pop('inrow', True)
-
+        self.props = {'inrow': True}
         self.plots = []
+
+        plots,            args   = splitargs(args)
+        kwplots, kwprops, kwargs = splitkwargs(kwargs)
+
+        self.props.update(kwprops)
+
         for p in plots:
-            self.stage(p, *args, **kwargs)
-        for k, v in kwplot.items():
+            if isinstance(p, (Panel, Plot)):
+                self.plots += [p]
+            else:
+                self.stage(p, *args, **kwargs)
+        for k, v in kwplots.items():
             self.stage(k, v, *args, **kwargs)
-        self.subpanels = panels
 
     def __call__(self, ax, *args, **kwargs):
         """Panel realizer
@@ -107,25 +101,33 @@ class Panel:
         array.
 
         """
-        if not self.plots:
-            ax.axis('off')
-        for plot in self.plots:
-            plot(ax, *args, **kwargs)
+        n_plots  = len([p for p in self.plots if isinstance(p, Plot)])
+        n_panels = len([p for p in self.plots if isinstance(p, Panel)])
 
-        if not self.subpanels:
-            return
         fig = ax.figure
         pos = ax.get_position()
-        if self.inrow:
-            h =  pos.y1 - pos.y0
-            w = (pos.x1 - pos.x0) / len(self.subpanels)
-            for i, panel in enumerate(self.subpanels):
-                panel(fig.add_axes([pos.x0+i*w, pos.y0, w, h]), *args, **kwargs)
-        else:
-            h = (pos.y1 - pos.y0) / len(self.subpanels)
-            w =  pos.x1 - pos.x0
-            for i, panel in enumerate(self.subpanels):
-                panel(fig.add_axes([pos.x0, pos.y0+i*h, w, h]), *args, **kwargs)
+        i = 0
+        j = 0
+        w = pos.x1 - pos.x0
+        h = pos.y1 - pos.y0
+
+        if n_plots == 0:
+            ax.axis('off')
+        if n_panels != 0:
+            if self.props['inrow']:
+                w /= n_panels
+            else:
+                h /= n_panels
+
+        for p in self.plots:
+            if isinstance(p, Plot):
+                p(ax, *args, **kwargs)
+            elif isinstance(p, Panel):
+                p(fig.add_axes([pos.x0+i*w, pos.y0+j*h, w, h]), *args, **kwargs)
+                if self.props['inrow']:
+                    i += 1
+                else:
+                    j += 1
 
     def __getattr__(self, attr):
         return lambda *args, **kwargs: self.stage(attr, *args, **kwargs)
