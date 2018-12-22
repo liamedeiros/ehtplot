@@ -21,6 +21,9 @@ from .plot import *
 def arePanels(l):
     return isinstance(l, list) and all(isinstance(x, Panel) for x in l)
 
+def areFunctions(l):
+    return isinstance(l, list) and all(callable(x) for x in l)
+
 def pickPanels(args):
     if args and arePanels(args[0]):
         return args[0], args[1:]
@@ -28,6 +31,18 @@ def pickPanels(args):
         c = 0
         for a in args:
             if isinstance(a, Panel):
+                c += 1
+            else:
+                break
+        return list(args[:c]), args[c:]
+
+def pickFunctions(args):
+    if args and areFunctions(args[0]):
+        return args[0], args[1:]
+    else:
+        c = 0
+        for a in args:
+            if callable(a):
                 c += 1
             else:
                 break
@@ -63,14 +78,26 @@ class Panel:
 
         """
         panels, args = pickPanels(args)
+        plots,  args = pickFunctions(args)
+
+        d1 = {}
+        d2 = {}
+        for k, v in kwargs.items():
+            if k in self.types:
+                d1.update({k: v})
+            else:
+                d2.update({k: v})
+        kwplot = d1
+        kwargs = d2
+
         self.inrow = kwargs.pop('inrow', True)
 
-        self.plots     = []
+        self.plots = []
+        for p in plots:
+            self.stage(p, *args, **kwargs)
+        for k, v in kwplot.items():
+            self.stage(k, v, *args, **kwargs)
         self.subpanels = panels
-
-        for type in self.types:
-            if type in kwargs:
-                self.stage(type, kwargs.pop(type), *args, **kwargs)
 
     def __call__(self, ax, *args, **kwargs):
         """Panel realizer
