@@ -19,6 +19,9 @@
 from os.path import dirname, join, splitext, basename
 from glob    import glob
 
+from matplotlib.colors import Colormap
+from matplotlib.cm     import get_cmap
+
 import numpy as np
 
 Nc  = 1024 # nubber of quantization levels in a channel (10bit default)
@@ -28,6 +31,8 @@ path   = dirname(__file__) + "/ctabs"
 cscale = Nc - 1.0
 
 def get_ctab(cmap):
+    if not isinstance(cmap, Colormap):
+        cmap = get_cmap(cmap)
     return np.array([cmap(i) for i in range(cmap.N)])
 
 def list_ctab():
