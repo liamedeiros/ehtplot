@@ -77,7 +77,7 @@ class Panel:
             if type in kwargs:
                 self.stage('plot_'+type, kwargs.pop(type), *args, **kwargs)
 
-    def __call__(self, ax):
+    def __call__(self, ax, *args, **kwargs):
         """Panel realizer
 
         Realize (replot) all plots in the `self.plots[]` array and
@@ -88,7 +88,7 @@ class Panel:
         if not self.plots:
             ax.axis('off')
         for plot in self.plots:
-            plot(ax)
+            plot(ax, *args, **kwargs)
 
         if not self.subpanels:
             return
@@ -98,12 +98,12 @@ class Panel:
             h =  pos.y1 - pos.y0
             w = (pos.x1 - pos.x0) / len(self.subpanels)
             for i, panel in enumerate(self.subpanels):
-                panel(fig.add_axes([pos.x0+i*w, pos.y0, w, h]))
+                panel(fig.add_axes([pos.x0+i*w, pos.y0, w, h]), *args, **kwargs)
         else:
             h = (pos.y1 - pos.y0) / len(self.subpanels)
             w =  pos.x1 - pos.x0
             for i, panel in enumerate(self.subpanels):
-                panel(fig.add_axes([pos.x0, pos.y0+i*h, w, h]))
+                panel(fig.add_axes([pos.x0, pos.y0+i*h, w, h]), *args, **kwargs)
 
     def __getattr__(self, attr):
         return lambda *args, **kwargs: self.stage(attr, *args, **kwargs)
