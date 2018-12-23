@@ -33,6 +33,11 @@ class Panel:
     The root Panel can directly contain a single matplotlib axes or a
     set of subpanels.
 
+    Attributes:
+        _plotkeys (list of strings): List of built-in plots
+        _propkeys (list of strings): List of graphics keywords used by
+            Panel to create a panel.
+
     """
 
     _plotkeys = ['image']

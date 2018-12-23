@@ -30,6 +30,10 @@ class Figure:
     subpanels in it.  See the documentation of the ehtplot Panel class
     for details.
 
+    Attributes:
+        _propkeys (list of strings): List of graphics keywords used by
+            Figure to create a figure.
+
     """
 
     _propkeys = ['figsize', 'dpi', 'facecolor', 'edgecolor', 'frameon']

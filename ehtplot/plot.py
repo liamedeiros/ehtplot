@@ -32,6 +32,10 @@ class Plot:
     very similar to a funciton closure.  The only difference is that
     the keyworded arguments can be modified at "plot time".
 
+    Attributes:
+        _propkeys (list of strings): List of paths used by Plot to
+            look up plotting functions.
+
     """
 
     paths = [join(dirname(__file__), "plots")]
