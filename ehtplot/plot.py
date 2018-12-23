@@ -32,12 +32,18 @@ class Plot:
     very similar to a funciton closure.  The only difference is that
     the keyworded arguments can be modified at "plot time".
 
+    Attributes:
+        plot (callable): The plotting function
+        args (tuple): The default arguments when realizing an instance of Plot.
+        kwargs (dict): The default keywords when realizing an instance of Plot.
+
     """
 
     paths = [join(dirname(__file__), "plots")]
 
     @staticmethod
     def load_plot(plot):
+        """Load a plotting function from directories in Plot.paths."""
         func = "plot_"+plot
         for path in self.path:
             file = join(path, plot+".py")
@@ -52,6 +58,7 @@ class Plot:
 
     @staticmethod
     def ensure_callable(plot):
+        """Convert `plot` to callable when possible."""
         if isinstance(plot, basestring):
             return self.load_plot(plot)
         elif callable(plot):
@@ -62,9 +69,19 @@ class Plot:
     def __init__(self, plot, *args, **kwargs):
         """Plot initializer
 
-        The Panel class saves the plotter, args, and kwargs so that a
-        plot can be redrawn multiple times by calling the class as a
-        function.
+        The Panel class saves the plotting function, args, and kwargs
+        so that a plot can be redrawn multiple times by calling the
+        class as a function.
+
+        Args:
+            plot (string or callable): Name of the plotting function
+                or the plotting function itself.
+            *args (tuple): Variable length argument list that is
+                passed to the plotting function when realizing an
+                instance of Plot.
+            **kwargs (dict): Arbitrary keyword arguments that are
+                passed to the plotting function when realizing an
+                instance of Plot.
 
         """
         self.plot   = self.ensure_callable(plot)
@@ -72,11 +89,22 @@ class Plot:
         self.kwargs = kwargs
 
     def __call__(self, ax, *args, **kwargs):
-        """Plot realizer
+        """Plot drawer/renderer/realizer
 
-        Realize a plot, i.e., redraw a plot, by combining the saved
-        and new kwargs.  If new args is provided, then the realization
-        uses the new args.
+        Realize, i.e., draw or render, a plot by combining the saved
+        and new arguments.  The realization uses the new `args` list
+        if it is provided, and uses the saved attribute otherwise.
+        Saved and new `kwargs` are always combined.
+
+        Args:
+            ax (matplotlib.axis.Axes): A matplotlib Axes for Plot to
+                realize/draw on.
+            *args (tuple): Variable length argument list that
+                overrides the saved on when realizing an instance of
+                Plot.
+            **kwargs (dict): Arbitrary keyword arguments that are
+                passed to the plotting function the when realizing an
+                instance of Plot.
 
         """
         if args:
