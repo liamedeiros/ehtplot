@@ -34,14 +34,21 @@ class Plot:
 
     """
 
+    paths = [join(dirname(__file__), "plots")]
+
     @staticmethod
     def load_plot(plot):
-        path   = join(dirname(__file__), "plot", plot+".py")
-        func   = "plot_"+plot
-        spec   = iu.spec_from_file_location(func, path)
-        module = iu.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        return module.__dict__[func]
+        func = "plot_"+plot
+        for path in self.path:
+            file = join(path, plot+".py")
+            try:
+                spec   = iu.spec_from_file_location(func, file)
+                module = iu.module_from_spec(spec)
+            except:
+                continue
+            spec.loader.exec_module(module)
+            return module.__dict__[func]
+        raise ImportError("failed to load \"{}\"".format(plot))
 
     @staticmethod
     def ensure_callable(plot):
