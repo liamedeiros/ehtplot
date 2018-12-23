@@ -58,6 +58,20 @@ def splitkwargs(kwargs):
             c.update({k: v})
     return a, b, c
 
+def get_veclen(data, args, kwargs):
+    all = list(data) + list(args) + list(kwargs.values())
+    ns  = list(set(sorted([1] + [len(a) for a in all if isinstance(a, list)])))
+    if len(ns) > 2:
+        raise ValueError('The parameters have inconsistent vector length')
+    return ns[-1]
+
+def get_element(i, data, args, kwargs):
+    if data is not None:
+        args = (data) + args
+    args = tuple(a[i] if isinstance(a, list) else a for a in args)
+    kwargs = {k: v[o] if isinstance(v, list) else v for k, v in kwargs.items()}
+    return args, kwargs
+
 class Panel:
     """The "node" class for hierarchically organizing subplots in ehtplot
 
@@ -93,13 +107,26 @@ class Panel:
 
         self.props.update(kwprops)
 
+        veclen = get_veclen(kwplots.values(), args, kwargs)
+
         for p in plots:
             if isinstance(p, (Panel, Plot)):
                 self.plots += [p]
             else:
-                self.stage(p, *args, **kwargs)
+                if veclen == 1:
+                    self.stage(p, *args, **kwargs)
+                else:
+                    for i in range(veclen):
+                        args_i, kwargs_i = get_element(i, None, args, kwargs)
+                        self.plots += [Panel(p, *args_i, **kwargs_i)]
+
         for k, v in kwplots.items():
-            self.stage(k, v, *args, **kwargs)
+            if veclen == 1:
+                self.stage(k, v, *args, **kwargs)
+            else:
+                for i in range(veclen):
+                    args_i, kwargs_i = get_element(i, v, args, kwargs)
+                    self.plots += [Panel(p, *args_i, **kwargs_i)]
 
     def __call__(self, ax, *args, **kwargs):
         """Panel realizer
