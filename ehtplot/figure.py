@@ -17,7 +17,7 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 import matplotlib.pyplot as plt
-from .panel import *
+from .panel import splitargs, Panel
 
 class Figure:
     """The "head" class for hierarchically organizing panels in ehtplot
@@ -28,6 +28,9 @@ class Figure:
     Panel instance, although the root Panel can have multiple
     subpanels in it.  See the documentation of the ehtplot Panel class
     for details.
+
+    Attributes:
+        panel (ehtplot.Panel): The root panel.
 
     """
 
@@ -41,8 +44,8 @@ class Figure:
             fig = Figure( p0 )
             fig = Figure([p0])
 
-        this makes `pnl` the builtin panel of `fig`.  The second way
-        takes arbitrary arguments and keywards,
+        this makes `p0` the built-in root panel of `fig`.  The second
+        way takes arbitrary arguments and keywards,
 
             fig = Figure( p0, p1, ...,  arg0, ..., kw0=..., ...)
             fig = Figure([p0, p1, ...], arg0, ..., kw0=..., ...)
@@ -57,6 +60,18 @@ class Figure:
         If there is only one panel and none zero additional arguments
         and keywords, the initializer will raise a type error.
 
+        Args:
+            *args (tuple): Variable length argument list that is used
+                to determine what way a Figure is initialized.  If it
+                is a ehtplot.Panel or a list containing a single
+                ehtplot.Panel, then *args becomes the root panel of
+                the instantized Figure (if such a case, not kwargs is
+                allowed).  Otherwise, it is a variable length argument
+                list passed to create the root panel.
+            **kwargs (dict): If Figure is initialized in the second
+                way, then this is an arbitrary keyword arguments
+                passed to create the root panel.
+
         """
         plots, args = splitargs(args)
 
@@ -64,8 +79,8 @@ class Figure:
             if not args and not kwargs:
                 self.panel = plots[0]
             else:
-                raise TypeError("no argument or keyword is allowed when "+
-                                "passing a single ehtplot.Panel argument")
+                raise ValueError("no argument or keyword is allowed when "+
+                                 "passing a single ehtplot.Panel argument")
         else:
             self.panel = Panel(*(tuple(plots)+args), **kwargs)
 
@@ -73,9 +88,17 @@ class Figure:
         """Figure realizer
 
         The Figure class only keeps track of a root panel.  It does
-        not contain a actual matplotlib Figure instance.  Whenever a
+        not contain an actual matplotlib Figure instance.  Whenever a
         drawing needs to be made, Figure creates a new matplotlib
         Figure in order to render the figure.
+
+        Args:
+            *args (tuple): Variable length argument list that is
+                passed to the root panel when realizing an instance of
+                Plot.
+            **kwargs (dict): Arbitrary keyword arguments that are
+                passed to the root panel the when realizing an
+                instance of Plot.
 
         """
         fig = plt.figure()
@@ -85,10 +108,13 @@ class Figure:
         return fig
 
     def show(self, *args, **kwargs):
+        """Show the Figure"""
         self(*args, **kwargs).show()
 
     def draw(self, *args, **kwargs):
+        """Draw the Figure"""
         self(*args, **kwargs).canvas.draw_idle()
 
     def save(self, file, *args, **kwargs):
+        """Save the Figure"""
         self(*args, **kwargs).savefig(file)
