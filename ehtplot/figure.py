@@ -35,7 +35,7 @@ class Figure:
 
     """
 
-    _propkeys = ['figsize']
+    _propkeys = ['figsize', 'dpi', 'facecolor', 'edgecolor', 'frameon']
 
     def __init__(self, *args, **kwargs):
         """Figure initializer
