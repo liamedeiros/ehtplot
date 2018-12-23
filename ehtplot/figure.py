@@ -18,7 +18,7 @@
 
 import matplotlib.pyplot as plt
 from .panel   import splitargs, Panel
-from .helpers import ensure_list
+from .helpers import *
 
 class Figure:
     """The "head" class for hierarchically organizing panels in ehtplot
@@ -34,6 +34,8 @@ class Figure:
         panel (ehtplot.Panel): The root panel.
 
     """
+
+    _propkeys = ['figsize']
 
     def __init__(self, *args, **kwargs):
         """Figure initializer
@@ -74,7 +76,12 @@ class Figure:
                 passed to create the root panel.
 
         """
-        plots, args = splitargs(args)
+        self.props = {}
+
+        plots,  args    = splitargs(args)
+        kwargs, kwprops = split_dict(kwargs, self._propkeys)
+
+        self.props.update(kwprops)
 
         if len(plots) == 1 and isinstance(plots[0], Panel):
             if not args and not kwargs:
@@ -102,7 +109,7 @@ class Figure:
                 instance of Plot.
 
         """
-        fig = plt.figure()
+        fig = plt.figure(**self.props)
         ax  = fig.add_axes([0, 0, 1, 1])
         with plt.style.context(kwargs.pop('style', 'ehtplot')):
             self.panel(ax, *args, **kwargs)
