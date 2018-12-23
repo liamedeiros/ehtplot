@@ -68,7 +68,11 @@ class Plot:
         """Plot realizer
 
         Realize a plot, i.e., redraw a plot, by combining the saved
-        and new args and kwargs.
+        and new kwargs.  If new args is provided, then the realization
+        uses the new args.
 
         """
-        self.plot(ax, *(self.args + args), **{**self.kwargs, **kwargs})
+        if args:
+            self.plot(ax, *args,      **{**self.kwargs, **kwargs})
+        else:
+            self.plot(ax, *self.args, **{**self.kwargs, **kwargs})
