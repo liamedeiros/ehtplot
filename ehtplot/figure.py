@@ -30,10 +30,6 @@ class Figure:
     subpanels in it.  See the documentation of the ehtplot Panel class
     for details.
 
-    Attributes:
-        panel (ehtplot.Panel): The root panel.
-        kwprops (dict): The default keywords when creating a figure.
-
     """
 
     _propkeys = ['figsize', 'dpi', 'facecolor', 'edgecolor', 'frameon']
@@ -75,6 +71,10 @@ class Figure:
             **kwargs (dict): If Figure is initialized in the second
                 way, then this is an arbitrary keyword arguments
                 passed to create the root panel.
+
+        Attributes:
+            panel (ehtplot.Panel): The root panel.
+            kwprops (dict): The default keywords when creating a figure.
 
         """
         self.props = {}

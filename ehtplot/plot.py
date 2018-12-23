@@ -32,11 +32,6 @@ class Plot:
     very similar to a funciton closure.  The only difference is that
     the keyworded arguments can be modified at "plot time".
 
-    Attributes:
-        plot (callable): The plotting function
-        args (tuple): The default arguments when realizing an instance of Plot.
-        kwargs (dict): The default keywords when realizing an instance of Plot.
-
     """
 
     paths = [join(dirname(__file__), "plots")]
@@ -81,6 +76,13 @@ class Plot:
                 instance of Plot.
             **kwargs (dict): Arbitrary keyword arguments that are
                 passed to the plotting function when realizing an
+                instance of Plot.
+
+        Attributes:
+            plot (callable): The plotting function
+            args (tuple): The default arguments when realizing an
+                instance of Plot.
+            kwargs (dict): The default keywords when realizing an
                 instance of Plot.
 
         """
