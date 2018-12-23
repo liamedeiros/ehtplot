@@ -24,7 +24,7 @@ except NameError:
     basestring = str # so that we can always test strings as in python2
 
 _plots = ['image']
-_props = ['inrow']
+_props = ['inrow', 'title']
 
 def loadable(a):
     return isinstance(a, basestring) and (a in _plots)
@@ -91,8 +91,6 @@ class Panel:
         plots,            args   = splitargs(args)
         kwplots, kwprops, kwargs = splitkwargs(kwargs)
 
-        if len(plots) > 1 and 'title' in kwargs:
-            kwprops['title'] = kwargs.pop('title')
         self.props.update(kwprops)
 
         for p in plots:
@@ -144,10 +142,10 @@ class Panel:
                     j += 1
 
         if 'title' in self.props:
-            if self.props['inrow']:
-                ax0.set_ylabel(self.props['title'])
-            else:
+            if len(self.plots) <= 1 or not self.props['inrow']:
                 ax0.set_title(self.props['title'])
+            else:
+                ax0.set_ylabel(self.props['title'])
 
     def __getattr__(self, attr):
         return lambda *args, **kwargs: self.stage(attr, *args, **kwargs)
