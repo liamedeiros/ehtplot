@@ -37,7 +37,6 @@ def split_dict(inp, *keyses):
             unwrapped into a form similar to the full argument list.
 
     Example:
-
         To illustrate how split_dict() can be used, we provide two
         examples here.  The non-trivial one is:
 
@@ -70,3 +69,46 @@ def split_dict(inp, *keyses):
             out[0].update({k: v})
 
     return out[0] if keyses == () else out
+
+def broadcast(*args, **kwargs):
+    """Broadcast values in `args` and `kwargs` to a list of them
+
+    This is a very simple 1D version of numpy's broadcasting mechanism
+    for `args` and `kwargs`.  The idea is that we can pass lists or
+    objects to a function through `args` and `kwargs`.  If all the
+    `args` and `kwargs` have lengths 1 and a unique `n`, then we
+    consider they are broadcastable.  This function then returns a
+    list of `n` `(args, kwargs)` tuples.
+
+    Args:
+        *args (tuple): Variable length argument list that contains
+            objects or list of objects.
+        **kwargs (dict): Arbitrary keyword arguments that contains
+            objects or list of objects.
+
+    Returns:
+        list of objects: As long as the input `args` and `kwargs` are
+            broadcastable, this function return a list of `(args,
+            kwargs)` tuples.
+
+    """
+    def get(obj, i):
+        if not isinstance(obj, list):
+            return obj
+        elif len(obj) > 1:
+            return obj[i]
+        else:
+            return obj[0]
+
+    values = args + tuple(kwargs.values())
+    ns     = set(len(a) for a in values if isinstance(a, list) and len(a) > 1)
+
+    if len(ns) == 0:
+        n = 1
+    elif len(ns) == 1:
+        n = ns.pop()
+    else:
+        raise ValueError('The parameters have inconsistent vector length')
+
+    return [(tuple(get(a, i) for a    in args),
+               {k: get(v, i) for k, v in kwargs.items()}) for i in range(n)]
