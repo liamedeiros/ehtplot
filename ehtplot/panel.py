@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-from .plot import *
+from .plot    import *
+from .helpers import *
 
 try:
     basestring
@@ -46,17 +47,6 @@ def splitargs(args):
             break
         c += 1
     return l, args[c:]
-
-def splitkwargs(kwargs):
-    a, b, c = {}, {}, {}
-    for k, v in kwargs.items():
-        if k in _plots:
-            a.update({k: v})
-        elif k in _props:
-            b.update({k: v})
-        else:
-            c.update({k: v})
-    return a, b, c
 
 def get_veclen(data, args, kwargs):
     all = list(data) + list(args) + list(kwargs.values())
@@ -103,7 +93,7 @@ class Panel:
         self.plots = []
 
         plots,            args   = splitargs(args)
-        kwplots, kwprops, kwargs = splitkwargs(kwargs)
+        kwargs, kwplots, kwprops = split_dict(kwargs, _plots, _props)
 
         self.props.update(kwprops)
 
