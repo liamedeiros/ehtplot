@@ -201,11 +201,5 @@ class Panel:
             else:
                 ax0.set_ylabel(self.props['title'])
 
-    def __getattr__(self, attr):
-        return lambda *args, **kwargs: self.stage(attr, *args, **kwargs)
-
-    def __iter__(self):
-        return iter(self.subpanels)
-
     def stage(self, plot, *args, **kwargs):
         self.plots += [Plot(plot, *args, **kwargs)]
