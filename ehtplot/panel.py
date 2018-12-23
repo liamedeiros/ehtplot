@@ -24,30 +24,6 @@ try:
 except NameError:
     basestring = str # so that we can always test strings as in python2
 
-_plots = ['image']
-_props = ['inrow', 'title']
-
-def loadable(a):
-    return isinstance(a, basestring) and (a in _plots)
-
-def validarg(a):
-    return isinstance(a, (Panel, Plot)) or callable(a) or loadable(a)
-
-def validlist(l):
-    return isinstance(l, list) and all(validarg(a) for a in l)
-
-def splitargs(args):
-    l, c = [], 0
-    for a in args:
-        if validlist(a):
-            l += a
-        elif validarg(a):
-            l += [a]
-        else:
-            break
-        c += 1
-    return l, args[c:]
-
 def get_veclen(data, args, kwargs):
     all = list(data) + list(args) + list(kwargs.values())
     ns  = list(set(sorted([1] + [len(a) for a in all if isinstance(a, list)])))
@@ -73,6 +49,34 @@ class Panel:
 
     """
 
+    _plotkeys = ['image']
+    _propkeys = ['inrow', 'title']
+
+    @classmethod
+    def loadable(cls, a):
+        return isinstance(a, basestring) and (a in cls._plotkeys)
+
+    @classmethod
+    def validarg(cls, a):
+        return isinstance(a, (Panel, Plot)) or callable(a) or cls.loadable(a)
+
+    @classmethod
+    def validlist(cls, l):
+        return isinstance(l, list) and all(cls.validarg(a) for a in l)
+
+    @classmethod
+    def splitargs(cls, args):
+        l, c = [], 0
+        for a in args:
+            if cls.validlist(a):
+                l += a
+            elif cls.validarg(a):
+                l += [a]
+            else:
+                break
+            c += 1
+        return l, args[c:]
+
     def __init__(self, *args, **kwargs):
         """Panel initializer
 
@@ -92,9 +96,9 @@ class Panel:
         self.props = {'inrow': True}
         self.plots = []
 
-        plots,            args   = splitargs(args)
-        kwargs, kwplots, kwprops = split_dict(kwargs, _plots, _props)
-
+        plots,            args   = self.splitargs(args)
+        kwargs, kwplots, kwprops = split_dict(kwargs, self._plotkeys,
+                                                      self._propkeys)
         self.props.update(kwprops)
 
         veclen = get_veclen(kwplots.values(), args, kwargs)

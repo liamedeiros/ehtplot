@@ -17,7 +17,7 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 import matplotlib.pyplot as plt
-from .panel   import splitargs, Panel
+from .panel   import Panel
 from .helpers import *
 
 class Figure:
@@ -78,7 +78,7 @@ class Figure:
         """
         self.props = {}
 
-        plots,  args    = splitargs(args)
+        plots,  args    = Panel.splitargs(args)
         kwargs, kwprops = split_dict(kwargs, self._propkeys)
 
         self.props.update(kwprops)
