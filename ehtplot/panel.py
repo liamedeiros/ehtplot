@@ -115,8 +115,6 @@ class Panel:
         fig = ax.figure
         pos = ax.get_position()
         ax0 = ax
-        i = 0
-        j = 0
         w = pos.x1 - pos.x0
         h = pos.y1 - pos.y0
 
@@ -128,7 +126,7 @@ class Panel:
             else:
                 h /= n_panels
 
-        for p in self.plots:
+        for i, p in enumerate(self.plots):
             if isinstance(p, Plot):
                 p(ax, *args, **kwargs)
                 # Steal title from matplotlib Axes and put it in ehtplot Panel
@@ -137,14 +135,13 @@ class Panel:
                     self.props['title'] = title
                     ax.set_title(None)
             elif isinstance(p, Panel):
-                subax = fig.add_axes([pos.x0+i*w, pos.y0+j*h, w, h])
-                p(subax, *args, **kwargs)
-                if i == 0 and j == 0:
-                    ax0 = subax
                 if self.props['inrow']:
-                    i += 1
+                    subax = fig.add_axes([pos.x0+i*w, pos.y0, w, h])
                 else:
-                    j += 1
+                    subax = fig.add_axes([pos.x0, pos.y0+i*h, w, h])
+                if i == 0:
+                    ax0 = subax
+                p(subax, *args, **kwargs)
 
         if 'title' in self.props:
             if len(self.plots) <= 1 or not self.props['inrow']:
