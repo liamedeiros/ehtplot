@@ -32,6 +32,7 @@ class Figure:
 
     Attributes:
         panel (ehtplot.Panel): The root panel.
+        kwprops (dict): The default keywords when creating a figure.
 
     """
 
