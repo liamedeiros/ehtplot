@@ -91,6 +91,8 @@ class Panel:
         plots,            args   = splitargs(args)
         kwplots, kwprops, kwargs = splitkwargs(kwargs)
 
+        if len(plots) > 1 and 'title' in kwargs:
+            kwprops['title'] = kwargs.pop('title')
         self.props.update(kwprops)
 
         for p in plots:
@@ -114,6 +116,7 @@ class Panel:
 
         fig = ax.figure
         pos = ax.get_position()
+        ax0 = ax
         i = 0
         j = 0
         w = pos.x1 - pos.x0
@@ -131,11 +134,20 @@ class Panel:
             if isinstance(p, Plot):
                 p(ax, *args, **kwargs)
             elif isinstance(p, Panel):
-                p(fig.add_axes([pos.x0+i*w, pos.y0+j*h, w, h]), *args, **kwargs)
+                subax = fig.add_axes([pos.x0+i*w, pos.y0+j*h, w, h])
+                p(subax, *args, **kwargs)
+                if i == 0 and j == 0:
+                    ax0 = subax
                 if self.props['inrow']:
                     i += 1
                 else:
                     j += 1
+
+        if 'title' in self.props:
+            if self.props['inrow']:
+                ax0.set_ylabel(self.props['title'])
+            else:
+                ax0.set_title(self.props['title'])
 
     def __getattr__(self, attr):
         return lambda *args, **kwargs: self.stage(attr, *args, **kwargs)
