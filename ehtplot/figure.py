@@ -17,7 +17,8 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 import matplotlib.pyplot as plt
-from .panel import splitargs, Panel
+from .panel   import splitargs, Panel
+from .helpers import ensure_list
 
 class Figure:
     """The "head" class for hierarchically organizing panels in ehtplot
@@ -33,11 +34,6 @@ class Figure:
         panel (ehtplot.Panel): The root panel.
 
     """
-
-    @staticmethod
-    def ensure_list(obj):
-        """Convert `obj` to a list if it is not already one"""
-        return obj if isinstance(obj, list) else [obj]
 
     def __init__(self, *args, **kwargs):
         """Figure initializer
@@ -122,5 +118,5 @@ class Figure:
 
     def save(self, files, *args, **kwargs):
         """Save the Figure"""
-        for file in self.ensure_list(files):
+        for file in ensure_list(files):
             self(*args, **kwargs).savefig(file)
