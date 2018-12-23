@@ -41,11 +41,11 @@ class Plot:
 
     paths = [join(dirname(__file__), "plots")]
 
-    @staticmethod
-    def load_plot(plot):
+    @classmethod
+    def load_plot(cls, plot):
         """Load a plotting function from directories in Plot.paths."""
         func = "plot_"+plot
-        for path in self.path:
+        for path in cls.paths:
             file = join(path, plot+".py")
             try:
                 spec   = iu.spec_from_file_location(func, file)
@@ -56,11 +56,11 @@ class Plot:
             return module.__dict__[func]
         raise ImportError("failed to load \"{}\"".format(plot))
 
-    @staticmethod
-    def ensure_callable(plot):
+    @classmethod
+    def ensure_callable(cls, plot):
         """Convert `plot` to callable when possible."""
         if isinstance(plot, basestring):
-            return self.load_plot(plot)
+            return cls.load_plot(plot)
         elif callable(plot):
             return plot
         else:
