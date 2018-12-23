@@ -78,7 +78,7 @@ class Figure:
         """
         self.props = {}
 
-        plots,  args    = Panel.splitargs(args)
+        args,   plots   = Panel.split_args(args)
         kwargs, kwprops = split_dict(kwargs, self._propkeys)
 
         self.props.update(kwprops)

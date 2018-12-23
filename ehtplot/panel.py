@@ -57,25 +57,25 @@ class Panel:
         return isinstance(a, basestring) and (a in cls._plotkeys)
 
     @classmethod
-    def validarg(cls, a):
+    def valid_arg(cls, a):
         return isinstance(a, (Panel, Plot)) or callable(a) or cls.loadable(a)
 
     @classmethod
-    def validlist(cls, l):
-        return isinstance(l, list) and all(cls.validarg(a) for a in l)
+    def valid_list(cls, l):
+        return isinstance(l, list) and all(cls.valid_arg(a) for a in l)
 
     @classmethod
-    def splitargs(cls, args):
+    def split_args(cls, args):
         l, c = [], 0
         for a in args:
-            if cls.validlist(a):
+            if cls.valid_list(a):
                 l += a
-            elif cls.validarg(a):
+            elif cls.valid_arg(a):
                 l += [a]
             else:
                 break
             c += 1
-        return l, args[c:]
+        return args[c:], l
 
     def __init__(self, *args, **kwargs):
         """Panel initializer
@@ -96,7 +96,7 @@ class Panel:
         self.props = {'inrow': True}
         self.plots = []
 
-        plots,            args   = self.splitargs(args)
+        args,   plots            = self.split_args(args)
         kwargs, kwplots, kwprops = split_dict(kwargs, self._plotkeys,
                                                       self._propkeys)
         self.props.update(kwprops)
