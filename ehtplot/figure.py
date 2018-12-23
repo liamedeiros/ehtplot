@@ -109,7 +109,8 @@ class Figure:
                 instance of Plot.
 
         """
-        fig = plt.figure(**self.props)
+        kwargs, kwprops = split_dict(kwargs, self._propkeys)
+        fig = plt.figure(**{**self.props, **kwprops})
         ax  = fig.add_axes([0, 0, 1, 1])
         with plt.style.context(kwargs.pop('style', 'ehtplot')):
             self.panel(ax, *args, **kwargs)
