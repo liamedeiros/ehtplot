@@ -143,12 +143,35 @@ class Panel:
                     ax0 = subax
                 p(subax, *args, **kwargs)
 
+        # This panel is left-most
+        if pos.x0 < w:
+            pass
+        else:
+            ax0.set_yticklabels([])
+            ax0.yaxis.label.set_visible(False)
+
+        # This panel is right-most
+        if 1.0 - pos.x1 < w:
+            pass
+
+        # This panel is at bottom
+        if pos.y0 < h:
+            pass
+        else:
+            ax0.set_xticklabels([])
+            ax0.xaxis.label.set_visible(False)
+
+        # This panel is at top
+        if 1.0 - pos.y1 < h:
+            pass
+
+        # Take care of panel title
         if 'title' in self.props:
             if len(self.plots) <= 1 or not self.props['inrow']:
-                if 1.0 - pos.y1 >= h:
-                    pass # most likely *not* the top row; do nothing
-                else:
+                if 1.0 - pos.y1 < h: # top
                     ax0.set_title(self.props['title'])
+                else:
+                    pass # do nothing
             else:
                 ax0.set_ylabel(self.props['title'])
 
