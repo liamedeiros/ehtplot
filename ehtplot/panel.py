@@ -24,20 +24,6 @@ try:
 except NameError:
     basestring = str # so that we can always test strings as in python2
 
-def get_veclen(data, args, kwargs):
-    all = list(data) + list(args) + list(kwargs.values())
-    ns  = list(set(sorted([1] + [len(a) for a in all if isinstance(a, list)])))
-    if len(ns) > 2:
-        raise ValueError('The parameters have inconsistent vector length')
-    return ns[-1]
-
-def get_element(i, data, args, kwargs):
-    if data is not None:
-        args = (data) + args
-    args = tuple(a[i] if isinstance(a, list) else a for a in args)
-    kwargs = {k: v[o] if isinstance(v, list) else v for k, v in kwargs.items()}
-    return args, kwargs
-
 class Panel:
     """The "node" class for hierarchically organizing subplots in ehtplot
 
@@ -77,6 +63,25 @@ class Panel:
             c += 1
         return args[c:], l
 
+    @staticmethod
+    def get_veclen(data, args, kwargs):
+        all = list(data) + list(args) + list(kwargs.values())
+        ns  = list(set(sorted([1] +
+                              [len(a) for a in all if isinstance(a, list)])))
+        if len(ns) > 2:
+            raise ValueError('The parameters have inconsistent vector length')
+        return ns[-1]
+
+    @staticmethod
+    def get_element(i, data, args, kwargs):
+        if data is not None:
+            args = (data) + args
+        args = tuple(a[i] if isinstance(a, list) else a
+                     for a in args)
+        kwargs = {k: v[o] if isinstance(v, list) else v
+                     for k, v in kwargs.items()}
+        return args, kwargs
+
     def __init__(self, *args, **kwargs):
         """Panel initializer
 
@@ -101,7 +106,7 @@ class Panel:
                                                       self._propkeys)
         self.props.update(kwprops)
 
-        veclen = get_veclen(kwplots.values(), args, kwargs)
+        veclen = self.get_veclen(kwplots.values(), args, kwargs)
 
         for p in plots:
             if isinstance(p, (Panel, Plot)):
@@ -111,7 +116,7 @@ class Panel:
                     self.stage(p, *args, **kwargs)
                 else:
                     for i in range(veclen):
-                        args_i, kwargs_i = get_element(i, None, args, kwargs)
+                        args_i, kwargs_i = self.get_element(i, None, args, kwargs)
                         self.plots += [Panel(p, *args_i, **kwargs_i)]
 
         for k, v in kwplots.items():
@@ -119,7 +124,7 @@ class Panel:
                 self.stage(k, v, *args, **kwargs)
             else:
                 for i in range(veclen):
-                    args_i, kwargs_i = get_element(i, v, args, kwargs)
+                    args_i, kwargs_i = self.get_element(i, v, args, kwargs)
                     self.plots += [Panel(p, *args_i, **kwargs_i)]
 
     def __call__(self, ax, *args, **kwargs):
