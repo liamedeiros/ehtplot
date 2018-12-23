@@ -131,6 +131,11 @@ class Panel:
         for p in self.plots:
             if isinstance(p, Plot):
                 p(ax, *args, **kwargs)
+                # Steal title from matplotlib Axes and put it in ehtplot Panel
+                title = ax.get_title()
+                if title is not None:
+                    self.props['title'] = title
+                    ax.set_title(None)
             elif isinstance(p, Panel):
                 subax = fig.add_axes([pos.x0+i*w, pos.y0+j*h, w, h])
                 p(subax, *args, **kwargs)
@@ -143,7 +148,10 @@ class Panel:
 
         if 'title' in self.props:
             if len(self.plots) <= 1 or not self.props['inrow']:
-                ax0.set_title(self.props['title'])
+                if 1.0 - pos.y1 >= h:
+                    pass # most likely *not* the top row; do nothing
+                else:
+                    ax0.set_title(self.props['title'])
             else:
                 ax0.set_ylabel(self.props['title'])
 
