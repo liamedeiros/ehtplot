@@ -47,8 +47,10 @@ class Plot:
     def ensure_callable(plot):
         if isinstance(plot, basestring):
             return self.load_plot(plot)
-        else:
+        elif callable(plot):
             return plot
+        else:
+            raise TypeError("`plot` must be a string or a callable")
 
     def __init__(self, plot, *args, **kwargs):
         """Plot initializer
