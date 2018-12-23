@@ -33,7 +33,7 @@ class Plot:
     the keyworded arguments can be modified at "plot time".
 
     Attributes:
-        _propkeys (list of strings): List of paths used by Plot to
+        _prop_keys (list of strings): List of paths used by Plot to
             look up plotting functions.
 
     """
@@ -84,15 +84,15 @@ class Plot:
 
         Attributes:
             plot (callable): The plotting function
-            args (tuple): The default arguments when realizing an
+            props (tuple): The default arguments when realizing an
                 instance of Plot.
-            kwargs (dict): The default keywords when realizing an
+            kwprops (dict): The default keywords when realizing an
                 instance of Plot.
 
         """
-        self.plot   = self.ensure_callable(plot)
-        self.args   = args
-        self.kwargs = kwargs
+        self.plot    = self.ensure_callable(plot)
+        self.props   = args
+        self.kwprops = kwargs
 
     def __call__(self, ax, *args, **kwargs):
         """Plot drawer/renderer/realizer
@@ -114,6 +114,6 @@ class Plot:
 
         """
         if args:
-            self.plot(ax, *args,      **{**self.kwargs, **kwargs})
+            self.plot(ax, *args,       **{**self.kwprops, **kwargs})
         else:
-            self.plot(ax, *self.args, **{**self.kwargs, **kwargs})
+            self.plot(ax, *self.props, **{**self.kwprops, **kwargs})

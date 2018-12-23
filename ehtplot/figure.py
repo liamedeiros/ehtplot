@@ -31,12 +31,12 @@ class Figure:
     for details.
 
     Attributes:
-        _propkeys (list of strings): List of graphics keywords used by
+        _prop_keys (list of strings): List of graphics keywords used by
             Figure to create a figure.
 
     """
 
-    _propkeys = ['figsize', 'dpi', 'facecolor', 'edgecolor', 'frameon']
+    _prop_keys = ['figsize', 'dpi', 'facecolor', 'edgecolor', 'frameon']
 
     def __init__(self, *args, **kwargs):
         """Figure initializer
@@ -81,21 +81,19 @@ class Figure:
             kwprops (dict): The default keywords when creating a figure.
 
         """
-        self.props = {}
+        self.panel   = args[0]
+        self.kwprops = {}
 
         args,   plots   = Panel.split_args(args)
-        kwargs, kwprops = split_dict(kwargs, self._propkeys)
+        kwargs, kwprops = split_dict(kwargs, self._prop_keys)
 
-        self.props.update(kwprops)
+        self.kwprops.update(kwprops)
 
-        if len(plots) == 1 and isinstance(plots[0], Panel):
-            if not args and not kwargs:
-                self.panel = plots[0]
-            else:
-                raise ValueError("no argument or keyword is allowed when "+
-                                 "passing a single ehtplot.Panel argument")
-        else:
-            self.panel = Panel(*(tuple(plots)+args), **kwargs)
+        if len(plots) != 1 or not isinstance(plots[0], Panel):
+            self.panel = Panel(*plots, *args, **kwargs)
+        elif args or kwargs:
+            raise ValueError("no argument or keyword is allowed when "+
+                             "passing a single ehtplot.Panel argument")
 
     def __call__(self, *args, **kwargs):
         """Figure realizer
@@ -114,11 +112,11 @@ class Figure:
                 instance of Plot.
 
         """
-        kwargs, kwprops = split_dict(kwargs, self._propkeys)
-        fig = plt.figure(**{**self.props, **kwprops})
-        ax  = fig.add_axes([0, 0, 1, 1])
+        kwargs, kwprops = split_dict(kwargs, self._prop_keys)
+
+        fig = plt.figure(**{**self.kwprops, **kwprops})
         with plt.style.context(kwargs.pop('style', 'ehtplot')):
-            self.panel(ax, *args, **kwargs)
+            self.panel(fig.add_axes([0, 0, 1, 1]), *args, **kwargs)
         return fig
 
     def show(self, *args, **kwargs):

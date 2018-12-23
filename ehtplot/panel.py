@@ -34,18 +34,18 @@ class Panel:
     set of subpanels.
 
     Attributes:
-        _plotkeys (list of strings): List of built-in plots
-        _propkeys (list of strings): List of graphics keywords used by
-            Panel to create a panel.
+        _plot_keys (list of strings): List of built-in plots
+        _kwprop_keys (list of strings): List of graphics keywords used
+            by Panel to create a panel.
 
     """
 
-    _plotkeys = ['image']
-    _propkeys = ['inrow', 'title']
+    _plot_keys = ['image']
+    _kwprop_keys = ['inrow', 'title']
 
     @classmethod
     def loadable(cls, a):
-        return isinstance(a, basestring) and (a in cls._plotkeys)
+        return isinstance(a, basestring) and (a in cls._plot_keys)
 
     @classmethod
     def valid_arg(cls, a):
@@ -103,13 +103,13 @@ class Panel:
             pnl = Panel(image=img_array)
 
         """
-        self.props = {'inrow': True}
-        self.plots = []
+        self.plots   = []
+        self.kwprops = {'inrow': True}
 
         args,   plots            = self.split_args(args)
-        kwargs, kwplots, kwprops = split_dict(kwargs, self._plotkeys,
-                                                      self._propkeys)
-        self.props.update(kwprops)
+        kwargs, kwplots, kwprops = split_dict(kwargs, self._plot_keys,
+                                                      self._kwprop_keys)
+        self.kwprops.update(kwprops)
 
         veclen = self.get_veclen(kwplots.values(), args, kwargs)
 
@@ -152,7 +152,7 @@ class Panel:
         if n_plots == 0:
             ax.axis('off')
         if n_panels != 0:
-            if self.props['inrow']:
+            if self.kwprops['inrow']:
                 w /= n_panels
             else:
                 h /= n_panels
@@ -163,10 +163,10 @@ class Panel:
                 # Steal title from matplotlib Axes and put it in ehtplot Panel
                 title = ax.get_title()
                 if title is not None:
-                    self.props['title'] = title
+                    self.kwprops['title'] = title
                     ax.set_title(None)
             elif isinstance(p, Panel):
-                if self.props['inrow']:
+                if self.kwprops['inrow']:
                     subax = fig.add_axes([pos.x0+i*w, pos.y0, w, h])
                 else:
                     subax = fig.add_axes([pos.x0, pos.y0+i*h, w, h])
@@ -197,14 +197,14 @@ class Panel:
             pass
 
         # Take care of panel title
-        if 'title' in self.props:
-            if len(self.plots) <= 1 or not self.props['inrow']:
+        if 'title' in self.kwprops:
+            if len(self.plots) <= 1 or not self.kwprops['inrow']:
                 if 1.0 - pos.y1 < h: # top
-                    ax0.set_title(self.props['title'])
+                    ax0.set_title(self.kwprops['title'])
                 else:
                     pass # do nothing
             else:
-                ax0.set_ylabel(self.props['title'])
+                ax0.set_ylabel(self.kwprops['title'])
 
     def stage(self, plot, *args, **kwargs):
         self.plots += [Plot(plot, *args, **kwargs)]
