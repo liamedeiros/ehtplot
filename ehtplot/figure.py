@@ -34,6 +34,11 @@ class Figure:
 
     """
 
+    @staticmethod
+    def ensure_list(obj):
+        """Convert `obj` to a list if it is not already one"""
+        return obj if isinstance(obj, list) else [obj]
+
     def __init__(self, *args, **kwargs):
         """Figure initializer
 
@@ -115,6 +120,7 @@ class Figure:
         """Draw the Figure"""
         self(*args, **kwargs).canvas.draw_idle()
 
-    def save(self, file, *args, **kwargs):
+    def save(self, files, *args, **kwargs):
         """Save the Figure"""
-        self(*args, **kwargs).savefig(file)
+        for file in self.ensure_list(files):
+            self(*args, **kwargs).savefig(file)
