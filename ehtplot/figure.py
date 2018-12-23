@@ -18,7 +18,7 @@
 
 import matplotlib.pyplot as plt
 from .panel   import Panel
-from .helpers import *
+from .helpers import ensure_list, split_dict
 
 class Figure:
     """The "head" class for hierarchically organizing panels in ehtplot

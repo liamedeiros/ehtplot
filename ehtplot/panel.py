@@ -16,8 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-from .plot    import *
-from .helpers import *
+from .plot    import Plot
+from .helpers import split_dict
 
 try:
     basestring
