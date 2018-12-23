@@ -34,6 +34,22 @@ class Plot:
 
     """
 
+    @staticmethod
+    def load_plot(plot):
+        path   = join(dirname(__file__), "plot", plot+".py")
+        func   = "plot_"+plot
+        spec   = iu.spec_from_file_location(func, path)
+        module = iu.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module.__dict__[func]
+
+    @staticmethod
+    def ensure_callable(plot):
+        if isinstance(plot, basestring):
+            return self.load_plot(plot)
+        else:
+            return plot
+
     def __init__(self, plot, *args, **kwargs):
         """Plot initializer
 
@@ -42,15 +58,7 @@ class Plot:
         function.
 
         """
-        if isinstance(plot, basestring):
-            file   = join(dirname(__file__), "plot", plot+".py")
-            func   = "plot_"+plot
-            spec   = iu.spec_from_file_location(func, file)
-            module = iu.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            plot   = module.__dict__[func]
-
-        self.plot   = plot
+        self.plot   = self.ensure_callable(plot)
         self.args   = args
         self.kwargs = kwargs
 
