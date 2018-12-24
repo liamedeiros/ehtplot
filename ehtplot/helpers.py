@@ -76,6 +76,15 @@ def split_dict(inp, *keyses):
 
     return out[0] if keyses == () else out
 
+def getbce(obj, i):
+    """Get broadcasted element"""
+    if not isinstance(obj, list):
+        return obj
+    elif len(obj) > 1:
+        return obj[i]
+    else:
+        return obj[0]
+
 def broadcast(args, kwargs):
     """Broadcast values in `args` and `kwargs` to a list of them
 
@@ -98,14 +107,6 @@ def broadcast(args, kwargs):
             kwargs)` tuples.
 
     """
-    def get(obj, i):
-        if not isinstance(obj, list):
-            return obj
-        elif len(obj) > 1:
-            return obj[i]
-        else:
-            return obj[0]
-
     values = args + tuple(kwargs.values())
     ns     = set(len(a) for a in values if isinstance(a, list) and len(a) > 1)
 
@@ -116,5 +117,5 @@ def broadcast(args, kwargs):
     else:
         raise ValueError('The parameters have inconsistent vector length')
 
-    return [(tuple(get(a, i) for a    in args),
-               {k: get(v, i) for k, v in kwargs.items()}) for i in range(n)]
+    return [(tuple(getbce(a, i) for a    in args),
+               {k: getbce(v, i) for k, v in kwargs.items()}) for i in range(n)]
