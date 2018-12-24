@@ -38,6 +38,7 @@ class Panel:
 
     @classmethod
     def split_args(cls, args):
+        """Split plotables out from an argument list"""
         l, c = [], 0
         for a in args:
             a = ensure_list(a, lambda p: isinstance(p, Panel) or
@@ -50,15 +51,16 @@ class Panel:
         return args[c:], l
 
     @staticmethod
-    def count(plots):
+    def count(plotables):
+        """Count number of plots and panels in a list of plotables"""
         n_plots, n_panels = 0, 0
-        for p in plots:
+        for p in plotables:
             if   isinstance(p, Plot):
                 n_plots  += 1
             elif isinstance(p, Panel):
                 n_panels += 1
             else:
-                raise ValueError("unexpected types found in self.plots")
+                raise ValueError("unexpected types found in list of plotables")
         return n_plots, n_panels
 
     def __init__(self, *args, **kwargs):
