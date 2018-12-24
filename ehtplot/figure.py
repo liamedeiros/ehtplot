@@ -81,19 +81,23 @@ class Figure:
             kwprops (dict): The default keywords when creating a figure.
 
         """
-        self.panel   = args[0]
-        self.kwprops = {}
-
+        # Smart argument transform
         args,   plots   = Panel.split_args(args)
         kwargs, kwprops = split_dict(kwargs, self._prop_keys)
 
-        self.kwprops.update(kwprops)
-
+        # Smart panel construction
         if len(plots) != 1 or not isinstance(plots[0], Panel):
-            self.panel = Panel(*plots, *args, **kwargs)
-        elif args or kwargs:
+            self.__init__(Panel(*plots, *args, **kwargs), **kwprops)
+            return # done after calling self
+
+        # Check for errors
+        if args or kwargs:
             raise ValueError("no argument or keyword is allowed when "+
                              "passing a single ehtplot.Panel argument")
+
+        # The actual constructor
+        self.panel   = plots[0]
+        self.kwprops = kwprops
 
     def __call__(self, *args, **kwargs):
         """Figure realizer

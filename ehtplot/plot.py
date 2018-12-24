@@ -90,7 +90,11 @@ class Plot:
                 instance of Plot.
 
         """
-        self.plot    = self.ensure_callable(plot)
+        # Smart argument transform
+        plot = self.ensure_callable(plot)
+
+        # The actual constructor
+        self.plot    = plot
         self.props   = args
         self.kwprops = kwargs
 
