@@ -117,7 +117,9 @@ class Plot:
                 instance of Plot.
 
         """
-        if args:
-            self.plot(ax, *args,       **{**self.kwprops, **kwargs})
-        else:
-            self.plot(ax, *self.props, **{**self.kwprops, **kwargs})
+        # Smart argument transform
+        props   = args if args else self.props
+        kwprops = {**self.kwprops, **kwargs}
+
+        # The actual plot realization
+        self.plot(ax, *props, *kwprops)
