@@ -73,10 +73,38 @@ class Panel:
             pnl = Panel( p0, p1, ...,  arg0, ..., kw0=..., ...)
             pnl = Panel([p0, p1, ...], arg0, ..., kw0=..., ...)
 
-        this makes `p0`, `p1`, etc the subpanel of `pnl`.  To create
-        plots, one can pass the data with proper keywords, e.g.,
+        this makes `p0`, `p1`, etc the subpanel of `pnl`.
+
+        There are multiple ways to create plots.  To use ehtplot's
+        built-in plotter, one can simpmlly pass the data with proper
+        keywords, e.g.,
 
             pnl = Panel(image=img_array)
+
+        User can also supply custom plotter based on matplotlib,
+
+            def myimshow(img_array):
+                 ....
+            pnl = Panel(myimshow, img_array)
+
+        Args:
+            *args (tuple): Variable length argument list that is used
+                to determine what way a Panel is initialized.  If it
+                contains ehtplot.Panel's or a list containing
+                ehtplot.Panel's, then they become the subpanels of the
+                instantized Panel.  Otherwise, they will be passed as
+                a variable length argument list to create the
+                subpanels or plots.
+            **kwargs (dict): If a keyword is recognized as a built-in
+                plotter, then the keyed value will become the data
+                passed to the plotter.  All the remaining keyworeded
+                arugments will be passed as an arbitrary keyword
+                arguments passed to create the root panel.
+
+        Attributes:
+            plotables (list of ehtplot.Plot and ehtplot.Panel): The
+                root plotables.
+            kwprops (dict): The default keywords when creating a panel.
 
         """
         # Smart argument transform
@@ -110,6 +138,16 @@ class Panel:
         Realize all plotables in the `self.plotables[]` array.  This
         means realizing all plots and panels in the array using the
         parent Axes `ax` and new Axeses.
+
+        Args:
+            ax (matplotlib.axis.Axes): A matplotlib Axes for Plot to
+                realize/draw on.
+            *args (tuple): Variable length argument list that
+                overrides the saved on when realizing an instance of
+                Panel.
+            **kwargs (dict): Arbitrary keyword arguments that are
+                passed to the plotting function the when realizing an
+                instance of Panel.
 
         """
         n_plots, n_panels = self.count(self.plotables)
