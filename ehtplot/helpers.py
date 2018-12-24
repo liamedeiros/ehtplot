@@ -76,7 +76,7 @@ def split_dict(inp, *keyses):
 
     return out[0] if keyses == () else out
 
-def broadcast(*args, **kwargs):
+def broadcast(args, kwargs):
     """Broadcast values in `args` and `kwargs` to a list of them
 
     This is a very simple 1D version of numpy's broadcasting mechanism
