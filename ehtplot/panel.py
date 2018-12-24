@@ -19,11 +19,6 @@
 from .plot    import Plot
 from .helpers import ensure_list, split_dict, broadcast
 
-try:
-    basestring
-except NameError:
-    basestring = str # so that we can always test strings as in python2
-
 class Panel:
     """The "node" class for hierarchically organizing subplots in ehtplot
 
