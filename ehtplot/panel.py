@@ -98,8 +98,15 @@ class Panel:
         array.
 
         """
-        n_plots  = len([p for p in self.plots if isinstance(p, Plot)])
-        n_panels = len([p for p in self.plots if isinstance(p, Panel)])
+        n_plots  = 0
+        n_panels = 0
+        for p in self.plots:
+            if   isinstance(p, Plot):
+                n_plots += 1
+            elif isinstance(p, Panel):
+                n_panel += 1
+            else:
+                raise ValueError("unexpected types found in self.plots")
 
         fig = ax.figure
         pos = ax.get_position()
