@@ -17,7 +17,7 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 from .plot    import Plot
-from .helpers import split_dict
+from .helpers import ensure_list, split_dict
 
 try:
     basestring
@@ -52,17 +52,12 @@ class Panel:
         return isinstance(a, (Panel, Plot)) or callable(a) or cls.loadable(a)
 
     @classmethod
-    def valid_list(cls, l):
-        return isinstance(l, list) and all(cls.valid_arg(a) for a in l)
-
-    @classmethod
     def split_args(cls, args):
         l, c = [], 0
         for a in args:
-            if cls.valid_list(a):
+            a = ensure_list(a, cls.valid_arg)
+            if a:
                 l += a
-            elif cls.valid_arg(a):
-                l += [a]
             else:
                 break
             c += 1
