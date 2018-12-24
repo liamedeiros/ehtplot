@@ -49,6 +49,18 @@ class Panel:
             c += 1
         return args[c:], l
 
+    @staticmethod
+    def count(plots):
+        n_plots, n_panels = 0, 0
+        for p in plots:
+            if   isinstance(p, Plot):
+                n_plots  += 1
+            elif isinstance(p, Panel):
+                n_panels += 1
+            else:
+                raise ValueError("unexpected types found in self.plots")
+        return n_plots, n_panels
+
     def __init__(self, *args, **kwargs):
         """Panel initializer
 
@@ -98,15 +110,7 @@ class Panel:
         array.
 
         """
-        n_plots  = 0
-        n_panels = 0
-        for p in self.plots:
-            if   isinstance(p, Plot):
-                n_plots += 1
-            elif isinstance(p, Panel):
-                n_panel += 1
-            else:
-                raise ValueError("unexpected types found in self.plots")
+        n_plots, n_panels = self.count(self.plots)
 
         fig = ax.figure
         pos = ax.get_position()
