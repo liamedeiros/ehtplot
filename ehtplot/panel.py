@@ -40,16 +40,11 @@ class Panel:
 
     """
 
-    _plot_keys = ['image']
     _kwprop_keys = ['inrow', 'title']
 
     @classmethod
-    def loadable(cls, a):
-        return isinstance(a, basestring) and (a in cls._plot_keys)
-
-    @classmethod
     def valid_arg(cls, a):
-        return isinstance(a, (Panel, Plot)) or callable(a) or cls.loadable(a)
+        return isinstance(a, (Panel, Plot)) or callable(a) or Plot.plotable(a)
 
     @classmethod
     def split_args(cls, args):
@@ -102,7 +97,7 @@ class Panel:
         self.kwprops = {'inrow': True}
 
         args,   plots            = self.split_args(args)
-        kwargs, kwplots, kwprops = split_dict(kwargs, self._plot_keys,
+        kwargs, kwplots, kwprops = split_dict(kwargs, Plot.plot_keys,
                                                       self._kwprop_keys)
         self.kwprops.update(kwprops)
 

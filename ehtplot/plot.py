@@ -38,7 +38,12 @@ class Plot:
 
     """
 
-    paths = [join(dirname(__file__), "plots")]
+    paths     = [join(dirname(__file__), "plots")]
+    plot_keys = ['image'] # TODO: automatically generate this list from paths
+
+    @classmethod
+    def plotable(cls, plot):
+        return plot in cls.plot_keys
 
     @classmethod
     def load_plot(cls, plot):
