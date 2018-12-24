@@ -17,7 +17,7 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 from .plot    import Plot
-from .helpers import ensure_list, split_dict
+from .helpers import ensure_list, split_dict, broadcast
 
 try:
     basestring
@@ -96,28 +96,28 @@ class Panel:
         args,   plots            = self.split_args(args)
         kwargs, kwplots, kwprops = split_dict(kwargs, Plot.plot_keys,
                                                       self._kwprop_keys)
+        plots = plots + list(kwplots.keys())
+        args  = tuple(kwplots.values()) + args
         self.kwprops.update(kwprops)
 
-        veclen = self.get_veclen(kwplots.values(), args, kwargs)
+        count = 0
+        for p in plots:
+            if not isinstance(p, (Panel, Plot)):
+                count += 1
+        if count > 1:
+            raise ValueError("Do not know how to braodcast to multiple plots")
+
+        allargses = broadcast(args, kwargs)
 
         for p in plots:
             if isinstance(p, (Panel, Plot)):
                 self.plots += [p]
+            elif len(allargses) == 1:
+                args, kwargs = allargses[0]
+                self.stage(p, *args, **kwargs)
             else:
-                if veclen == 1:
-                    self.stage(p, *args, **kwargs)
-                else:
-                    for i in range(veclen):
-                        args_i, kwargs_i = self.get_element(i, None, args, kwargs)
-                        self.plots += [Panel(p, *args_i, **kwargs_i)]
-
-        for k, v in kwplots.items():
-            if veclen == 1:
-                self.stage(k, v, *args, **kwargs)
-            else:
-                for i in range(veclen):
-                    args_i, kwargs_i = self.get_element(i, v, args, kwargs)
-                    self.plots += [Panel(p, *args_i, **kwargs_i)]
+                for args, kwargs in allargses:
+                    self.plots += [Panel(p, *args, **kwargs)]
 
     def __call__(self, ax, *args, **kwargs):
         """Panel realizer
