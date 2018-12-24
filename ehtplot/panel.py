@@ -43,14 +43,11 @@ class Panel:
     _kwprop_keys = ['inrow', 'title']
 
     @classmethod
-    def isplotable(cls, a):
-        return isinstance(a, Panel) or Plot.isplotable(a)
-
-    @classmethod
     def split_args(cls, args):
         l, c = [], 0
         for a in args:
-            a = ensure_list(a, cls.isplotable)
+            a = ensure_list(a, lambda p: isinstance(p, Panel) or
+                                         Plot.isplotable(p))
             if a:
                 l += a
             else:
