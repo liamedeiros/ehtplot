@@ -16,9 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-def ensure_list(obj):
+def ensure_list(obj, valid=lambda x: True):
     """Convert `obj` to a list if it is not already one"""
-    return obj if isinstance(obj, list) else [obj]
+    if isinstance(obj, list):
+        if all(valid(o) for o in obj):
+            return obj
+    else:
+        if valid(obj):
+            return [obj]
+    return []
 
 def split_dict(inp, *keyses):
     """Split an input dict into multiple dicts according to lists of keys
