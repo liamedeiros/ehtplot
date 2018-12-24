@@ -96,7 +96,7 @@ class Figure:
             raise ValueError("no argument or keyword is allowed when "+
                              "passing a single ehtplot.Panel argument")
 
-        # The actual constructor
+        # The actual constructor (aka the "base case")
         self.panel   = plots[0]
         self.kwprops = {'style': 'ehtplot'}
         self.kwprops.update(kwprops)
@@ -123,7 +123,7 @@ class Figure:
         kwprops = {**self.kwprops, **kwprops}
         style   = kwprops.pop('style')
 
-        # The actual panel realization
+        # The actual figure realization (aka the "base case")
         fig = plt.figure(**kwprops)
         with plt.style.context(style):
             ax = fig.add_axes([0, 0, 1, 1])

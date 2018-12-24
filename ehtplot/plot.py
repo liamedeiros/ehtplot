@@ -43,6 +43,7 @@ class Plot:
 
     @classmethod
     def isplotable(cls, p):
+        """Check if the argument can be used as a Plot"""
         return isinstance(p, Plot) or callable(p) or p in cls.plot_keys
 
     @classmethod
@@ -98,7 +99,7 @@ class Plot:
         # Smart argument transform
         plot = self.ensure_callable(plot)
 
-        # The actual constructor
+        # The actual constructor (aka the "base case")
         self.plot    = plot
         self.props   = args
         self.kwprops = kwargs
@@ -126,5 +127,5 @@ class Plot:
         props   = args if args else self.props
         kwprops = {**self.kwprops, **kwargs}
 
-        # The actual plot realization
+        # The actual plot realization (aka the "base case")
         self.plot(ax, *props, *kwprops)
