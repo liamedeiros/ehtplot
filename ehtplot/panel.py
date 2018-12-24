@@ -17,7 +17,7 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 from .plot    import Plot
-from .helpers import ensure_list, split_dict, broadcast
+from .helpers import ensure_list, split_dict, getbce, broadcast
 
 class Panel:
     """The "node" class for hierarchically organizing subplots in ehtplot
@@ -76,7 +76,8 @@ class Panel:
 
         # Add and create Panels and Plots
         allargses = broadcast(args, kwargs)
-        Make      = Plot if len(allargses) == 1 else Panel
+        n         = len(allargses)
+        Make      = Plot if n == 1 else Panel
 
         for p in plots:
             if isinstance(p, (Panel, Plot)):
@@ -86,8 +87,8 @@ class Panel:
                 self.plots += [Make(p, *args, **kwargs)]
 
         for p, d in kwplots.items():
-            for args, kwargs in allargses:
-                self.plots += [Make(p, d, *args, **kwargs)]
+            for i, (args, kwargs) in enumerate(allargses):
+                self.plots += [Make(p, getbce(d, i), *args, **kwargs)]
 
     def __call__(self, ax, *args, **kwargs):
         """Panel realizer
