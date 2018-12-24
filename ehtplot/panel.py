@@ -43,14 +43,14 @@ class Panel:
     _kwprop_keys = ['inrow', 'title']
 
     @classmethod
-    def valid_arg(cls, a):
-        return isinstance(a, (Panel, Plot)) or callable(a) or Plot.plotable(a)
+    def isplotable(cls, a):
+        return isinstance(a, Panel) or Plot.isplotable(a)
 
     @classmethod
     def split_args(cls, args):
         l, c = [], 0
         for a in args:
-            a = ensure_list(a, cls.valid_arg)
+            a = ensure_list(a, cls.isplotable)
             if a:
                 l += a
             else:

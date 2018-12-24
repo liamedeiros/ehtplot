@@ -42,8 +42,8 @@ class Plot:
     plot_keys = ['image'] # TODO: automatically generate this list from paths
 
     @classmethod
-    def plotable(cls, plot):
-        return plot in cls.plot_keys
+    def isplotable(cls, p):
+        return isinstance(p, Plot) or callable(p) or p in cls.plot_keys
 
     @classmethod
     def load_plot(cls, plot):
