@@ -36,7 +36,8 @@ class Figure:
 
     """
 
-    _prop_keys = ['figsize', 'dpi', 'facecolor', 'edgecolor', 'frameon']
+    _prop_keys = ['style',
+                  'figsize', 'dpi', 'facecolor', 'edgecolor', 'frameon']
 
     def __init__(self, *args, **kwargs):
         """Figure initializer
@@ -97,7 +98,8 @@ class Figure:
 
         # The actual constructor
         self.panel   = plots[0]
-        self.kwprops = kwprops
+        self.kwprops = {'style': 'ehtplot'}
+        self.kwprops.update(kwprops)
 
     def __call__(self, *args, **kwargs):
         """Figure realizer
@@ -116,11 +118,16 @@ class Figure:
                 instance of Plot.
 
         """
+        # Smart argument transform
         kwargs, kwprops = split_dict(kwargs, self._prop_keys)
+        kwprops = {**self.kwprops, **kwprops}
+        style   = kwprops.pop('style')
 
-        fig = plt.figure(**{**self.kwprops, **kwprops})
-        with plt.style.context(kwargs.pop('style', 'ehtplot')):
-            self.panel(fig.add_axes([0, 0, 1, 1]), *args, **kwargs)
+        # The actual panel realization
+        fig = plt.figure(**kwprops)
+        with plt.style.context(style):
+            ax = fig.add_axes([0, 0, 1, 1])
+            self.panel(ax, *args, **kwargs)
         return fig
 
     def show(self, *args, **kwargs):
@@ -133,5 +140,6 @@ class Figure:
 
     def save(self, files, *args, **kwargs):
         """Save the Figure"""
+        fig = self(*args, **kwargs)
         for file in ensure_list(files):
-            self(*args, **kwargs).savefig(file)
+            fig.savefig(file)
