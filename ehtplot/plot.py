@@ -19,6 +19,8 @@
 import importlib.util as iu
 from os.path import join, dirname
 
+import numpy as np
+
 try:
     basestring
 except NameError:
@@ -44,7 +46,8 @@ class Plot:
     @classmethod
     def isplotable(cls, p):
         """Check if the argument can be used as a Plot"""
-        return isinstance(p, Plot) or callable(p) or p in cls.plot_keys
+        return (not isinstance(p, np.ndarray) and
+                (isinstance(p, Plot) or callable(p) or p in cls.plot_keys))
 
     @classmethod
     def load_plot(cls, plot):
