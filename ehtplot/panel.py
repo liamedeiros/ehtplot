@@ -65,33 +65,29 @@ class Panel:
             pnl = Panel(image=img_array)
 
         """
-        self.plots   = []
-        self.kwprops = {'inrow': True}
-
+        # Smart argument transform
         args,   plots            = self.split_args(args)
         kwargs, kwplots, kwprops = split_dict(kwargs, Plot.plot_keys,
                                                       self._prop_keys)
-        plots = plots + list(kwplots.keys())
-        args  = tuple(kwplots.values()) + args
+        # The actual constructor
+        self.plots   = []
+        self.kwprops = {'inrow': True}
         self.kwprops.update(kwprops)
 
-        count = 0
-        for p in plots:
-            if not isinstance(p, (Panel, Plot)):
-                count += 1
-        if count > 1:
-            raise ValueError("Do not know how to braodcast to multiple plots")
-
+        # Add and create Panels and Plots
         allargses = broadcast(args, kwargs)
+        Make      = Plot if len(allargses) == 1 else Panel
+
         for p in plots:
             if isinstance(p, (Panel, Plot)):
                 self.plots += [p]
-            elif len(allargses) == 1:
-                args, kwargs = allargses[0]
-                self.plots += [Plot(p, *args, **kwargs)]
-            else:
-                for args, kwargs in allargses:
-                    self.plots += [Panel(p, *args, **kwargs)]
+                continue # done for this `p`
+            for args, kwargs in allargses:
+                self.plots += [Make(p, *args, **kwargs)]
+
+        for p, d in kwplots.items():
+            for args, kwargs in allargses:
+                self.plots += [Make(p, d, *args, **kwargs)]
 
     def __call__(self, ax, *args, **kwargs):
         """Panel realizer
