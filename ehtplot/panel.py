@@ -17,7 +17,7 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 from .plot    import Plot
-from .helpers import ensure_list, split_dict, getbce, broadcast
+from .helpers import ensure_list, split_dict, getaxes, getbce, broadcast
 
 class Panel:
     """The "node" class for hierarchically organizing subplots in ehtplot
@@ -104,6 +104,7 @@ class Panel:
         fig = ax.figure
         pos = ax.get_position()
         ax0 = ax
+
         w = pos.x1 - pos.x0
         h = pos.y1 - pos.y0
 
@@ -131,6 +132,8 @@ class Panel:
                 if i == 0:
                     ax0 = subax
                 p(subax, *args, **kwargs)
+
+        axes = getaxes(ax0)
 
         # This panel is left-most
         if pos.x0 < w:
