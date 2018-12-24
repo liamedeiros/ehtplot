@@ -84,8 +84,8 @@ class Panel:
         kwargs, kwplots, kwprops = split_dict(kwargs, Plot.plot_keys,
                                                       self._prop_keys)
         # The actual constructor
-        self.plots   = []
-        self.kwprops = {'inrow': True}
+        self.plotables = []
+        self.kwprops   = {'inrow': True}
         self.kwprops.update(kwprops)
 
         # Add and create Panels and Plots
@@ -95,24 +95,24 @@ class Panel:
 
         for p in plots:
             if isinstance(p, (Panel, Plot)):
-                self.plots += [p]
+                self.plotables += [p]
                 continue # done for this `p`
             for args, kwargs in allargses:
-                self.plots += [Make(p, *args, **kwargs)]
+                self.plotables += [Make(p, *args, **kwargs)]
 
         for p, d in kwplots.items():
             for i, (args, kwargs) in enumerate(allargses):
-                self.plots += [Make(p, getbce(d, i), *args, **kwargs)]
+                self.plotables += [Make(p, getbce(d, i), *args, **kwargs)]
 
     def __call__(self, ax, *args, **kwargs):
         """Panel realizer
 
-        Realize (replot) all plots in the `self.plots[]` array and
-        then recursively realize all panels in the `self.subpanels[]`
-        array.
+        Realize all plotables in the `self.plotables[]` array.  This
+        means realizing all plots and panels in the array using the
+        parent Axes `ax` and new Axeses.
 
         """
-        n_plots, n_panels = self.count(self.plots)
+        n_plots, n_panels = self.count(self.plotables)
 
         fig = ax.figure
         pos = ax.get_position()
@@ -130,7 +130,7 @@ class Panel:
             else:
                 h /= n_panels
 
-        for i, p in enumerate(self.plots):
+        for i, p in enumerate(self.plotables):
             if isinstance(p, Plot):
                 p(ax, *args, **kwargs)
                 # Steal title from matplotlib Axes and put it in ehtplot Panel
@@ -175,7 +175,7 @@ class Panel:
 
         # Take care of panel title
         if 'title' in self.kwprops:
-            if len(self.plots) <= 1 or not self.kwprops['inrow']:
+            if len(self.plotables) <= 1 or not self.kwprops['inrow']:
                 if 1.0 - pos.y1 < h: # top
                     axF.set_title(self.kwprops['title'])
                 else:
