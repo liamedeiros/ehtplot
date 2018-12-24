@@ -34,13 +34,12 @@ class Panel:
     set of subpanels.
 
     Attributes:
-        _plot_keys (list of strings): List of built-in plots
-        _kwprop_keys (list of strings): List of graphics keywords used
+        _prop_keys (list of strings): List of graphics keywords used
             by Panel to create a panel.
 
     """
 
-    _kwprop_keys = ['inrow', 'title']
+    _prop_keys = ['inrow', 'title']
 
     @classmethod
     def split_args(cls, args):
@@ -54,25 +53,6 @@ class Panel:
                 break
             c += 1
         return args[c:], l
-
-    @staticmethod
-    def get_veclen(data, args, kwargs):
-        all = list(data) + list(args) + list(kwargs.values())
-        ns  = list(set(sorted([1] +
-                              [len(a) for a in all if isinstance(a, list)])))
-        if len(ns) > 2:
-            raise ValueError('The parameters have inconsistent vector length')
-        return ns[-1]
-
-    @staticmethod
-    def get_element(i, data, args, kwargs):
-        if data is not None:
-            args = (data) + args
-        args = tuple(a[i] if isinstance(a, list) else a
-                     for a in args)
-        kwargs = {k: v[o] if isinstance(v, list) else v
-                     for k, v in kwargs.items()}
-        return args, kwargs
 
     def __init__(self, *args, **kwargs):
         """Panel initializer
@@ -95,7 +75,7 @@ class Panel:
 
         args,   plots            = self.split_args(args)
         kwargs, kwplots, kwprops = split_dict(kwargs, Plot.plot_keys,
-                                                      self._kwprop_keys)
+                                                      self._prop_keys)
         plots = plots + list(kwplots.keys())
         args  = tuple(kwplots.values()) + args
         self.kwprops.update(kwprops)
@@ -108,13 +88,12 @@ class Panel:
             raise ValueError("Do not know how to braodcast to multiple plots")
 
         allargses = broadcast(args, kwargs)
-
         for p in plots:
             if isinstance(p, (Panel, Plot)):
                 self.plots += [p]
             elif len(allargses) == 1:
                 args, kwargs = allargses[0]
-                self.stage(p, *args, **kwargs)
+                self.plots += [Plot(p, *args, **kwargs)]
             else:
                 for args, kwargs in allargses:
                     self.plots += [Panel(p, *args, **kwargs)]
@@ -192,6 +171,3 @@ class Panel:
                     pass # do nothing
             else:
                 ax0.set_ylabel(self.kwprops['title'])
-
-    def stage(self, plot, *args, **kwargs):
-        self.plots += [Plot(plot, *args, **kwargs)]
