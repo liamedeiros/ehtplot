@@ -78,12 +78,14 @@ def split_dict(inp, *keyses):
 
 def getbce(obj, i):
     """Get broadcasted element"""
-    if not isinstance(obj, list):
+    if not isinstance(obj, list) or len(obj) == 0:
         return obj
-    elif len(obj) > 1:
+    elif len(obj) == 1:
+        return obj[0]
+    elif len(obj) > i:
         return obj[i]
     else:
-        return obj[0]
+        raise IndexError("failed to broadcast")
 
 def broadcast(args, kwargs):
     """Broadcast values in `args` and `kwargs` to a list of them
