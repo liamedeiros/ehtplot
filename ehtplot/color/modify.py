@@ -23,15 +23,21 @@ import re
 from matplotlib.cm import get_cmap
 
 from ehtplot.color.ctab   import get_ctab, save_ctab, path, ext
-from ehtplot.color.adjust import transform, classify, adjust_sequential, adjust_divergent
+from ehtplot.color.adjust import transform, classify, symmetrize, adjust_sequential, adjust_divergent
 
 def pre(cname):
     return transform(get_ctab(get_cmap(cname)))
 
 def post(Jabp, cls, roundup, fname):
-    adjust = globals()['adjust_'+cls]
-    save_ctab(transform(adjust(Jabp, roundup), inverse=True), fname)
-    print("    Rounded up to {}; saved to \"{}\"".format(roundup, fname))
+    adjust = globals()["adjust_"+cls]
+
+    Jabp = adjust(Jabp, roundup)
+    save_ctab(transform(Jabp, inverse=True), fname+ext)
+    print("    Rounded up to {}; saved to \"{}\"".format(roundup, fname+ext))
+
+    Jabp = symmetrize(Jabp)
+    save_ctab(transform(Jabp, inverse=True), fname+"s"+ext)
+    print("    Symmetrized; saved to \"{}\"".format(fname+"s"+ext))
 
 def modify(cname, roundup, fname):
     Jabp = pre(cname)
@@ -58,12 +64,12 @@ def modify_many(category, cnames, roundups, prefix=path, postfix=None):
     print(category)
 
     for cname in cnames:
-        Jabp, cls = modify(cname, None, path+"/"+cname+"_u"+ext)
+        Jabp, cls = modify(cname, None, path+"/"+cname+"_u")
         for roundup in roundups:
             if postfix is None or len(roundups) > 1:
-                fname = "{}/{}_{:.0f}u{}".format(path, cname, roundup, ext)
+                fname = "{}/{}_{:.0f}u".format(path, cname, roundup)
             else:
-                fname = "{}/{}_{}u{}".format(path, cname, postfix, ext)
+                fname = "{}/{}_{}u".format(path, cname, postfix)
             post(Jabp, cls, roundup, fname)
 
 if __name__ == "__main__":
@@ -82,4 +88,4 @@ if __name__ == "__main__":
             else:
                 roundups = None
 
-            modify_many(category, cnames, roundups, postfix='l')
+            modify_many(category, cnames, roundups, postfix="l")
