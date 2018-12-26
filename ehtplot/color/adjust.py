@@ -74,14 +74,23 @@ def uniformize(Jabp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
 
     return out
 
-def desaturate(Jabp):
+def symmetrize(Jabp, softening=1.0):
     out = Jabp.copy()
-    s = np.linspace(0.0, np.sqrt(0.5), num=out.shape[0])
-    s = s / np.sqrt(1.0 - s * s)
-    if Jabp[0,0] > Jabp[-1,0]:
-        s = np.flip(s)
-    out[:,1] *= s
-    out[:,2] *= s
+    Jp  = out[:,0]
+    Cp  = np.sqrt(out[:,1] * out[:,1] + out[:,2] * out[:,2])
+
+    s = Cp + softening # function being symmetrized
+    H = len(Cp)//2
+    m = np.minimum(s[:H], np.flip(s[-H:]))
+
+    f = m / s[:H]
+    out[:H,1] *= f
+    out[:H,2] *= f
+
+    g = np.flip(m) / s[-H:]
+    out[-H:,1] *= g
+    out[-H:,2] *= g
+
     return out
 
 def adjust_sequential(Jabp, roundup=None):
