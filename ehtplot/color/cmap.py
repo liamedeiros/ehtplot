@@ -20,18 +20,18 @@ import numpy as np
 
 from matplotlib.colors import ListedColormap
 
+from .adjust import transform
+from .ctab   import save_ctab
+
 Nq = 256 # number of quantization levels in a colormap
 
-def new_cmap(N=Nq,
-             darkest=0.0, lightest=100.0,
-             saturation=None, hue=None):
+def new_cmap(N=Nq, darkest=15.0, lightest=95.0):
     v  = np.linspace(0, 1, num=N)
 
-    s  = np.sqrt(0.5) if saturation is None else saturation(f)
-    hp = 0.0          if hue        is None else hue(f)
     Jp = np.linspace(darkest, lightest, num=N)
-    Cp = Jp * s / np.sqrt(1.0 - s*s)
+    hp = np.clip(np.linspace(-15.0, 105.0, num=N), 30.0, 90.0) * (np.pi/180.0)
+    Cp = 30 * (1 - (2*v-1)**4)
 
     Jabp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
-    sRGB = np.clip(transform(Jabp, inverse=True), 0, 1)
-    return ListedColormap(sRGB)
+    sRGB = transform(Jabp, inverse=True)
+    return ListedColormap(np.clip(sRGB, 0, 1))
