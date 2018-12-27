@@ -74,12 +74,14 @@ def uniformize(Jabp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
 
     return out
 
-def factor(Cp, softening=1.0, bitonic=False, verbose=False):
+def factor(Cp, softening=1.0, bitonic=True, diffuse=True, verbose=False):
     S = Cp + softening
     s = S.copy()
 
-    H = len(Cp)//2
+    N = len(Cp)
+    H = N//2
     m = np.minimum(s[:H], np.flip(s[-H:]))
+
     if bitonic: # force half of Cp increase monotonically
         if m[H-1] > s[H]:
             m[H-1] = s[H]
@@ -93,6 +95,11 @@ def factor(Cp, softening=1.0, bitonic=False, verbose=False):
 
     s[:H]  = m
     s[-H:] = np.flip(m)
+
+    if diffuse: # diffuse s using forward Euler
+        for i in range(N):
+            s[1:-1] += 0.5 * (s[2:] + s[:-2] - 2.0 * s[1:-1])
+
     return s / S
 
 def symmetrize(Jabp, verbose=False):
