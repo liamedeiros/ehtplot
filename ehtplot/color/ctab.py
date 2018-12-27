@@ -41,10 +41,11 @@ def list_ctab():
 def save_ctab(ctab, name):
     if ctab.shape[1] == 4 and np.all(ctab[:,3] == 1.0):
         ctab = ctab[:,:3]
-    np.savetxt(name, np.rint(np.clip(ctab, 0.0, 1.0) * cscale).astype(int), fmt="%i")
+    np.savetxt(name, np.rint(ctab * cscale).astype(int), fmt="%i")
 
 def load_ctab(name):
-    ctab = np.loadtxt(join(path, name+ext)) / cscale
+    ctab = np.loadtxt(join(path, name+ext))
+    ctab = np.clip(ctab / cscale, 0, 1.0)
     if ctab.shape[1] == 3:
         alpha = np.full((ctab.shape[0], 1), 1.0)
         ctab  = np.append(ctab, alpha, axis=1)
