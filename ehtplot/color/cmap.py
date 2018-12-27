@@ -25,12 +25,36 @@ from .ctab   import save_ctab
 
 Nq = 256 # number of quantization levels in a colormap
 
+def max_chroma(Jp, hp, eps=1.0-9):
+    c = np.cos(hp)
+    s = np.sin(hp)
+
+    CpU = np.full(len(Jp), 64.0)
+    CpL = np.full(len(Jp),  0.0)
+
+    for i in range(64):
+        Cp   = 0.5 * (CpU+CpL)
+        Jabp = np.stack([Jp, Cp*c, Cp*s], axis=-1)
+        sRGB = transform(Jabp, inverse=True)
+
+        if 1.0-eps <= np.max(sRGB) <= 1.0:
+            break
+
+        I = np.logical_or(np.amax(sRGB, -1) > 1.0,
+                          np.amin(sRGB, -1) < 0.0)
+        CpU[ I] = Cp[ I]
+        CpL[~I] = Cp[~I]
+    else:
+        print("WARNING: max_chroma() has not fully converged")
+
+    return Cp
+
 def new_cmap(N=Nq, darkest=15.0, lightest=95.0):
     v  = np.linspace(0, 1, num=N)
 
     Jp = np.linspace(darkest, lightest, num=N)
     hp = np.clip(np.linspace(-15.0, 105.0, num=N), 30.0, 90.0) * (np.pi/180.0)
-    Cp = 30 * (1 - (2*v-1)**4)
+    Cp = max_chroma(Jp=Jp, hp=hp)
 
     Jabp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
     sRGB = transform(Jabp, inverse=True)
