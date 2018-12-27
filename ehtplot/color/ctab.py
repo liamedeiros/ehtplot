@@ -41,7 +41,7 @@ def list_ctab():
 def save_ctab(ctab, name):
     if ctab.shape[1] == 4 and np.all(ctab[:,3] == 1.0):
         ctab = ctab[:,:3]
-    np.savetxt(name, np.rint(ctab * cscale).astype(int), fmt="%i")
+    np.savetxt(name, np.rint(np.clip(ctab, 0.0, 1.0) * cscale).astype(int), fmt="%i")
 
 def load_ctab(name):
     ctab = np.loadtxt(join(path, name+ext)) / cscale
