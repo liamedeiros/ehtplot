@@ -17,7 +17,8 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 import importlib.util as iu
-from os.path import join, dirname
+from os.path import join, dirname, basename, splitext
+from glob import glob
 
 import numpy as np
 
@@ -43,7 +44,10 @@ class Plot:
     """
 
     paths     = [join(dirname(__file__), "plots")]
-    plot_keys = ['image', 'cmap'] # TODO: automatically generate this list from paths
+    plot_keys = []
+    for p in paths:
+        files = glob(join(p, "*.py"))
+        plot_keys += [splitext(basename(f))[0] for f in files]
 
     @classmethod
     def isplotable(cls, p):
