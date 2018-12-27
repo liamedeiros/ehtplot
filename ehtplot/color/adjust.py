@@ -74,7 +74,7 @@ def uniformize(Jabp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
 
     return out
 
-def symmetrize(Jabp, softening=1.0):
+def symmetrize(Jabp, softening=1.0, bitonic=False):
     out = Jabp.copy()
     Jp  = out[:,0]
     Cp  = np.sqrt(out[:,1] * out[:,1] + out[:,2] * out[:,2])
@@ -82,6 +82,13 @@ def symmetrize(Jabp, softening=1.0):
     s = Cp + softening # function being symmetrized
     H = len(Cp)//2
     m = np.minimum(s[:H], np.flip(s[-H:]))
+
+    if bitonic: # force half of Cp increase monotonically
+        if m[H-1] > s[H]:
+            m[H-1] = s[H]
+        for i in range(H-1,0,-1):
+            if m[i-1] > m[i]:
+                m[i-1] = m[i]
 
     f = m / s[:H]
     out[:H,1] *= f
