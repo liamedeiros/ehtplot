@@ -35,7 +35,7 @@ def post(Jabp, cls, roundup, fname):
     save_ctab(transform(Jabp, inverse=True), fname+ext)
     print("    Rounded up to {}; saved to \"{}\"".format(roundup, fname+ext))
 
-    Jabp = symmetrize(Jabp)
+    Jabp = symmetrize(Jabp, bitonic=True)
     save_ctab(transform(Jabp, inverse=True), fname+"s"+ext)
     print("    Symmetrized; saved to \"{}\"".format(fname+"s"+ext))
 
