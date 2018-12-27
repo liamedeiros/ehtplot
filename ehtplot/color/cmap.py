@@ -25,12 +25,12 @@ from .ctab   import save_ctab
 
 Nq = 256 # number of quantization levels in a colormap
 
-def max_chroma(Jp, hp, eps=1.0-9):
+def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=1.0-9):
     c = np.cos(hp)
     s = np.sin(hp)
 
-    CpU = np.full(len(Jp), 64.0)
-    CpL = np.full(len(Jp),  0.0)
+    CpU = np.full(len(Jp), Cpmax)
+    CpL = np.full(len(Jp), Cpmin)
 
     for i in range(64):
         Cp   = 0.5 * (CpU+CpL)
@@ -49,14 +49,17 @@ def max_chroma(Jp, hp, eps=1.0-9):
 
     return Cp
 
-def new_cmap(N=Nq, darkest=15.0, lightnest=95.0, hp=None):
-    Jp = np.linspace(darkest, lightnest, num=N)
+def new_cmap(N=Nq,
+             Jpmin=15.0, Jpmax=95.0,
+             Cpmin= 0.0, Cpmax=64.0,
+             hp=None):
+    Jp = np.linspace(Jpmin, Jpmax, num=N)
     if hp is None:
         hp = np.clip(np.linspace(-15.0, 105.0, num=N), 30.0, 90.0)
     elif callable(hp):
         hp = hp(np.linspace(0.0, 1.0, num=N))
     hp *= np.pi/180.0
-    Cp = max_chroma(Jp=Jp, hp=hp)
+    Cp = max_chroma(Jp, hp, Cpmin=Cpmin, Cpmax=Cpmax)
 
     Jabp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
     Jabp = symmetrize(Jabp, bitonic=True)
