@@ -54,6 +54,8 @@ def ehtcmap(N=Nq,
             Cpmin= 0.0, Cpmax=64.0,
             hp=None,
             **kwargs):
+    name = kwargs.pop('name', "new eht colormap")
+
     Jp = np.linspace(Jpmin, Jpmax, num=N)
     if hp is None:
         hp = np.clip(np.linspace(-15.0, 105.0, num=N), 30.0, 90.0)
@@ -65,4 +67,4 @@ def ehtcmap(N=Nq,
     Jabp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
     Jabp = symmetrize(Jabp, **kwargs)
     sRGB = transform(Jabp, inverse=True)
-    return ListedColormap(np.clip(sRGB, 0, 1))
+    return ListedColormap(np.clip(sRGB, 0, 1), name=name)
