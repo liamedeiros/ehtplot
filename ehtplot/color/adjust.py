@@ -74,7 +74,11 @@ def uniformize(Jabp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
 
     return out
 
-def factor(Cp, softening=1.0, bitonic=True, diffuse=True, verbose=False):
+def factor(Cp,
+           softening=1.0,
+           bitonic=True,
+           diffuse=True,  CpL=None, CpR=None,
+           verbose=False):
     S = Cp + softening
     s = S.copy()
 
@@ -93,8 +97,13 @@ def factor(Cp, softening=1.0, bitonic=True, diffuse=True, verbose=False):
                 if verbose:
                     print("Enforce bitonic at {}".format(m[i]))
 
-    s[:H]  = m
+    s[:+H] = m
     s[-H:] = np.flip(m)
+
+    if CpL is not None:
+        s[ 0] = CpL + softening
+    if CpR is not None:
+        s[-1] = CpR + softening
 
     if diffuse: # diffuse s using forward Euler
         for i in range(N):
