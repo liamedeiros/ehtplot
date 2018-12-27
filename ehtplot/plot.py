@@ -21,6 +21,8 @@ from os.path import join, dirname
 
 import numpy as np
 
+from matplotlib.colors import Colormap
+
 try:
     basestring
 except NameError:
@@ -46,8 +48,12 @@ class Plot:
     @classmethod
     def isplotable(cls, p):
         """Check if the argument can be used as a Plot"""
-        return (not isinstance(p, np.ndarray) and
-                (isinstance(p, Plot) or callable(p) or p in cls.plot_keys))
+        if isinstance(p, np.ndarray): # special case 1
+            return False
+        elif callable(p) and not isinstance(p, Colormap): # special case 2
+            return True
+        else: # normal logic
+            return isinstance(p, Plot) or p in cls.plot_keys
 
     @classmethod
     def load_plot(cls, plot):
