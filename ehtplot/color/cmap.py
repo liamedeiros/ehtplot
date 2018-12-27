@@ -49,10 +49,10 @@ def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=1.0-9):
 
     return Cp
 
-def new_cmap(N=Nq,
-             Jpmin=15.0, Jpmax=95.0,
-             Cpmin= 0.0, Cpmax=64.0,
-             hp=None):
+def ehtcmap(N=Nq,
+            Jpmin=15.0, Jpmax=95.0,
+            Cpmin= 0.0, Cpmax=64.0,
+            hp=None):
     Jp = np.linspace(Jpmin, Jpmax, num=N)
     if hp is None:
         hp = np.clip(np.linspace(-15.0, 105.0, num=N), 30.0, 90.0)
