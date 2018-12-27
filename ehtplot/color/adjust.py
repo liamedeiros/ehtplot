@@ -102,12 +102,12 @@ def factor(Cp, softening=1.0, bitonic=True, diffuse=True, verbose=False):
 
     return s / S
 
-def symmetrize(Jabp, verbose=False):
+def symmetrize(Jabp, **kwargs):
     out = Jabp.copy()
     Jp  = out[:,0]
     Cp  = np.sqrt(out[:,1] * out[:,1] + out[:,2] * out[:,2])
 
-    f = factor(Cp, bitonic=True, verbose=False)
+    f = factor(Cp, **kwargs)
     out[:,1] *= f
     out[:,2] *= f
     return out
