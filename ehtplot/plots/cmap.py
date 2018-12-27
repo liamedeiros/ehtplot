@@ -25,6 +25,14 @@ except NameError:
     basestring = str # so that we can always test strings as in python2
 
 def plot_cmap(ax1, cmap):
+    """Plot J', C', and h' of a colormap as function of the mapped value
+
+    Args:
+        ax1 (matplotlib.axes.Axes): The matplotlib Axes to be plot on.
+        cmap (string or matplotlib.colors.Colormap): The colormap to
+            be plotted.
+
+    """
     ctab = ev.get_ctab(cmap)  # get the colormap as a color table in sRGB
     Jabp = ev.transform(ctab) # transform color table into CAM02-UCS colorspace
 

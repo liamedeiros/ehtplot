@@ -24,6 +24,14 @@ except NameError:
     basestring = str # so that we can always test strings as in python2
 
 def plot_pyramid(ax, cmap):
+    """Plot the pyramid image with the colormap `cmap`
+
+    Args:
+        ax (matplotlib.axes.Axes): The matplotlib Axes to be plot on.
+        cmap (string or matplotlib.colors.Colormap): The colormap to
+            be used in plotting the pyramid.
+
+    """
     ax.imshow(ev.pyramid(), cmap=cmap, vmin=0.0, vmax=1.0)
     ax.set_xticks([])
     ax.set_xticklabels([])
