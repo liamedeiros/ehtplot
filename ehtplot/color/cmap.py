@@ -20,7 +20,7 @@ import numpy as np
 
 from matplotlib.colors import ListedColormap
 
-from .adjust import transform
+from .adjust import transform, symmetrize
 from .ctab   import save_ctab
 
 Nq = 256 # number of quantization levels in a colormap
@@ -57,5 +57,6 @@ def new_cmap(N=Nq, darkest=15.0, lightest=95.0):
     Cp = max_chroma(Jp=Jp, hp=hp)
 
     Jabp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
+    Jabp = symmetrize(Jabp, bitonic=True)
     sRGB = transform(Jabp, inverse=True)
     return ListedColormap(np.clip(sRGB, 0, 1))
