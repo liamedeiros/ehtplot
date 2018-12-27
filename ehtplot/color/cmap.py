@@ -63,6 +63,6 @@ def ehtcmap(N=Nq,
     Cp = max_chroma(Jp, hp, Cpmin=Cpmin, Cpmax=Cpmax)
 
     Jabp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
-    Jabp = symmetrize(Jabp, bitonic=True, verbose=verbose)
+    Jabp = symmetrize(Jabp, verbose=verbose)
     sRGB = transform(Jabp, inverse=True)
     return ListedColormap(np.clip(sRGB, 0, 1))
