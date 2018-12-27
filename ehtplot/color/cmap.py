@@ -49,11 +49,11 @@ def max_chroma(Jp, hp, eps=1.0-9):
 
     return Cp
 
-def new_cmap(N=Nq, darkest=15.0, lightest=95.0):
-    v  = np.linspace(0, 1, num=N)
-
+def new_cmap(N=Nq, darkest=15.0, lightest=95.0, hp=None):
     Jp = np.linspace(darkest, lightest, num=N)
-    hp = np.clip(np.linspace(-15.0, 105.0, num=N), 30.0, 90.0) * (np.pi/180.0)
+    if hp is None:
+        hp = np.clip(np.linspace(-15.0, 105.0, num=N), 30.0, 90.0)
+    hp *= np.pi/180.0
     Cp = max_chroma(Jp=Jp, hp=hp)
 
     Jabp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
