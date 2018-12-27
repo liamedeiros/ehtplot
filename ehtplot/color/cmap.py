@@ -52,13 +52,17 @@ def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=1.0-9):
 def ehtcmap(N=Nq,
             Jpmin=15.0, Jpmax=95.0,
             Cpmin= 0.0, Cpmax=64.0,
+            hpmin=None, hpmax=90.0,
             hp=None,
             **kwargs):
     name = kwargs.pop('name', "new eht colormap")
 
     Jp = np.linspace(Jpmin, Jpmax, num=N)
     if hp is None:
-        hp = np.clip(np.linspace(-15.0, 105.0, num=N), 30.0, 90.0)
+        if hpmin is None:
+            hpmin = hpmax - 60.0
+        q  = 0.25 * (hpmax - hpmin)
+        hp = np.clip(np.linspace(hpmin-3*q, hpmax+q, num=N), hpmin, hpmax)
     elif callable(hp):
         hp = hp(np.linspace(0.0, 1.0, num=N))
     hp *= np.pi/180.0
