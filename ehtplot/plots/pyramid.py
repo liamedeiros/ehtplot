@@ -18,10 +18,15 @@
 
 from ehtplot.color import vis as ev
 
+try:
+    basestring
+except NameError:
+    basestring = str # so that we can always test strings as in python2
+
 def plot_pyramid(ax, cmap):
     ax.imshow(ev.pyramid(), cmap=cmap, vmin=0.0, vmax=1.0)
     ax.set_xticks([])
     ax.set_xticklabels([])
     ax.set_yticks([])
     ax.set_yticklabels([])
-    ax.set_title(cmap)
+    ax.set_title(cmap if isinstance(cmap, basestring) else cmap.name)

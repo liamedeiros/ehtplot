@@ -19,6 +19,11 @@
 import numpy as np
 from ehtplot.color import vis as ev
 
+try:
+    basestring
+except NameError:
+    basestring = str # so that we can always test strings as in python2
+
 def plot_cmap(ax1, cmap):
     ctab = ev.get_ctab(cmap)  # get the colormap as a color table in sRGB
     Jabp = ev.transform(ctab) # transform color table into CAM02-UCS colorspace
@@ -31,7 +36,7 @@ def plot_cmap(ax1, cmap):
     hp = np.arctan2(bp, ap) * 180 / np.pi
     v  = np.linspace(0.0, 1.0, len(Jp))
 
-    ax1.set_title(cmap)
+    ax1.set_title(cmap if isinstance(cmap, basestring) else cmap.name)
     ax1.set_xlabel("Value")
 
     ax2 = ax1.twinx()
