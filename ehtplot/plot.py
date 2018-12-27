@@ -43,7 +43,7 @@ class Plot:
     """
 
     paths     = [join(dirname(__file__), "plots")]
-    plot_keys = ['image'] # TODO: automatically generate this list from paths
+    plot_keys = ['image', 'cmap'] # TODO: automatically generate this list from paths
 
     @classmethod
     def isplotable(cls, p):
