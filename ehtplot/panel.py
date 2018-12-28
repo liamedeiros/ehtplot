@@ -103,7 +103,8 @@ class Panel:
 
         fig = ax.figure
         pos = ax.get_position()
-        ax0 = ax
+        axF = ax
+        axL = ax
 
         w = pos.x1 - pos.x0
         h = pos.y1 - pos.y0
@@ -130,17 +131,19 @@ class Panel:
                 else:
                     subax = fig.add_axes([pos.x0, pos.y0+i*h, w, h])
                 if i == 0:
-                    ax0 = subax
+                    axF = subax
+                if i == n_plots-1:
+                    axL = subax
                 p(subax, *args, **kwargs)
 
-        axes = getaxes(ax0)
+        axes = getaxes(axF)
 
         # This panel is left-most
         if pos.x0 < w:
             pass
         else:
-            ax0.set_yticklabels([])
-            ax0.yaxis.label.set_visible(False)
+            axF.set_yticklabels([])
+            axF.yaxis.label.set_visible(False)
 
         # This panel is right-most
         if 1.0 - pos.x1 < w:
@@ -150,8 +153,8 @@ class Panel:
         if pos.y0 < h:
             pass
         else:
-            ax0.set_xticklabels([])
-            ax0.xaxis.label.set_visible(False)
+            axF.set_xticklabels([])
+            axF.xaxis.label.set_visible(False)
 
         # This panel is at top
         if 1.0 - pos.y1 < h:
@@ -161,8 +164,8 @@ class Panel:
         if 'title' in self.kwprops:
             if len(self.plots) <= 1 or not self.kwprops['inrow']:
                 if 1.0 - pos.y1 < h: # top
-                    ax0.set_title(self.kwprops['title'])
+                    axF.set_title(self.kwprops['title'])
                 else:
                     pass # do nothing
             else:
-                ax0.set_ylabel(self.kwprops['title'])
+                axF.set_ylabel(self.kwprops['title'])
