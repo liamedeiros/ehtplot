@@ -21,12 +21,6 @@ from os.path import join, dirname, basename, splitext
 from glob import glob
 
 import numpy as np
-from matplotlib.colors import Colormap
-
-try:
-    basestring
-except NameError:
-    basestring = str # so that we can always test strings as in python2
 
 
 class Plot:
@@ -34,12 +28,14 @@ class Plot:
 
     The Plot class saves the plotting function, arguments, and
     keywords together so that a plot can be redrawn.  Its behavior is
-    very similar to a funciton closure.  The only difference is that
+    very similar to a function closure.  The only difference is that
     the keyworded arguments can be modified at "plot time".
 
     Attributes:
-        _prop_keys (list of strings): List of paths used by Plot to
-            look up plotting functions.
+        paths (list of strings): A list of paths used by Plot to look
+            up plotting functions.
+        plot_keys (list of strings): A list of valid names that can be
+            loaded into plotting functions.
 
     """
     paths     = [join(dirname(__file__), "plots")]
@@ -50,44 +46,71 @@ class Plot:
 
 
     @classmethod
-    def isplotable(cls, p):
-        """Check if the argument can be used as a Plot"""
-        if isinstance(p, np.ndarray): # special case 1
-            return False
-        elif callable(p) and not isinstance(p, Colormap): # special case 2
-            return True
-        else: # normal logic
-            return isinstance(p, Plot) or p in cls.plot_keys
-
-
-    @classmethod
-    def load_plot(cls, plot):
-        """Load a plotting function from directories in Plot.paths."""
-        func = "plot_"+plot
+    def load(cls, plot, prefix="plot_", ext=".py"):
+        """Load a plotting function from directories listed in Plot.paths."""
+        func_name = prefix+plot
         for path in cls.paths:
-            file = join(path, plot+".py")
+            file_name = join(path, plot+ext)
             try:
-                spec   = iu.spec_from_file_location(func, file)
+                spec   = iu.spec_from_file_location(func_name, file_name)
                 module = iu.module_from_spec(spec)
             except:
-                continue
+                continue # try next path
             spec.loader.exec_module(module)
-            return module.__dict__[func]
+            return module.__dict__[func_name]
         raise ImportError("failed to load \"{}\"".format(plot))
 
 
     @classmethod
-    def ensure_callable(cls, plot):
-        """Convert `plot` to callable when possible."""
-        if isinstance(plot, basestring):
-            return cls.load_plot(plot)
-        elif callable(plot):
-            return plot
-        else:
-            raise TypeError("`plot` must be a string or a callable")
+    def isplotable(cls, p):
+        """Check if the argument can be used as a Plot or Plots"""
+
+        # Recur to self if p is a tuple
+        if isinstance(p, tuple):
+            return all((cls.isplotable(q) for q in p))
+
+        # Numpy wants to do everything pointwisely so we take it out
+        # as a special case---numpy arrays are not plotable.
+        if isinstance(p, np.ndarray):
+            return False
+
+        # Base cases
+        return (isinstance(p, Plot) or callable(p)) or (p in cls.plot_keys)
 
 
-    def __init__(self, plot, *args, **kwargs):
+    @classmethod
+    def prepare(cls, p):
+        """Recursively convert generic plot to callable."""
+
+        # Recur to self if p is a tuple
+        if isinstance(p, tuple):
+            return tuple(cls.prepare(q) for q in p)
+
+        # Base cases
+        if isinstance(p, Plot) or callable(p):
+            return p
+        if p in cls.plot_keys:
+            return cls.load(p)
+
+        raise TypeError("Unexpected type")
+
+
+    @classmethod
+    def apply(cls, p, ax, args, kwargs):
+        """Recursively realize plot"""
+
+        # Recur to self if p is a tuple
+        if isinstance(p, tuple):
+            return tuple(cls.apply(q, ax, args, kwargs) for q in p)
+
+        # Base case
+        if isinstance(p, Plot) or callable(p):
+            return p(ax, *args, **kwargs)
+
+        raise TypeError("Unexpected type")
+
+
+    def __init__(self, plotable, *args, **kwargs):
         """Plot initializer
 
         The Panel class saves the plotting function, args, and kwargs
@@ -95,8 +118,11 @@ class Plot:
         class as a function.
 
         Args:
-            plot (string or callable): Name of the plotting function
-                or the plotting function itself.
+            plotable (Plot, callable, valid plot key, or tuple of any
+                of them): A variable that describes the plotting
+                functions.  It can be a Plot, a callable, a valid plot
+                key, or a tuple of any of them, i.e., anything that
+                returns a True from isplotable().
             *args (tuple): Variable length argument list that is
                 passed to the plotting function when realizing an
                 instance of Plot.
@@ -105,18 +131,17 @@ class Plot:
                 instance of Plot.
 
         Attributes:
-            plot (callable): The plotting function
+            plot (Plot, callable, or tuple of any of them): The
+                plotting function(s) generated from the `plotable`
+                argument.
             props (tuple): The default arguments when realizing an
                 instance of Plot.
             kwprops (dict): The default keywords when realizing an
                 instance of Plot.
 
         """
-        # Smart argument transform
-        plot = self.ensure_callable(plot)
-
-        # The actual constructor (aka the "base case")
-        self.plot    = plot
+        # TODO: smart argument transform to automatically split plot from args
+        self.plot    = self.prepare(plotable)
         self.props   = args
         self.kwprops = kwargs
 
@@ -140,9 +165,6 @@ class Plot:
                 instance of Plot.
 
         """
-        # Smart argument transform
         props   = args if args else self.props
         kwprops = {**self.kwprops, **kwargs}
-
-        # The actual plot realization (aka the "base case")
-        self.plot(ax, *props, *kwprops)
+        return self.apply(self.plot, ax, props, kwprops)
