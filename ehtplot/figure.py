@@ -66,8 +66,29 @@ class Figure:
         self.kwprops = {'style': 'ehtplot', **kwargs}
 
 
-    def __call__(self, *args, **kwargs):
-        """Figure drawer/renderer/realizer
+    def __call__(self, **kwargs):
+        """Figure realizer
+
+        The Figure class only keeps track of a root panel.  It does
+        not contain an actual matplotlib Figure instance.  Whenever a
+        figure needs to be created, Figure creates a new matplotlib
+        Figure in order to drew/rendered/realized the figure.
+
+        Args:
+
+            **kwargs (dict): Arbitrary Figure-specific keyworded
+                arguments that are used to construct the matplotlib
+                Figure.
+
+        """
+        kwprops = {**self.kwprops, **kwargs}
+        style = kwprops.pop('style')
+        plt.ioff()
+        return plt.figure(**kwprops)
+
+
+    def draw(self, *args, **kwargs):
+        """Figure drawer/renderer
 
         The Figure class only keeps track of a root panel.  It does
         not contain an actual matplotlib Figure instance.  Whenever a
@@ -85,26 +106,23 @@ class Figure:
         kwprops = {**self.kwprops, **kwprops}
 
         style = kwprops.pop('style')
-        fig   = plt.figure(**kwprops)
-        with plt.style.context(style):
-            ax = fig.add_axes([0, 0, 1, 1])
+        fig   = self(**kwprops)
+        ax    = fig.add_axes([0, 0, 1, 1])
+        with plt.style.context(style): # TODO: handle style in self.__call__()
             self.panel.draw(ax, *args, **kwargs) # TODO: how to handle returned
                                                  # variable from self.panel()
+        fig.canvas.draw_idle()
         return fig
 
 
     def show(self, *args, **kwargs):
         """Show the Figure"""
-        self(*args, **kwargs).show()
-
-
-    def draw(self, *args, **kwargs):
-        """Draw the Figure"""
-        self(*args, **kwargs).canvas.draw_idle()
+        fig = self.draw(*args, **kwargs)
+        fig.show()
 
 
     def save(self, files, *args, **kwargs):
         """Save the Figure"""
-        fig = self(*args, **kwargs)
+        fig = self.draw(*args, **kwargs)
         for file in ensure_list(files):
             fig.savefig(file)
