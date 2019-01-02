@@ -77,10 +77,11 @@ class Panel:
     def __call__(self, ax, **kwargs):
         """Panel realizer
 
-        Realize a panel to a list of matplotlib subaxeses by combining
-        the saved and new arguments.  It accepts the same keyworded
-        arguments as Plot.__init__().  Therefore, its argument list
-        matches Plot.__init__() with `panelable` replaced by `ax`.
+        Realize a panel to a generator of matplotlib subaxeses by
+        combining the saved and new arguments.  It accepts the same
+        keyworded arguments as Plot.__init__().  Therefore, its
+        argument list matches Plot.__init__() with `panelable`
+        replaced by `ax`.
 
         Args:
             ax (matplotlib.axis.Axes): A matplotlib Axes for Panel's
@@ -102,17 +103,16 @@ class Panel:
             else:
                 h /= n_panels
 
-        out, i = [], 0
+        i = 0
         for p in self.panels:
             if isinstance(p, Panel):
                 if kwprops['inrow']:
-                    out += [fig.add_axes([pos.x0+i*w, pos.y0, w, h])]
+                    yield fig.add_axes([pos.x0+i*w, pos.y0, w, h])
                 else:
-                    out += [fig.add_axes([pos.x0, pos.y0+i*h, w, h])]
+                    yield fig.add_axes([pos.x0, pos.y0+i*h, w, h])
                 i += 1
             else:
-                out += [ax]
-        return out
+                yield ax
 
 
     def draw(self, ax, *args, **kwargs):
