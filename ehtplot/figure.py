@@ -41,96 +41,55 @@ class Figure:
                   'figsize', 'dpi', 'facecolor', 'edgecolor', 'frameon']
 
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, panel, **kwargs):
         """Figure initializer
 
-        The Figure class can be initialized in two different ways.
-        The first way takes a single argument with type Panel, or a
-        single list of one Panel:
+        The Figure class takes a single argument with type Panel:
 
-            fig = Figure( p0 )
-            fig = Figure([p0])
+            fig = Figure(pnl, kw0=..., kw1=..., ...)
 
-        this makes `p0` the built-in root panel of `fig`.  The second
-        way takes arbitrary arguments and keywards,
-
-            fig = Figure( p0, p1, ...,  arg0, ..., kw0=..., ...)
-            fig = Figure([p0, p1, ...], arg0, ..., kw0=..., ...)
-
-        As long as the number of panel is not one, Figure will
-        automatically create a Panel class with the arguments and
-        keywords.  That this, the above statements are equvilient to
-
-            fig = Figure(Panel( p0, p1, ...,  arg0, ..., kw0=..., ...))
-            fig = Figure(Panel([p0, p1, ...], arg0, ..., kw0=..., ...))
-
-        If there is only one panel and none zero additional arguments
-        and keywords, the initializer will raise a type error.
+        this makes `pnl` the built-in root panel of `fig`.
 
         Args:
-            *args (tuple): Variable length argument list that is used
-                to determine what way a Figure is initialized.  If it
-                is a ehtplot.Panel or a list containing a single
-                ehtplot.Panel, then *args becomes the root panel of
-                the instantized Figure (if such a case, not kwargs is
-                allowed).  Otherwise, it is a variable length argument
-                list passed to create the root panel.
+            panel (ehtplot.Panel): The root panel of the Figure.
             **kwargs (dict): If Figure is initialized in the second
-                way, then this is an arbitrary keyword arguments
+                way, then this is an arbitrary keyworded arguments
                 passed to create the root panel.
 
         Attributes:
-            panel (ehtplot.Panel): The root panel.
-            kwprops (dict): The default keywords when creating a figure.
+            panel (ehtplot.Panel): The root panel of the Figure.
+            kwprops (dict): The default keywords for creating a
+                figure.
 
         """
-        # Smart argument transform
-        args,   plots   = Panel.split_args(args)
-        kwargs, kwprops = split_dict(kwargs, self._prop_keys)
-
-        # Smart panel construction
-        if len(plots) != 1 or not isinstance(plots[0], Panel):
-            self.__init__(Panel(*plots, *args, **kwargs), **kwprops)
-            return # done after calling self
-
-        # Check for errors
-        if args or kwargs:
-            raise ValueError("no argument or keyword is allowed when "+
-                             "passing a single ehtplot.Panel argument")
-
-        # The actual constructor (aka the "base case")
-        self.panel   = plots[0]
-        self.kwprops = {'style': 'ehtplot'}
-        self.kwprops.update(kwprops)
+        self.panel   = panel
+        self.kwprops = {'style': 'ehtplot', **kwargs}
 
 
     def __call__(self, *args, **kwargs):
-        """Figure realizer
+        """Figure drawer/renderer/realizer
 
         The Figure class only keeps track of a root panel.  It does
         not contain an actual matplotlib Figure instance.  Whenever a
-        drawing needs to be made, Figure creates a new matplotlib
-        Figure in order to render the figure.
+        figure needs to be created, Figure creates a new matplotlib
+        Figure in order to drew/rendered/realized the figure.
 
         Args:
             *args (tuple): Variable length argument list that is
-                passed to the root panel when realizing an instance of
-                Plot.
-            **kwargs (dict): Arbitrary keyword arguments that are
-                passed to the root panel the when realizing an
-                instance of Plot.
+                passed to the root panel.
+            **kwargs (dict): Arbitrary keyworded arguments that are
+                split into properties of the figure and the panel.
 
         """
-        # Smart argument transform
         kwargs, kwprops = split_dict(kwargs, self._prop_keys)
         kwprops = {**self.kwprops, **kwprops}
-        style   = kwprops.pop('style')
 
-        # The actual figure realization (aka the "base case")
-        fig = plt.figure(**kwprops)
+        style = kwprops.pop('style')
+        fig   = plt.figure(**kwprops)
         with plt.style.context(style):
             ax = fig.add_axes([0, 0, 1, 1])
-            self.panel(ax, *args, **kwargs)
+            self.panel(ax, *args, **kwargs) # TODO: how to handle returned
+                                            # variable from self.panel()
         return fig
 
 
