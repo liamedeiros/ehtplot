@@ -3,9 +3,9 @@
 import ehtplot as ep
 from ehtplot.extra import io
 
-img = ep.Panel(image=io.open("sample", component="pca0"))
-row = ep.Panel(img, img, img)
-fig = ep.Figure(row, row, inrow=False)
+img = ep.Panel(ep.Plot('image', io.open("sample", component="pca0")))
+row = ep.Panel([img, img, img])
+fig = ep.Figure(ep.Panel(row, row, inrow=False))
 
 exts = [".png", ".jpg"]
 
