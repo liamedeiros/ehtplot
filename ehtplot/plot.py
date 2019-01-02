@@ -16,9 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-import importlib.util as iu
-from os.path import join, dirname, basename, splitext
+from os.path import basename, dirname, join, splitext
 from glob import glob
+import importlib.util as iu
 
 import numpy as np
 
@@ -27,9 +27,10 @@ class Plot:
     """The Plot class has similar behavior compare to a function closure
 
     The Plot class saves the plotting function, arguments, and
-    keywords together so that a plot can be redrawn.  Its behavior is
-    very similar to a function closure.  The only difference is that
-    the keyworded arguments can be modified at "plot time".
+    keyworded arguments together so that a plot can be redrawn.  Its
+    behavior is very similar to a function closure.  The only
+    difference is that the keyworded arguments can be modified at
+    "plot time".
 
     Attributes:
         paths (list of strings): A list of paths used by Plot to look
@@ -39,18 +40,15 @@ class Plot:
 
     """
     paths     = [join(dirname(__file__), "plots")]
-    plot_keys = []
-    for p in paths:
-        files = glob(join(p, "*.py"))
-        plot_keys += [splitext(basename(f))[0] for f in files]
-
+    plot_keys = [splitext(basename(f))[0]
+                 for p in paths for f in glob(join(p, "*.py"))]
 
     @classmethod
-    def load(cls, plot, prefix="plot_", ext=".py"):
+    def _load(cls, plotable, prefix="plot_", ext=".py"):
         """Load a plotting function from directories listed in Plot.paths."""
-        func_name = prefix+plot
+        func_name = prefix+plotable
         for path in cls.paths:
-            file_name = join(path, plot+ext)
+            file_name = join(path, plotable+ext)
             try:
                 spec   = iu.spec_from_file_location(func_name, file_name)
                 module = iu.module_from_spec(spec)
@@ -58,56 +56,24 @@ class Plot:
                 continue # try next path
             spec.loader.exec_module(module)
             return module.__dict__[func_name]
-        raise ImportError("failed to load \"{}\"".format(plot))
+        raise ImportError("failed to load \"{}\"".format(plotable))
+
+
+    @classmethod
+    def _prepare(cls, p):
+        """Convert a generic plotable to a callable."""
+        return p if callable(p) else cls._load(p)
 
 
     @classmethod
     def isplotable(cls, p):
         """Check if the argument can be used as a Plot or Plots"""
-
-        # Recur to self if p is a tuple
-        if isinstance(p, tuple):
-            return all((cls.isplotable(q) for q in p))
-
         # Numpy wants to do everything pointwisely so we take it out
         # as a special case---numpy arrays are not plotable.
         if isinstance(p, np.ndarray):
             return False
-
-        # Base cases
-        return (isinstance(p, Plot) or callable(p)) or (p in cls.plot_keys)
-
-
-    @classmethod
-    def prepare(cls, p):
-        """Recursively convert generic plot to callable."""
-
-        # Recur to self if p is a tuple
-        if isinstance(p, tuple):
-            return tuple(cls.prepare(q) for q in p)
-
-        # Base cases
-        if isinstance(p, Plot) or callable(p):
-            return p
-        if p in cls.plot_keys:
-            return cls.load(p)
-
-        raise TypeError("Unexpected type")
-
-
-    @classmethod
-    def apply(cls, p, ax, args, kwargs):
-        """Recursively realize plot"""
-
-        # Recur to self if p is a tuple
-        if isinstance(p, tuple):
-            return tuple(cls.apply(q, ax, args, kwargs) for q in p)
-
-        # Base case
-        if isinstance(p, Plot) or callable(p):
-            return p(ax, *args, **kwargs)
-
-        raise TypeError("Unexpected type")
+        else:
+            return callable(p) or (p in cls.plot_keys)
 
 
     def __init__(self, plotable, *args, **kwargs):
@@ -118,30 +84,27 @@ class Plot:
         class as a function.
 
         Args:
-            plotable (Plot, callable, valid plot key, or tuple of any
-                of them): A variable that describes the plotting
-                functions.  It can be a Plot, a callable, a valid plot
-                key, or a tuple of any of them, i.e., anything that
-                returns a True from isplotable().
+            plotable (Plot, callable, or plot key): A variable that
+                describes the plotting functions.  It can be a Plot, a
+                callable, or a plot key, i.e., anything that returns a
+                True from isplotable().
             *args (tuple): Variable length argument list that is
                 passed to the plotting function when realizing an
                 instance of Plot.
-            **kwargs (dict): Arbitrary keyword arguments that are
+            **kwargs (dict): Arbitrary keyworded arguments that are
                 passed to the plotting function when realizing an
                 instance of Plot.
 
         Attributes:
-            plot (Plot, callable, or tuple of any of them): The
-                plotting function(s) generated from the `plotable`
-                argument.
+            plot (callable): The plotting function generated from the
+                `plotable` argument.
             props (tuple): The default arguments when realizing an
                 instance of Plot.
             kwprops (dict): The default keywords when realizing an
                 instance of Plot.
 
         """
-        # TODO: smart argument transform to automatically split plot from args
-        self.plot    = self.prepare(plotable)
+        self.plot    = self._prepare(plotable)
         self.props   = args
         self.kwprops = kwargs
 
@@ -156,15 +119,15 @@ class Plot:
 
         Args:
             ax (matplotlib.axis.Axes): A matplotlib Axes for Plot to
-                realize/draw on.
+                draw/render/realize on.
             *args (tuple): Variable length argument list that
                 overrides the saved on when realizing an instance of
                 Plot.
-            **kwargs (dict): Arbitrary keyword arguments that are
+            **kwargs (dict): Arbitrary keyworded arguments that are
                 passed to the plotting function the when realizing an
                 instance of Plot.
 
         """
         props   = args if args else self.props
         kwprops = {**self.kwprops, **kwargs}
-        return self.apply(self.plot, ax, props, kwprops)
+        return self.plot(ax, *props, **kwprops)
