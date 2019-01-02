@@ -21,9 +21,9 @@ from .helpers import split_dict, getaxes
 
 
 class Panel:
-    """The "node" class for hierarchically organizing subpanels in ehtplot
+    """The "node" class for hierarchically organizing plots in ehtplot
 
-    The Panel class is the "node class" that allows ehtplot to
+    The Panel class is the "container" that allows ehtplot to
     hierarchically organize subpanels and subplots, and to manage
     their properties.
 
@@ -38,23 +38,15 @@ class Panel:
 
 
     @classmethod
-    def _prepare(cls, p):
-        """Convert a generic panelable to a list."""
-        return p if isinstance(p, list) else [p]
-
-
-    @classmethod
     def ispanelable(cls, p):
-        """Check if the argument can be used as a Panel or Panels"""
-        # Recur to self if p is a list
-        if isinstance(p, list):
-            return all(map(cls.ispanelable, p))
+        """Check if the argument can be used in a Panel"""
         # Numpy wants to do everything pointwisely so we take it out
         # as a special case---numpy arrays are not panelable.
         if isinstance(p, np.ndarray):
             return False
         else:
-            return isinstance(p, (Panel, Plot))
+            return (isinstance(p, list) and
+                    all(map(lambda q: isinstance(q, (cls, Plot)), p)))
 
 
     def __init__(self, panelable, **kwargs):
@@ -65,9 +57,8 @@ class Panel:
         their properties.
 
         Args:
-            *args (tuple): Variable length argument list that contains
-                subpanels, subplots, or list of them, i.e., anything
-                that returns a True from ispanelable().
+            panelable (list): A list that contains subpanels and/or
+                subplots.
             **kwargs (dict): Arbitrary keyworded arguments that are
                 passed to the subaxes constructor when realizing an
                 instance of Panel.
@@ -79,7 +70,7 @@ class Panel:
                 subaxeses when realizing an instance of Panel.
 
         """
-        self.panels  = self._prepare(panelable)
+        self.panels  = panelable
         self.kwprops = {**self._default_kwprops, **kwargs}
 
 
