@@ -28,11 +28,13 @@ class Panel:
     their properties.
 
     Attributes:
-        _prop_keys (list of strings): List of graphics keywords used
-            by Panel to create a panel.
+        _default_kwprops (dict): Default keyworded properties used by
+            Panel to create a panel.
+        _prop_keys (dict_keys): Keys of _default_kwprops.
 
     """
-    _prop_keys = ['inrow', 'title']
+    _default_kwprops = {'inrow': True, 'title': None}
+    _prop_keys = _default_kwprops.keys()
 
 
     @classmethod
@@ -78,7 +80,7 @@ class Panel:
 
         """
         self.panels  = self._prepare(panelable)
-        self.kwprops = {'inrow': True, **kwargs}
+        self.kwprops = {**self._default_kwprops, **kwargs}
 
 
     def __call__(self, ax, *args, **kwargs):
