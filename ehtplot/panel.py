@@ -17,17 +17,15 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 from .plot    import Plot
-from .helpers import ensure_list, split_dict, getaxes, getbce, broadcast
+from .helpers import split_dict, getaxes
 
 
 class Panel:
-    """The "node" class for hierarchically organizing subplots in ehtplot
+    """The "node" class for hierarchically organizing subpanels in ehtplot
 
-    The Panel class is the "organization class" that allows ehtplot to
-    hierarchically organize subplots and manage subplot properties.
-    In each ehtplot Figure, there is always one root Panel instance.
-    The root Panel can directly contain a single matplotlib axes or a
-    set of subpanels.
+    The Panel class is the "node class" that allows ehtplot to
+    hierarchically organize subpanels and subplots, and to manage
+    their properties.
 
     Attributes:
         _prop_keys (list of strings): List of graphics keywords used
@@ -38,123 +36,85 @@ class Panel:
 
 
     @classmethod
-    def split_args(cls, args):
-        """Split plotables out from an argument list"""
-        l, c = [], 0
-        for a in args:
-            a = ensure_list(a, lambda p: isinstance(p, Panel) or
-                                         Plot.isplotable(p))
-            if a:
-                l += a
-            else:
-                break
-            c += 1
-        return args[c:], l
+    def _prepare(cls, p):
+        """Convert a generic panelable to a list."""
+        return p if isinstance(p, list) else [p]
 
 
-    @staticmethod
-    def count(plotables):
-        """Count number of plots and panels in a list of plotables"""
-        n_plots, n_panels = 0, 0
-        for p in plotables:
-            if   isinstance(p, Plot):
-                n_plots  += 1
-            elif isinstance(p, Panel):
-                n_panels += 1
-            else:
-                raise ValueError("unexpected types found in list of plotables")
-        return n_plots, n_panels
+    @classmethod
+    def ispanelable(cls, p):
+        """Check if the argument can be used as a Panel or Panels"""
+        # Recur to self if p is a list
+        if isinstance(p, list):
+            return all(map(cls.ispanelable, p))
+        # Numpy wants to do everything pointwisely so we take it out
+        # as a special case---numpy arrays are not panelable.
+        if isinstance(p, np.ndarray):
+            return False
+        else:
+            return isinstance(p, (Panel, Plot))
 
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, panelable, **kwargs):
         """Panel initializer
 
-        The Panel class can be initialized with both subpanels and
-        plots.  To create subpanels, pass multiple arguments with type
-        Panel or a list of Panels:
-
-            pnl = Panel( p0, p1, ...,  arg0, ..., kw0=..., ...)
-            pnl = Panel([p0, p1, ...], arg0, ..., kw0=..., ...)
-
-        this makes `p0`, `p1`, etc the subpanel of `pnl`.
-
-        There are multiple ways to create plots.  To use ehtplot's
-        built-in plotter, one can simpmlly pass the data with proper
-        keywords, e.g.,
-
-            pnl = Panel(image=img_array)
-
-        User can also supply custom plotter based on matplotlib,
-
-            def myimshow(img_array):
-                 ....
-            pnl = Panel(myimshow, img_array)
+        The Panel class is the "node class" that allows ehtplot to
+        hierarchically organize subpanels and subplots, and to manage
+        their properties.
 
         Args:
-            *args (tuple): Variable length argument list that is used
-                to determine what way a Panel is initialized.  If it
-                contains ehtplot.Panel's or a list containing
-                ehtplot.Panel's, then they become the subpanels of the
-                instantized Panel.  Otherwise, they will be passed as
-                a variable length argument list to create the
-                subpanels or plots.
-            **kwargs (dict): If a keyword is recognized as a built-in
-                plotter, then the keyed value will become the data
-                passed to the plotter.  All the remaining keyworeded
-                arugments will be passed as an arbitrary keyword
-                arguments passed to create the root panel.
+            *args (tuple): Variable length argument list that contains
+                subpanels, subplots, or list of them, i.e., anything
+                that returns a True from ispanelable().
+            **kwargs (dict): Arbitrary keyworded arguments that are
+                passed to the subaxes constructor when realizing an
+                instance of Panel.
 
         Attributes:
-            plotables (list of ehtplot.Plot and ehtplot.Panel): The
-                root plotables.
-            kwprops (dict): The default keywords when creating a panel.
+            panels (list): A list of subpanels, subplots, or list of
+                them generated from the `args` argument.
+            kwprops (dict): The default keywords used in creating
+                subaxeses when realizing an instance of Panel.
 
         """
-        # Smart argument transform
-        args,   plots            = self.split_args(args)
-        kwargs, kwplots, kwprops = split_dict(kwargs, Plot.plot_keys,
-                                                      self._prop_keys)
-        # The actual constructor
-        self.plotables = []
-        self.kwprops   = {'inrow': True}
-        self.kwprops.update(kwprops)
-
-        # Add and create Panels and Plots
-        allargses = broadcast(args, kwargs)
-        n         = len(allargses)
-        Make      = Plot if n == 1 else Panel
-
-        for p in plots:
-            if isinstance(p, (Panel, Plot)):
-                self.plotables += [p]
-                continue # done for this `p`
-            for args, kwargs in allargses:
-                self.plotables += [Make(p, *args, **kwargs)]
-
-        for p, d in kwplots.items():
-            for i, (args, kwargs) in enumerate(allargses):
-                self.plotables += [Make(p, getbce(d, i), *args, **kwargs)]
+        self.panels  = self._prepare(panelable)
+        self.kwprops = {'inrow': True, **kwargs}
 
 
     def __call__(self, ax, *args, **kwargs):
-        """Panel realizer
+        """Panel drawer/renderer/realizer
 
-        Realize all plotables in the `self.plotables[]` array.  This
-        means realizing all plots and panels in the array using the
-        parent Axes `ax` and new Axeses.
+        Realize, i.e., draw or render, a panel by combining the saved
+        and new arguments.  Its argument list is designed to match
+        Plot.__call__() so that a Panel and Plot called in the same
+        way.  This duck typing allows Panel to realize all its
+        subpanels and subplots recusively.  Saved and new panel
+        properties are combined to create subaxeses.  The passed
+        `args` and non-panel-specific keyworded arguments are passed
+        recusively to the subpanels and eventially to some ehtplot
+        Plots.
 
         Args:
-            ax (matplotlib.axis.Axes): A matplotlib Axes for Plot to
-                realize/draw on.
-            *args (tuple): Variable length argument list that
-                overrides the saved on when realizing an instance of
-                Panel.
-            **kwargs (dict): Arbitrary keyword arguments that are
-                passed to the plotting function the when realizing an
-                instance of Panel.
+            ax (matplotlib.axis.Axes): A matplotlib Axes for Panel to
+                draw/render/realize on.
+            *args (tuple): Variable length argument list that is
+                eventually passed to some ehtplot Plots.
+            **kwargs (dict): Arbitrary keyworded arguments that are
+                split into panel-specific and non-panel-specific
+                keyworded arguments.  The panel-specific ones are used
+                to construct the subaxeses, while others are
+                eventually passed to some ehtplot Plots.
 
         """
-        n_plots, n_panels = self.count(self.plotables)
+        kwargs, kwprops = split_dict(kwargs, self._prop_keys)
+        kwprops = {**self.kwprops, **kwprops}
+
+        n_plots, n_panels = 0, 0
+        for p in self.panels:
+            if isinstance(p, Panel):
+                n_panels += 1
+            else:
+                n_plots  += 1
 
         fig = ax.figure
         pos = ax.get_position()
@@ -172,15 +132,10 @@ class Panel:
             else:
                 h /= n_panels
 
-        for i, p in enumerate(self.plotables):
-            if isinstance(p, Plot):
-                p(ax, *args, **kwargs)
-                # Steal title from matplotlib Axes and put it in ehtplot Panel
-                title = ax.get_title()
-                if title is not None:
-                    self.kwprops['title'] = title
-                    ax.set_title(None)
-            elif isinstance(p, Panel):
+        out = []
+        i   = 0
+        for p in self.panels:
+            if isinstance(p, Panel):
                 if self.kwprops['inrow']:
                     subax = fig.add_axes([pos.x0+i*w, pos.y0, w, h])
                 else:
@@ -189,7 +144,15 @@ class Panel:
                     axF = subax
                 if i == n_plots-1:
                     axL = subax
-                p(subax, *args, **kwargs)
+                out += [p(subax, *args, **kwargs)]
+                i   += 1
+            else:
+                out += [p(ax, *args, **kwargs)]
+                # Steal title from matplotlib Axes and put it in ehtplot Panel
+                title = ax.get_title()
+                if title is not None:
+                    self.kwprops['title'] = title
+                    ax.set_title(None)
 
         axes = getaxes(axF)
 
@@ -217,10 +180,12 @@ class Panel:
 
         # Take care of panel title
         if 'title' in self.kwprops:
-            if len(self.plotables) <= 1 or not self.kwprops['inrow']:
+            if len(self.panels) <= 1 or not self.kwprops['inrow']:
                 if 1.0 - pos.y1 < h: # top
                     axF.set_title(self.kwprops['title'])
                 else:
                     pass # do nothing
             else:
                 axF.set_ylabel(self.kwprops['title'])
+
+        return out
