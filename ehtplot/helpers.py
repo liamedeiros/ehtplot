@@ -113,7 +113,7 @@ def broadcast(args, kwargs):
     Args:
         *args (tuple): Variable length argument list that contains
             objects or list of objects.
-        **kwargs (dict): Arbitrary keyword arguments that contains
+        **kwargs (dict): Arbitrary keyworded arguments that contains
             objects or list of objects.
 
     Returns:
