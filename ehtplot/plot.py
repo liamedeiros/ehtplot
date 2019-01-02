@@ -110,12 +110,12 @@ class Plot:
 
 
     def __call__(self, ax, *args, **kwargs):
-        """Plot drawer/renderer/realizer
+        """Plot realizer
 
-        Realize, i.e., draw or render, a plot by combining the saved
-        and new arguments.  The realization uses the new `args` list
-        if it is provided, and uses the saved attribute otherwise.
-        Saved and new `kwargs` are always combined.
+        Realize a plot by combining the saved and new arguments.  The
+        realization uses the new `args` list if it is provided, and
+        uses the saved attribute otherwise.  Saved and new `kwargs`
+        are always combined.
 
         Args:
             ax (matplotlib.axis.Axes): A matplotlib Axes for Plot to
@@ -131,3 +131,24 @@ class Plot:
         props   = args if args else self.props
         kwprops = {**self.kwprops, **kwargs}
         return self.plot(ax, *props, **kwprops)
+
+    def draw(self, ax, *args, **kwargs):
+        """Plot drawer/renderer
+
+        Draw or render a plot by combining the saved and new
+        arguments.  This function is identical to `Plot.__call__()`.
+        It matches Panel.draw() in order to do recursion with duck
+        typing.
+
+        Args:
+            ax (matplotlib.axis.Axes): A matplotlib Axes for Plot to
+                draw/render/realize on.
+            *args (tuple): Variable length argument list that
+                overrides the saved on when realizing an instance of
+                Plot.
+            **kwargs (dict): Arbitrary keyworded arguments that are
+                passed to the plotting function the when realizing an
+                instance of Plot.
+
+        """
+        return self(ax, *args, **kwargs)

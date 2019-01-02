@@ -74,111 +74,72 @@ class Panel:
         self.kwprops = {**self._default_kwprops, **kwargs}
 
 
-    def __call__(self, ax, *args, **kwargs):
-        """Panel drawer/renderer/realizer
+    def __call__(self, ax, **kwargs):
+        """Panel realizer
 
-        Realize, i.e., draw or render, a panel by combining the saved
-        and new arguments.  Its argument list is designed to match
-        Plot.__call__() so that a Panel and Plot called in the same
-        way.  This duck typing allows Panel to realize all its
-        subpanels and subplots recusively.  Saved and new panel
-        properties are combined to create subaxeses.  The passed
-        `args` and non-panel-specific keyworded arguments are passed
-        recusively to the subpanels and eventially to some ehtplot
-        Plots.
+        Realize a panel to a list of matplotlib subaxeses by combining
+        the saved and new arguments.  It accepts the same keyworded
+        arguments as Plot.__init__().  Therefore, its argument list
+        matches Plot.__init__() with `panelable` replaced by `ax`.
+
+        Args:
+            ax (matplotlib.axis.Axes): A matplotlib Axes for Panel's
+                subaxeses to realize on.
+            **kwargs (dict): Arbitrary Panel-specific keyworded
+                arguments that are used to construct the subaxeses.
+
+        """
+        kwprops = {**self.kwprops, **kwargs}
+
+        n_panels = list(map(type, self.panels)).count(Panel)
+        if n_panels:
+            fig = ax.figure
+            pos = ax.get_position()
+            w   = pos.x1 - pos.x0
+            h   = pos.y1 - pos.y0
+            if kwprops['inrow']:
+                w /= n_panels
+            else:
+                h /= n_panels
+
+        out, i = [], 0
+        for p in self.panels:
+            if isinstance(p, Panel):
+                if kwprops['inrow']:
+                    out += [fig.add_axes([pos.x0+i*w, pos.y0, w, h])]
+                else:
+                    out += [fig.add_axes([pos.x0, pos.y0+i*h, w, h])]
+                i += 1
+            else:
+                out += [ax]
+        return out
+
+
+    def draw(self, ax, *args, **kwargs):
+        """Panel drawer/renderer
+
+        Draw or render a Panel by combining the saved and new
+        arguments.  Its argument list is designed to match Plot.draw()
+        so that a Panel and Plot draw in the same way.  This duck
+        typing allows Panel to draw all its subpanels and subplots
+        recusively.  Saved and new panel properties are combined to
+        create subaxeses.  The passed `args` and non-Panel-specific
+        keyworded arguments are passed recusively to the subpanels and
+        eventially to some ehtplot Plots.
 
         Args:
             ax (matplotlib.axis.Axes): A matplotlib Axes for Panel to
-                draw/render/realize on.
+                draw/render on.
             *args (tuple): Variable length argument list that is
                 eventually passed to some ehtplot Plots.
             **kwargs (dict): Arbitrary keyworded arguments that are
-                split into panel-specific and non-panel-specific
-                keyworded arguments.  The panel-specific ones are used
+                split into Panel-specific and non-Panel-specific
+                keyworded arguments.  The Panel-specific ones are used
                 to construct the subaxeses, while others are
                 eventually passed to some ehtplot Plots.
 
         """
         kwargs, kwprops = split_dict(kwargs, self._prop_keys)
         kwprops = {**self.kwprops, **kwprops}
-
-        n_plots, n_panels = 0, 0
-        for p in self.panels:
-            if isinstance(p, Panel):
-                n_panels += 1
-            else:
-                n_plots  += 1
-
-        fig = ax.figure
-        pos = ax.get_position()
-        axF = ax
-        axL = ax
-
-        w = pos.x1 - pos.x0
-        h = pos.y1 - pos.y0
-
-        if n_plots == 0:
-            ax.axis('off')
-        if n_panels != 0:
-            if self.kwprops['inrow']:
-                w /= n_panels
-            else:
-                h /= n_panels
-
-        out = []
-        i   = 0
-        for p in self.panels:
-            if isinstance(p, Panel):
-                if self.kwprops['inrow']:
-                    subax = fig.add_axes([pos.x0+i*w, pos.y0, w, h])
-                else:
-                    subax = fig.add_axes([pos.x0, pos.y0+i*h, w, h])
-                if i == 0:
-                    axF = subax
-                if i == n_plots-1:
-                    axL = subax
-                out += [p(subax, *args, **kwargs)]
-                i   += 1
-            else:
-                out += [p(ax, *args, **kwargs)]
-                # Steal title from matplotlib Axes and put it in ehtplot Panel
-                title = ax.get_title()
-                if title is not None:
-                    self.kwprops['title'] = title
-                    ax.set_title(None)
-
-        axes = getaxes(axF)
-
-        # This panel is left-most
-        if pos.x0 < w:
-            pass
-        else:
-            axF.set_yticklabels([])
-            axF.yaxis.label.set_visible(False)
-
-        # This panel is right-most
-        if 1.0 - pos.x1 < w:
-            pass
-
-        # This panel is at bottom
-        if pos.y0 < h:
-            pass
-        else:
-            axF.set_xticklabels([])
-            axF.xaxis.label.set_visible(False)
-
-        # This panel is at top
-        if 1.0 - pos.y1 < h:
-            pass
-
-        # Take care of panel title
-        if 'title' in self.kwprops:
-            if len(self.panels) <= 1 or not self.kwprops['inrow']:
-                if 1.0 - pos.y1 < h: # top
-                    axF.set_title(self.kwprops['title'])
-                else:
-                    pass # do nothing
-            else:
-                axF.set_ylabel(self.kwprops['title'])
-
-        return out
+        return [p.draw(a, *args, **kwargs) # this is the recursion
+                for p, a in zip(self.panels, self(ax, **kwprops))]

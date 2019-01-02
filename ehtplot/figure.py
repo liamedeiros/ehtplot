@@ -88,8 +88,8 @@ class Figure:
         fig   = plt.figure(**kwprops)
         with plt.style.context(style):
             ax = fig.add_axes([0, 0, 1, 1])
-            self.panel(ax, *args, **kwargs) # TODO: how to handle returned
-                                            # variable from self.panel()
+            self.panel.draw(ax, *args, **kwargs) # TODO: how to handle returned
+                                                 # variable from self.panel()
         return fig
 
 
