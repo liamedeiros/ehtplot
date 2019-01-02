@@ -78,23 +78,6 @@ def split_dict(inp, *keyses):
     return out[0] if keyses == () else out
 
 
-def newaxes(fig, box=(0,0,1,1)):
-    """Create an axes with hidden axises"""
-    ax = fig.add_axes(box)
-    ax.axis('off')
-    return ax
-
-
-def getaxes(ax0):
-    """Get all axeses, e.g. twinx, from a single axes"""
-    axes = [ax0]
-    for pair in ax0._twinned_axes:
-        if ax0 in pair:
-            axes += list(set(pair).difference([ax0]))
-    # TODO: ensure that all axes have the same position
-    return axes
-
-
 def getbce(obj, i):
     """Get broadcasted element"""
     if not isinstance(obj, list) or len(obj) == 0:

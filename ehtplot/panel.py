@@ -17,7 +17,8 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 from .plot    import Plot
-from .helpers import split_dict, newaxes, getaxes
+from .helpers import split_dict
+from .layouts import getaxes, newaxes
 
 
 class Panel:

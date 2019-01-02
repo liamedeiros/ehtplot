@@ -22,7 +22,8 @@ import matplotlib        as mpl
 import matplotlib.pyplot as plt
 
 from .panel   import Panel
-from .helpers import ensure_list, split_dict, newaxes
+from .helpers import ensure_list, split_dict
+from .layouts import newaxes
 
 
 class Figure:
