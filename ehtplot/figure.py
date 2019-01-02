@@ -22,7 +22,7 @@ import matplotlib        as mpl
 import matplotlib.pyplot as plt
 
 from .panel   import Panel
-from .helpers import ensure_list, split_dict
+from .helpers import ensure_list, split_dict, newaxes
 
 
 class Figure:
@@ -96,7 +96,9 @@ class Figure:
             if imode:
                 plt.ioff()
 
-            yield plt.figure(**kwprops)
+            fig = plt.figure(**kwprops)
+            ax  = newaxes(fig)
+            yield fig, ax
 
             if imode:
                 plt.ion()
@@ -120,11 +122,9 @@ class Figure:
         kwargs, kwprops = split_dict(kwargs, self._prop_keys)
         kwprops = {**self.kwprops, **kwprops}
 
-        with self(**kwprops) as fig:
-            ax = fig.add_axes([0, 0, 1, 1])
-            self.panel.draw(ax, *args, **kwargs) # TODO: how to handle returned
-                                                 # variable from self.panel()
-        fig.canvas.draw_idle()
+        with self(**kwprops) as (fig, ax):
+            self.panel.draw(ax, *args, **kwargs)
+
         return fig
 
 

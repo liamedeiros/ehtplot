@@ -78,6 +78,13 @@ def split_dict(inp, *keyses):
     return out[0] if keyses == () else out
 
 
+def newaxes(fig, box=(0,0,1,1)):
+    """Create an axes with hidden axises"""
+    ax = fig.add_axes(box)
+    ax.axis('off')
+    return ax
+
+
 def getaxes(ax0):
     """Get all axeses, e.g. twinx, from a single axes"""
     axes = [ax0]

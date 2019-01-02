@@ -17,7 +17,7 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 from .plot    import Plot
-from .helpers import split_dict, getaxes
+from .helpers import split_dict, newaxes, getaxes
 
 
 class Panel:
@@ -92,9 +92,10 @@ class Panel:
         """
         kwprops = {**self.kwprops, **kwargs}
 
+        fig = ax.figure
+
         n_panels = list(map(type, self.panels)).count(Panel)
         if n_panels:
-            fig = ax.figure
             pos = ax.get_position()
             w   = pos.x1 - pos.x0
             h   = pos.y1 - pos.y0
@@ -107,11 +108,12 @@ class Panel:
         for p in self.panels:
             if isinstance(p, Panel):
                 if kwprops['inrow']:
-                    yield fig.add_axes([pos.x0+i*w, pos.y0, w, h])
+                    yield newaxes(fig, [pos.x0+i*w, pos.y0, w, h])
                 else:
-                    yield fig.add_axes([pos.x0, pos.y0+i*h, w, h])
+                    yield newaxes(fig, [pos.x0, pos.y0+i*h, w, h])
                 i += 1
             else:
+                ax.axis('on')
                 yield ax
 
 
@@ -141,5 +143,5 @@ class Panel:
         """
         kwargs, kwprops = split_dict(kwargs, self._prop_keys)
         kwprops = {**self.kwprops, **kwprops}
-        return [p.draw(a, *args, **kwargs) # this is the recursion
+        return [p.draw(a, *args, **kwargs)
                 for p, a in zip(self.panels, self(ax, **kwprops))]
