@@ -18,7 +18,7 @@
 
 from .plot    import Plot
 from .helpers import split_dict
-from .layouts import getaxes, newaxes
+from .layouts import divide, newaxes, getaxes
 
 
 class Panel:
@@ -93,26 +93,14 @@ class Panel:
         """
         kwprops = {**self.kwprops, **kwargs}
 
-        fig = ax.figure
+        box = divide(ax.get_position(),
+                     list(map(type, self.panels)).count(Panel),
+                     inrow=kwprops['inrow'])
 
-        n_panels = list(map(type, self.panels)).count(Panel)
-        if n_panels:
-            pos = ax.get_position()
-            w   = pos.x1 - pos.x0
-            h   = pos.y1 - pos.y0
-            if kwprops['inrow']:
-                w /= n_panels
-            else:
-                h /= n_panels
-
-        i = 0
         for p in self.panels:
             if isinstance(p, Panel):
-                if kwprops['inrow']:
-                    yield newaxes(fig, [pos.x0+i*w, pos.y0, w, h])
-                else:
-                    yield newaxes(fig, [pos.x0, pos.y0+i*h, w, h])
-                i += 1
+                subax = newaxes(ax.figure, next(box))
+                yield subax
             else:
                 ax.axis('on')
                 yield ax

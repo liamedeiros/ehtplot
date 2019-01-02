@@ -16,6 +16,19 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+def divide(pos, n, inrow=True):
+    w = pos.x1 - pos.x0
+    h = pos.y1 - pos.y0
+    if inrow:
+        w /= n
+        box = lambda i: (pos.x0+i*w, pos.y0, w, h)
+    else:
+        h /= n
+        box = lambda i: (pos.x0, pos.y0+i*h, w, h)
+    for i in range(n):
+        yield box(i)
+
+
 def newaxes(fig, box=(0,0,1,1)):
     """Create an axes with hidden axises"""
     ax = fig.add_axes(box)
