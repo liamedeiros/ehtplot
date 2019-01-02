@@ -16,6 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+from contextlib import contextmanager
+
+import matplotlib        as mpl
 import matplotlib.pyplot as plt
 
 from .panel   import Panel
@@ -66,6 +69,7 @@ class Figure:
         self.kwprops = {'style': 'ehtplot', **kwargs}
 
 
+    @contextmanager
     def __call__(self, **kwargs):
         """Figure realizer
 
@@ -82,9 +86,20 @@ class Figure:
 
         """
         kwprops = {**self.kwprops, **kwargs}
-        style = kwprops.pop('style')
-        plt.ioff()
-        return plt.figure(**kwprops)
+        style   = kwprops.pop('style')
+
+        with mpl.rc_context():
+            mpl.rcdefaults()
+            plt.style.use(style)
+
+            imode = mpl.is_interactive()
+            if imode:
+                plt.ioff()
+
+            yield plt.figure(**kwprops)
+
+            if imode:
+                plt.ion()
 
 
     def draw(self, *args, **kwargs):
@@ -105,10 +120,8 @@ class Figure:
         kwargs, kwprops = split_dict(kwargs, self._prop_keys)
         kwprops = {**self.kwprops, **kwprops}
 
-        style = kwprops.pop('style')
-        fig   = self(**kwprops)
-        ax    = fig.add_axes([0, 0, 1, 1])
-        with plt.style.context(style): # TODO: handle style in self.__call__()
+        with self(**kwprops) as fig:
+            ax = fig.add_axes([0, 0, 1, 1])
             self.panel.draw(ax, *args, **kwargs) # TODO: how to handle returned
                                                  # variable from self.panel()
         fig.canvas.draw_idle()
