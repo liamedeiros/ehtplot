@@ -1,5 +1,5 @@
-# Copyright (C) 2018 Chi-kwan Chan
-# Copyright (C) 2018 Steward Observatory
+# Copyright (C) 2018--2019 Chi-kwan Chan
+# Copyright (C) 2018--2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #
@@ -19,11 +19,13 @@
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import register_cmap
 
-from ehtplot.color.ctab import list_ctab, load_ctab
+from .ctab import list_ctab, load_ctab
+
 
 def unmodified(name):
     chars = set("0123456789lus")
     return "_" not in name or not set(name.rsplit("_", 1)[1]) <= chars
+
 
 def register(name=None, cmap=None):
     if name is None:

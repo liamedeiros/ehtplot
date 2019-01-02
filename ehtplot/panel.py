@@ -1,5 +1,5 @@
-# Copyright (C) 2017--2018 Lia Medeiros & Chi-kwan Chan
-# Copyright (C) 2017--2018 Steward Observatory
+# Copyright (C) 2017--2019 Lia Medeiros & Chi-kwan Chan
+# Copyright (C) 2017--2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #
@@ -19,6 +19,7 @@
 from .plot    import Plot
 from .helpers import ensure_list, split_dict, getaxes, getbce, broadcast
 
+
 class Panel:
     """The "node" class for hierarchically organizing subplots in ehtplot
 
@@ -33,8 +34,8 @@ class Panel:
             by Panel to create a panel.
 
     """
-
     _prop_keys = ['inrow', 'title']
+
 
     @classmethod
     def split_args(cls, args):
@@ -50,6 +51,7 @@ class Panel:
             c += 1
         return args[c:], l
 
+
     @staticmethod
     def count(plotables):
         """Count number of plots and panels in a list of plotables"""
@@ -62,6 +64,7 @@ class Panel:
             else:
                 raise ValueError("unexpected types found in list of plotables")
         return n_plots, n_panels
+
 
     def __init__(self, *args, **kwargs):
         """Panel initializer
@@ -131,6 +134,7 @@ class Panel:
         for p, d in kwplots.items():
             for i, (args, kwargs) in enumerate(allargses):
                 self.plotables += [Make(p, getbce(d, i), *args, **kwargs)]
+
 
     def __call__(self, ax, *args, **kwargs):
         """Panel realizer

@@ -1,5 +1,5 @@
-# Copyright (C) 2017--2018 Lia Medeiros & Chi-kwan Chan
-# Copyright (C) 2017--2018 Steward Observatory
+# Copyright (C) 2017--2019 Lia Medeiros & Chi-kwan Chan
+# Copyright (C) 2017--2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #
@@ -17,8 +17,10 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 import matplotlib.pyplot as plt
+
 from .panel   import Panel
 from .helpers import ensure_list, split_dict
+
 
 class Figure:
     """The "head" class for hierarchically organizing panels in ehtplot
@@ -35,9 +37,9 @@ class Figure:
             Figure to create a figure.
 
     """
-
     _prop_keys = ['style',
                   'figsize', 'dpi', 'facecolor', 'edgecolor', 'frameon']
+
 
     def __init__(self, *args, **kwargs):
         """Figure initializer
@@ -101,6 +103,7 @@ class Figure:
         self.kwprops = {'style': 'ehtplot'}
         self.kwprops.update(kwprops)
 
+
     def __call__(self, *args, **kwargs):
         """Figure realizer
 
@@ -130,13 +133,16 @@ class Figure:
             self.panel(ax, *args, **kwargs)
         return fig
 
+
     def show(self, *args, **kwargs):
         """Show the Figure"""
         self(*args, **kwargs).show()
 
+
     def draw(self, *args, **kwargs):
         """Draw the Figure"""
         self(*args, **kwargs).canvas.draw_idle()
+
 
     def save(self, files, *args, **kwargs):
         """Save the Figure"""

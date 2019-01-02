@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
-# Copyright (C) 2018 Chi-kwan Chan
-# Copyright (C) 2018 Steward Observatory
+# Copyright (C) 2018--2019 Chi-kwan Chan
+# Copyright (C) 2018--2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #
@@ -28,16 +28,19 @@ except ImportError:
 else:
     missing = None
 
+
 def interp(x, xp, yp):
     if xp[0] < xp[-1]:
         return np.interp(x, xp, yp)
     else:
         return np.interp(x, np.flip(xp,0), np.flip(yp,0))
 
+
 def extrema(a):
     da =  a[1:] -  a[:-1]
     xa = da[1:] * da[:-1]
     return np.argwhere(xa <= 0.0)[:,0]+1
+
 
 def transform(ctab, src='sRGB1', dst='CAM02-UCS', inverse=False):
     if missing:
@@ -50,6 +53,7 @@ def transform(ctab, src='sRGB1', dst='CAM02-UCS', inverse=False):
         out[:,:3] = cspace_convert(out[:,:3], dst, src)
     return out
 
+
 def classify(Jabp):
     N = Jabp.shape[0]
     x = extrema(Jabp[:,0])
@@ -59,6 +63,7 @@ def classify(Jabp):
         return 'divergent'
     else:
         return 'unknown'
+
 
 def uniformize(Jabp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
     if JpL is None: JpL = Jabp[ 0,0]
@@ -73,6 +78,7 @@ def uniformize(Jabp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
     out[:,2] = interp(out[:,0], Jabp[:,0], Jabp[:,2])
 
     return out
+
 
 def factor(Cp,
            softening=1.0,
@@ -111,6 +117,7 @@ def factor(Cp,
 
     return s / S
 
+
 def symmetrize(Jabp, **kwargs):
     out = Jabp.copy()
     Jp  = out[:,0]
@@ -121,6 +128,7 @@ def symmetrize(Jabp, **kwargs):
     out[:,2] *= f
     return out
 
+
 def adjust_sequential(Jabp, roundup=None):
     Jp = Jabp[:,0]
 
@@ -129,6 +137,7 @@ def adjust_sequential(Jabp, roundup=None):
         Jplower = np.ceil(Jplower / roundup) * roundup
 
     return uniformize(Jabp, Jplower=Jplower)
+
 
 def adjust_divergent(Jabp, roundup=None):
     Jp = Jabp[:,0]

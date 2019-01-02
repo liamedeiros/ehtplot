@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import LogNorm
 
+
 def plot_image(ax1, array,
                name=None, norm=True, scale='lin',
                colorbar=True, norm_num=1, lim_lin=np.array([0,1]), lim_log=False,

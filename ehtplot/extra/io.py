@@ -20,6 +20,7 @@ from abc import ABC, abstractmethod
 import os
 import inspect
 
+
 class Bundle(ABC):
     """An abstract class to be implemented by data bundle loaders
     """
@@ -39,11 +40,14 @@ class Bundle(ABC):
     def __next__(self):
         raise NotImplementedError
 
+
 class MultipleImplementationError(Exception):
     pass
 
+
 def fullname(cls):
     return cls.__module__ + "." + cls.__name__
+
 
 def open(name, *args, **kwargs):
     """Open a data file/bundle for mockservation according to extensions
@@ -76,6 +80,7 @@ def open(name, *args, **kwargs):
         raise NameError("path \"{}\" is invalid".format(name))
 
     return open_x(name, *args, **kwargs)
+
 
 def open_bundle(name, *args, **kwargs):
     """Open a folder as a data bundle

@@ -1,5 +1,5 @@
-# Copyright (C) 2018 Chi-kwan Chan
-# Copyright (C) 2018 Steward Observatory
+# Copyright (C) 2018--2019 Chi-kwan Chan
+# Copyright (C) 2018--2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #
@@ -28,5 +28,6 @@ from .core import register
 # from .ctab   import *
 # from .modify import *
 # from .view   import *
+
 
 register()

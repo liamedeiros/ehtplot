@@ -1,5 +1,5 @@
-# Copyright (C) 2018 Chi-kwan Chan
-# Copyright (C) 2018 Steward Observatory
+# Copyright (C) 2018--2019 Chi-kwan Chan
+# Copyright (C) 2018--2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #
@@ -19,10 +19,9 @@
 from os.path import dirname, join, splitext, basename
 from glob    import glob
 
+import numpy as np
 from matplotlib.colors import Colormap
 from matplotlib.cm     import get_cmap
-
-import numpy as np
 
 Nc  = 1024 # nubber of quantization levels in a channel (10bit default)
 ext = ".ctab"
@@ -30,18 +29,22 @@ ext = ".ctab"
 path   = dirname(__file__) + "/ctabs"
 cscale = Nc - 1.0
 
+
 def get_ctab(cmap):
     if not isinstance(cmap, Colormap):
         cmap = get_cmap(cmap)
     return np.array([cmap(i) for i in range(cmap.N)])
 
+
 def list_ctab():
     return [splitext(basename(f))[0] for f in glob(join(path, '*'+ext))]
+
 
 def save_ctab(ctab, name):
     if ctab.shape[1] == 4 and np.all(ctab[:,3] == 1.0):
         ctab = ctab[:,:3]
     np.savetxt(name, np.rint(ctab * cscale).astype(int), fmt="%i")
+
 
 def load_ctab(name):
     ctab = np.loadtxt(join(path, name+ext))

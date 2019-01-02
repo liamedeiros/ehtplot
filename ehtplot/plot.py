@@ -1,5 +1,5 @@
-# Copyright (C) 2017--2018 Lia Medeiros & Chi-kwan Chan
-# Copyright (C) 2017--2018 Steward Observatory
+# Copyright (C) 2017--2019 Lia Medeiros & Chi-kwan Chan
+# Copyright (C) 2017--2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #
@@ -21,13 +21,13 @@ from os.path import join, dirname, basename, splitext
 from glob import glob
 
 import numpy as np
-
 from matplotlib.colors import Colormap
 
 try:
     basestring
 except NameError:
     basestring = str # so that we can always test strings as in python2
+
 
 class Plot:
     """The Plot class has similar behavior compare to a function closure
@@ -42,12 +42,12 @@ class Plot:
             look up plotting functions.
 
     """
-
     paths     = [join(dirname(__file__), "plots")]
     plot_keys = []
     for p in paths:
         files = glob(join(p, "*.py"))
         plot_keys += [splitext(basename(f))[0] for f in files]
+
 
     @classmethod
     def isplotable(cls, p):
@@ -58,6 +58,7 @@ class Plot:
             return True
         else: # normal logic
             return isinstance(p, Plot) or p in cls.plot_keys
+
 
     @classmethod
     def load_plot(cls, plot):
@@ -74,6 +75,7 @@ class Plot:
             return module.__dict__[func]
         raise ImportError("failed to load \"{}\"".format(plot))
 
+
     @classmethod
     def ensure_callable(cls, plot):
         """Convert `plot` to callable when possible."""
@@ -83,6 +85,7 @@ class Plot:
             return plot
         else:
             raise TypeError("`plot` must be a string or a callable")
+
 
     def __init__(self, plot, *args, **kwargs):
         """Plot initializer
@@ -116,6 +119,7 @@ class Plot:
         self.plot    = plot
         self.props   = args
         self.kwprops = kwargs
+
 
     def __call__(self, ax, *args, **kwargs):
         """Plot drawer/renderer/realizer

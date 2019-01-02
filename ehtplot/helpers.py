@@ -1,5 +1,5 @@
-# Copyright (C) 2017--2018 Lia Medeiros & Chi-kwan Chan
-# Copyright (C) 2017--2018 Steward Observatory
+# Copyright (C) 2017--2019 Lia Medeiros & Chi-kwan Chan
+# Copyright (C) 2017--2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #
@@ -25,6 +25,7 @@ def ensure_list(obj, valid=lambda x: True):
         if valid(obj):
             return [obj]
     return []
+
 
 def split_dict(inp, *keyses):
     """Split an input dict into multiple dicts according to lists of keys
@@ -76,6 +77,7 @@ def split_dict(inp, *keyses):
 
     return out[0] if keyses == () else out
 
+
 def getaxes(ax0):
     """Get all axeses, e.g. twinx, from a single axes"""
     axes = [ax0]
@@ -84,6 +86,7 @@ def getaxes(ax0):
             axes += list(set(pair).difference([ax0]))
     # TODO: ensure that all axes have the same position
     return axes
+
 
 def getbce(obj, i):
     """Get broadcasted element"""
@@ -95,6 +98,7 @@ def getbce(obj, i):
         return obj[i]
     else:
         raise IndexError("failed to broadcast")
+
 
 def broadcast(args, kwargs):
     """Broadcast values in `args` and `kwargs` to a list of them

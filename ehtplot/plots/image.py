@@ -1,5 +1,5 @@
-# Copyright (C) 2018 Lia Medeiros
-# Copyright (C) 2018 Steward Observatory
+# Copyright (C) 2018--2019 Lia Medeiros
+# Copyright (C) 2018--2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #
@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import LogNorm
 
+
 def add_scale(ax, label='$50 \mu $arcsec', length=10, color='gold', padding=0.15, end_factor=0.015,font=10.56, lw=1):
     lims   = ax.get_xlim()
     factor = (lims[1] -lims[0]) * padding
@@ -30,6 +31,7 @@ def add_scale(ax, label='$50 \mu $arcsec', length=10, color='gold', padding=0.15
     ax.vlines(lims[0]+factor+length, lims[0]+factor-ends, lims[0]+factor+ends, color=color, lw=lw)
     if label != None:
         ax.text((lims[0]+factor)+1.5,(lims[0]+factor)*.95, label, fontsize=font, color=color)
+
 
 def plot_image(ax, img, name=None,
                imgsz=None, pxsz=None, zoom=True, unit='$GMc^{-2}$', length_scale=None,
@@ -92,7 +94,6 @@ def plot_image(ax, img, name=None,
     @param colorbar optional keyword, default set to True.
 
     """
-
     if imgsz is not None and pxsz is not None:
         raise ValueError("imgsz and pxsz cannot be set simultaneously")
     elif pxsz is not None:

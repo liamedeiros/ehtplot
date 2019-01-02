@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
-# Copyright (C) 2018 Chi-kwan Chan
-# Copyright (C) 2018 Steward Observatory
+# Copyright (C) 2018--2019 Chi-kwan Chan
+# Copyright (C) 2018--2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #
@@ -22,11 +22,13 @@ import re
 
 from matplotlib.cm import get_cmap
 
-from ehtplot.color.ctab   import get_ctab, save_ctab, path, ext
-from ehtplot.color.adjust import transform, classify, symmetrize, adjust_sequential, adjust_divergent
+from .ctab   import get_ctab, save_ctab, path, ext
+from .adjust import transform, classify, symmetrize, adjust_sequential, adjust_divergent
+
 
 def pre(cname):
     return transform(get_ctab(get_cmap(cname)))
+
 
 def post(Jabp, cls, roundup, fname):
     adjust = globals()["adjust_"+cls]
@@ -38,6 +40,7 @@ def post(Jabp, cls, roundup, fname):
     Jabp = symmetrize(Jabp, bitonic=True, diffuse=False)
     save_ctab(transform(Jabp, inverse=True), fname+"s"+ext)
     print("    Symmetrized; saved to \"{}\"".format(fname+"s"+ext))
+
 
 def modify(cname, roundup, fname):
     Jabp = pre(cname)
@@ -53,6 +56,7 @@ def modify(cname, roundup, fname):
         post(Jabp, cls, roundup, fname)
 
     return Jabp, cls
+
 
 def modify_many(category, cnames, roundups, prefix=path, postfix=None):
     if roundups is None:
@@ -71,6 +75,7 @@ def modify_many(category, cnames, roundups, prefix=path, postfix=None):
             else:
                 fname = "{}/{}_{}u".format(path, cname, postfix)
             post(Jabp, cls, roundup, fname)
+
 
 if __name__ == "__main__":
     with open("modify.cfg") as file:

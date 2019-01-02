@@ -1,5 +1,5 @@
-# Copyright (C) 2018 Chi-kwan Chan
-# Copyright (C) 2018 Steward Observatory
+# Copyright (C) 2018--2019 Chi-kwan Chan
+# Copyright (C) 2018--2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #
@@ -16,12 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-from ehtplot.color import vis as ev
+import numpy as np
 
 try:
     basestring
 except NameError:
     basestring = str # so that we can always test strings as in python2
+
+
+def pyramid(N=513):
+    """Create a pyramid function"""
+    s    = np.linspace(-1.0, 1.0, N)
+    x, y = np.meshgrid(s, s)
+    return 1.0 - np.maximum(abs(x), abs(y))
+
 
 def plot_pyramid(ax, cmap):
     """Plot the pyramid image with the colormap `cmap`
@@ -32,7 +40,7 @@ def plot_pyramid(ax, cmap):
             be used in plotting the pyramid.
 
     """
-    ax.imshow(ev.pyramid(), cmap=cmap, vmin=0.0, vmax=1.0)
+    ax.imshow(pyramid(), cmap=cmap, vmin=0.0, vmax=1.0)
     ax.set_xticks([])
     ax.set_xticklabels([])
     ax.set_yticks([])

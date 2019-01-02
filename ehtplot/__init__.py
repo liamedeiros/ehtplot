@@ -1,5 +1,5 @@
-# Copyright (C) 2017--2018 Lia Medeiros & Chi-kwan Chan
-# Copyright (C) 2017--2018 Steward Observatory
+# Copyright (C) 2017--2019 Lia Medeiros & Chi-kwan Chan
+# Copyright (C) 2017--2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #

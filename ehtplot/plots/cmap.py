@@ -1,5 +1,5 @@
-# Copyright (C) 2018 Chi-kwan Chan
-# Copyright (C) 2018 Steward Observatory
+# Copyright (C) 2018--2019 Chi-kwan Chan
+# Copyright (C) 2018--2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #
@@ -17,12 +17,15 @@
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
 import numpy as np
-from ehtplot.color import vis as ev
+
+from ehtplot.color.ctab   import get_ctab
+from ehtplot.color.adjust import transform
 
 try:
     basestring
 except NameError:
     basestring = str # so that we can always test strings as in python2
+
 
 def plot_cmap(ax1, cmap):
     """Plot J', C', and h' of a colormap as function of the mapped value
@@ -33,8 +36,8 @@ def plot_cmap(ax1, cmap):
             be plotted.
 
     """
-    ctab = ev.get_ctab(cmap)  # get the colormap as a color table in sRGB
-    Jabp = ev.transform(ctab) # transform color table into CAM02-UCS colorspace
+    ctab = get_ctab(cmap)  # get the colormap as a color table in sRGB
+    Jabp = transform(ctab) # transform color table into CAM02-UCS colorspace
 
     Jp = Jabp[:,0]
     ap = Jabp[:,1]

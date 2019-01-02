@@ -16,13 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-from skimage.morphology import skeletonize
 import numpy as np
+from skimage.morphology import skeletonize
+
 
 def rebin(arr, shape=[32, 32]):
     reshape = (shape[0], arr.shape[0]//shape[0],
                shape[1], arr.shape[1]//shape[1])
     return arr.reshape(reshape).mean(-1).mean(1)
+
 
 def translate_threshold(img, threshold=0.5):
     threshold *= np.sum(img)
@@ -30,11 +32,13 @@ def translate_threshold(img, threshold=0.5):
     i = np.searchsorted(np.cumsum(s), threshold, side="left")
     return s[i]
 
+
 def metroize(img, mgrid=32, threshold=0.5):
     threshold = translate_threshold(img, threshold=threshold)
     img = skeletonize(img > threshold)
     img = skeletonize(rebin(img, [mgrid, mgrid]) > 0)
     return img
+
 
 def plot_metroized(ax, img, **kwargs):
     img = metroize(img, **kwargs)

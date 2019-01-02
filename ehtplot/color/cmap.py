@@ -1,5 +1,5 @@
-# Copyright (C) 2018 Chi-kwan Chan
-# Copyright (C) 2018 Steward Observatory
+# Copyright (C) 2018--2019 Chi-kwan Chan
+# Copyright (C) 2018--2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #
@@ -25,6 +25,7 @@ from .ctab   import save_ctab
 
 Nq = 256 # number of quantization levels in a colormap
 
+
 def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=1.0-9):
     c = np.cos(hp)
     s = np.sin(hp)
@@ -48,6 +49,7 @@ def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=1.0-9):
         print("WARNING: max_chroma() has not fully converged")
 
     return Cp
+
 
 def ehtcmap(N=Nq,
             Jpmin=15.0, Jpmax=95.0,
