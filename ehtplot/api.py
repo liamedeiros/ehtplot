@@ -80,7 +80,7 @@ def _broadcast(visuals, args, kwargs):
 
 def _leaf(visuals, args, kwargs):
     if isinstance(visuals, Panel):
-        return visuals
+        return visuals.update(*args, **kwargs)
     else:
         return Visual(visuals, *args, **kwargs)
 

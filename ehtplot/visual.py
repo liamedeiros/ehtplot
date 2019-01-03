@@ -112,6 +112,13 @@ class Visual:
         self.kwprops = kwargs
 
 
+    def update(self, *args, **kwargs):
+        """Update internal properties"""
+        self.props   = args if args else self.props
+        self.kwprops = {**self.kwprops, **kwargs}
+        return self
+
+
     def __call__(self, ax, *args, **kwargs):
         """Visual realizer
 

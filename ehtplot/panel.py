@@ -77,6 +77,12 @@ class Panel:
         self.kwprops = {**self._default_kwprops, **kwargs}
 
 
+    def update(self, **kwargs):
+        """Update internal properties"""
+        self.kwprops = {**self.kwprops, **kwargs}
+        return self
+
+
     def __call__(self, ax, **kwargs):
         """Panel realizer
 

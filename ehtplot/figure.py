@@ -70,6 +70,12 @@ class Figure:
         self.kwprops = {'style': 'ehtplot', **kwargs}
 
 
+    def update(self, **kwargs):
+        """Update internal properties"""
+        self.kwprops = {**self.kwprops, **kwargs}
+        return self
+
+
     @contextmanager
     def __call__(self, **kwargs):
         """Figure realizer
