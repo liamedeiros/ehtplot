@@ -22,7 +22,7 @@ import matplotlib        as mpl
 import matplotlib.pyplot as plt
 
 from .panel   import Panel
-from .helpers import ensure_list, split_dict
+from .helpers import ensure_list, split_dict, merge_dict
 from .layouts import newaxes
 
 
@@ -67,12 +67,12 @@ class Figure:
 
         """
         self.panel   = panel
-        self.kwprops = {'style': 'ehtplot', **kwargs}
+        self.kwprops = merge_dict({'style': 'ehtplot'}, kwargs)
 
 
     def update(self, **kwargs):
         """Update internal properties"""
-        self.kwprops = {**self.kwprops, **kwargs}
+        self.kwprops.update(kwargs)
         return self
 
 
@@ -92,7 +92,7 @@ class Figure:
                 Figure.
 
         """
-        kwprops = {**self.kwprops, **kwargs}
+        kwprops = merge_dict(self.kwprops, kwargs)
         style   = kwprops.pop('style')
 
         with mpl.rc_context():
@@ -127,7 +127,7 @@ class Figure:
 
         """
         kwargs, kwprops = split_dict(kwargs, self._prop_keys)
-        kwprops = {**self.kwprops, **kwprops}
+        kwprops = merge_dict(self.kwprops, kwprops)
 
         with self(**kwprops) as (fig, ax):
             self.panel.draw(ax, *args, **kwargs)

@@ -19,7 +19,7 @@
 import numpy as np
 
 from .visual  import Visual
-from .helpers import split_dict
+from .helpers import split_dict, merge_dict
 from .layouts import divide, newaxes, getaxes
 
 
@@ -74,12 +74,12 @@ class Panel:
 
         """
         self.panels  = panelable
-        self.kwprops = {**self._default_kwprops, **kwargs}
+        self.kwprops = merge_dict(self._default_kwprops, kwargs)
 
 
     def update(self, **kwargs):
         """Update internal properties"""
-        self.kwprops = {**self.kwprops, **kwargs}
+        self.kwprops.update(kwargs)
         return self
 
 
@@ -99,7 +99,7 @@ class Panel:
                 arguments that are used to construct the subaxeses.
 
         """
-        kwprops = {**self.kwprops, **kwargs}
+        kwprops = merge_dict(self.kwprops, kwargs)
 
         box = divide(ax.get_position(),
                      list(map(type, self.panels)).count(Panel),
@@ -139,6 +139,6 @@ class Panel:
 
         """
         kwargs, kwprops = split_dict(kwargs, self._prop_keys)
-        kwprops = {**self.kwprops, **kwprops}
+        kwprops = merge_dict(self.kwprops, kwprops)
         return [p.draw(a, *args, **kwargs)
                 for p, a in zip(self.panels, self(ax, **kwprops))]

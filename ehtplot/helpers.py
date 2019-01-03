@@ -88,3 +88,20 @@ def split_dict(inp, *keyses):
             out[0].update({k: v})
 
     return out[0] if keyses == () else out
+
+
+def merge_dict(d1, d2):
+    """Merge two dictionaries
+
+    The second dictionary `d2` overwrites values in `d1` if they have
+    common keys.  This is equivilent to
+
+        return {**d1, **2}
+
+    in python3.  Using this function improves python2--3
+    compatibility.
+
+    """
+    out = d1.copy()
+    out.update(d2)
+    return out

@@ -22,6 +22,8 @@ import importlib.util as iu
 
 import numpy as np
 
+from .helpers import merge_dict
+
 
 class Visual:
     """The Visual class has similar behavior compare to a function closure
@@ -115,7 +117,7 @@ class Visual:
     def update(self, *args, **kwargs):
         """Update internal properties"""
         self.props   = args if args else self.props
-        self.kwprops = {**self.kwprops, **kwargs}
+        self.kwprops.update(kwargs)
         return self
 
 
@@ -139,7 +141,7 @@ class Visual:
 
         """
         props   = args if args else self.props
-        kwprops = {**self.kwprops, **kwargs}
+        kwprops = merge_dict(self.kwprops, kwargs)
         return self.visual(ax, *props, **kwprops)
 
     def draw(self, ax, *args, **kwargs):
