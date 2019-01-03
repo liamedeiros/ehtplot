@@ -1,5 +1,5 @@
-# Copyright (C) 2017--2019 Lia Medeiros & Chi-kwan Chan
-# Copyright (C) 2017--2019 Steward Observatory
+# Copyright (C) 2019 Lia Medeiros & Chi-kwan Chan
+# Copyright (C) 2019 Steward Observatory
 #
 # This file is part of ehtplot.
 #
@@ -16,8 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-from .color  import *
-from .theme  import *
-from .panel  import *
-from .figure import *
-from .api    import *
+from .plot  import Plot
+from .panel import Panel
+
+
+def _leaf(plots, args, kwargs):
+    return Plot(plots, *args, **kwargs)
+
+
+def _node(plots, args, kwargs):
+    B, K = _broadcast(plots, args, kwargs)
+    mk   = _leaf if len(B) == 1 else _node # recursion
+    return Panel([mk(p, a, k) for p, a, k in B], **K)
