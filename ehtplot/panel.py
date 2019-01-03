@@ -16,16 +16,18 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-from .plot    import Plot
+import numpy as np
+
+from .visual  import Visual
 from .helpers import split_dict
 from .layouts import divide, newaxes, getaxes
 
 
 class Panel:
-    """The "node" class for hierarchically organizing plots in ehtplot
+    """The "node" class for hierarchically organizing visuals in ehtplot
 
     The Panel class is the "container" that allows ehtplot to
-    hierarchically organize subpanels and subplots, and to manage
+    hierarchically organize subpanels and subvisuals, and to manage
     their properties.
 
     Attributes:
@@ -47,25 +49,25 @@ class Panel:
             return False
         else:
             return (isinstance(p, list) and
-                    all(map(lambda q: isinstance(q, (cls, Plot)), p)))
+                    all(map(lambda q: isinstance(q, (cls, Visual)), p)))
 
 
     def __init__(self, panelable, **kwargs):
         """Panel initializer
 
         The Panel class is the "node class" that allows ehtplot to
-        hierarchically organize subpanels and subplots, and to manage
-        their properties.
+        hierarchically organize subpanels and subvisuals, and to
+        manage their properties.
 
         Args:
             panelable (list): A list that contains subpanels and/or
-                subplots.
+                subvisuals.
             **kwargs (dict): Arbitrary keyworded arguments that are
                 passed to the subaxes constructor when realizing an
                 instance of Panel.
 
         Attributes:
-            panels (list): A list of subpanels, subplots, or list of
+            panels (list): A list of subpanels, subvisuals, or list of
                 them generated from the `args` argument.
             kwprops (dict): The default keywords used in creating
                 subaxeses when realizing an instance of Panel.
@@ -80,8 +82,8 @@ class Panel:
 
         Realize a panel to a generator of matplotlib subaxeses by
         combining the saved and new arguments.  It accepts the same
-        keyworded arguments as Plot.__init__().  Therefore, its
-        argument list matches Plot.__init__() with `panelable`
+        keyworded arguments as Visual.__init__().  Therefore, its
+        argument list matches Visual.__init__() with `panelable`
         replaced by `ax`.
 
         Args:
@@ -110,24 +112,24 @@ class Panel:
         """Panel drawer/renderer
 
         Draw or render a Panel by combining the saved and new
-        arguments.  Its argument list is designed to match Plot.draw()
-        so that a Panel and Plot draw in the same way.  This duck
-        typing allows Panel to draw all its subpanels and subplots
-        recusively.  Saved and new panel properties are combined to
-        create subaxeses.  The passed `args` and non-Panel-specific
-        keyworded arguments are passed recusively to the subpanels and
-        eventially to some ehtplot Plots.
+        arguments.  Its argument list is designed to match
+        Visual.draw() so that a Panel and Visual draw in the same way.
+        This duck typing allows Panel to draw all its subpanels and
+        subvisuals recusively.  Saved and new panel properties are
+        combined to create subaxeses.  The passed `args` and
+        non-Panel-specific keyworded arguments are passed recusively
+        to the subpanels and eventially to some ehtplot Visuals.
 
         Args:
             ax (matplotlib.axis.Axes): A matplotlib Axes for Panel to
                 draw/render on.
             *args (tuple): Variable length argument list that is
-                eventually passed to some ehtplot Plots.
+                eventually passed to some ehtplot Visuals.
             **kwargs (dict): Arbitrary keyworded arguments that are
                 split into Panel-specific and non-Panel-specific
                 keyworded arguments.  The Panel-specific ones are used
                 to construct the subaxeses, while others are
-                eventually passed to some ehtplot Plots.
+                eventually passed to some ehtplot Visuals.
 
         """
         kwargs, kwprops = split_dict(kwargs, self._prop_keys)

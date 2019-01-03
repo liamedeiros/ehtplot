@@ -27,7 +27,7 @@ except NameError:
     basestring = str # so that we can always test strings as in python2
 
 
-def plot_cmap(ax1, cmap):
+def visualize_cmap(ax1, cmap):
     """Plot J', C', and h' of a colormap as function of the mapped value
 
     Args:

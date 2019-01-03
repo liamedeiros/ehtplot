@@ -31,7 +31,7 @@ def pyramid(N=513):
     return 1.0 - np.maximum(abs(x), abs(y))
 
 
-def plot_pyramid(ax, cmap):
+def visualize_pyramid(ax, cmap):
     """Plot the pyramid image with the colormap `cmap`
 
     Args:

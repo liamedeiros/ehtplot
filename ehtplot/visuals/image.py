@@ -33,7 +33,7 @@ def add_scale(ax, label='$50 \mu $arcsec', length=10, color='gold', padding=0.15
         ax.text((lims[0]+factor)+1.5,(lims[0]+factor)*.95, label, fontsize=font, color=color)
 
 
-def plot_image(ax, img, name=None,
+def visualize_image(ax, img, name=None,
                imgsz=None, pxsz=None, zoom=True, unit='$GMc^{-2}$', length_scale=None,
                norm=1, scale='lin', vlim=None, colorbar=True):
     """!@brief Makes a plot of an image.
@@ -41,7 +41,7 @@ def plot_image(ax, img, name=None,
     This can be used for a single image or for multiple subplots,
     below is an example of how this can be used for a single image:
     @code
-    fig = Figure(Panel().plot_image(image_array, name='Model B'))
+    fig = Figure(Panel().visualize_image(image_array, name='Model B'))
     fig.savefig(file_name)
     @endcode
 

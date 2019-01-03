@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
-from .plot    import Plot
+from .visual  import Visual
 from .panel   import Panel
 from .figure  import Figure
 from .helpers import split_tuple, split_dict
@@ -34,35 +34,35 @@ def _getbce(obj, i):
         raise IndexError("failed to broadcast")
 
 
-def _broadcast(plots, args, kwargs):
-    """Broadcast values in `plots`, `args` and `kwargs` to list of them
+def _broadcast(visuals, args, kwargs):
+    """Broadcast values in `visuals`, `args` and `kwargs` to list of them
 
     This is a very simple 1D version of numpy's broadcasting
     mechanism.  The idea is that we can pass lists or objects to a
-    function through `plots`, `args` and `kwargs`.  If all of them
+    function through `visuals`, `args` and `kwargs`.  If all of them
     have lengths 1 and a unique `n`, then we consider they are
-    broadcastable.  This function then returns a list of `n` `(plots,
-    args, kwargs)` tuples.
+    broadcastable.  This function then returns a list of `n`
+    `(visuals, args, kwargs)` tuples.
 
     Args:
-        plots (Panel, callable, or valid plot key): Panel, callable,
-            or valid plot key, or a list of them.
+        visuals (Panel, callable, or valid visual key): Panel,
+            callable, or valid visual key, or a list of them.
         *args (tuple): Variable length argument list that contains
             objects or list of objects.
         **kwargs (dict): Arbitrary keyworded arguments that contains
             objects or list of objects.
 
     Returns:
-        list of objects: As long as the input `plots`, `args`, and
+        list of objects: As long as the input `visuals`, `args`, and
             `kwargs` are broadcastable, this function return a list of
-            `(plots, args, kwargs)` tuples.
+            `(visuals, args, kwargs)` tuples.
         dict: A dictionary containing keyworded arguments for the
             Panel.
 
     """
     kwargs, kwprops = split_dict(kwargs, Panel._prop_keys)
 
-    values = (plots,) + args + tuple(kwargs.values())
+    values = (visuals,) + args + tuple(kwargs.values())
     ns     = set(len(a) for a in values if isinstance(a, list) and len(a) > 1)
 
     if len(ns) == 0:
@@ -72,29 +72,29 @@ def _broadcast(plots, args, kwargs):
     else:
         raise ValueError('The parameters have inconsistent vector lengths')
 
-    return ([(_getbce(plots, i),
-        tuple(_getbce(a,     i) for a    in args),
-          {k: _getbce(v,     i) for k, v in kwargs.items()}) for i in range(n)],
+    return ([(_getbce(visuals, i),
+        tuple(_getbce(a, i) for a    in args),
+          {k: _getbce(v, i) for k, v in kwargs.items()}) for i in range(n)],
             kwprops)
 
 
-def _leaf(plots, args, kwargs):
-    return Plot(plots, *args, **kwargs)
+def _leaf(visuals, args, kwargs):
+    return Visual(visuals, *args, **kwargs)
 
 
-def _node(plots, args, kwargs):
-    B, K = _broadcast(plots, args, kwargs)
+def _node(visuals, args, kwargs):
+    B, K = _broadcast(visuals, args, kwargs)
     mk   = _leaf if len(B) == 1 else _node # recursion
     return Panel([mk(p, a, k) for p, a, k in B], **K)
 
 
 def ehtplot(*args, **kwargs):
-    args,   plots   = split_tuple(args, Plot.isplotable)
+    args,   visuals = split_tuple(args, Visual.isvisualable)
     kwargs, kwprops = split_dict(kwargs, Figure._prop_keys)
 
-    if not plots:
-        kwargs, kwplots = split_dict(kwargs, Plot.plot_keys)
-        plots =  list(kwplots.keys())
-        args  = (list(kwplots.values()),) + args
+    if not visuals:
+        kwargs, kwvisuals = split_dict(kwargs, Visual.visual_keys)
+        visuals =  list(kwvisuals.keys())
+        args    = (list(kwvisuals.values()),) + args
 
-    return Figure(_node(plots, args, kwargs), **kwprops)
+    return Figure(_node(visuals, args, kwargs), **kwprops)
