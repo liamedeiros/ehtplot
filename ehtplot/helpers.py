@@ -27,6 +27,18 @@ def ensure_list(obj, valid=lambda x: True):
     return []
 
 
+def split_tuple(inp, check):
+    l, c = [], 0
+    for a in inp:
+        a = ensure_list(a, check)
+        if a:
+            l += a
+        else:
+            break
+        c += 1
+    return inp[c:], l
+
+
 def split_dict(inp, *keyses):
     """Split an input dict into multiple dicts according to lists of keys
 

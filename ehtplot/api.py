@@ -18,7 +18,8 @@
 
 from .plot    import Plot
 from .panel   import Panel
-from .helpers import split_dict
+from .figure  import Figure
+from .helpers import split_tuple, split_dict
 
 
 def _getbce(obj, i):
@@ -85,3 +86,15 @@ def _node(plots, args, kwargs):
     B, K = _broadcast(plots, args, kwargs)
     mk   = _leaf if len(B) == 1 else _node # recursion
     return Panel([mk(p, a, k) for p, a, k in B], **K)
+
+
+def ehtplot(*args, **kwargs):
+    args,   plots   = split_tuple(args, Plot.isplotable)
+    kwargs, kwprops = split_dict(kwargs, Figure._prop_keys)
+
+    if not plots:
+        kwargs, kwplots = split_dict(kwargs, Plot.plot_keys)
+        plots =  list(kwplots.keys())
+        args  = (list(kwplots.values()),) + args
+
+    return Figure(_node(plots, args, kwargs), **kwprops)
