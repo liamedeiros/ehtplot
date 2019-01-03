@@ -27,10 +27,10 @@ def ensure_list(obj, valid=lambda x: True):
     return []
 
 
-def split_tuple(inp, check):
+def split_tuple(inp, *checks):
     l, c = [], 0
     for a in inp:
-        a = ensure_list(a, check)
+        a = ensure_list(a, lambda x: any(ck(x) for ck in checks))
         if a:
             l += a
         else:

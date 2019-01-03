@@ -79,7 +79,10 @@ def _broadcast(visuals, args, kwargs):
 
 
 def _leaf(visuals, args, kwargs):
-    return Visual(visuals, *args, **kwargs)
+    if isinstance(visuals, Panel):
+        return visuals
+    else:
+        return Visual(visuals, *args, **kwargs)
 
 
 def _node(visuals, args, kwargs):
@@ -89,7 +92,7 @@ def _node(visuals, args, kwargs):
 
 
 def panel(*args, **kwargs):
-    args, visuals = split_tuple(args, Visual.isvisualable)
+    args, visuals = split_tuple(args, Panel.ispanelable, Visual.isvisualable)
     if not visuals:
         kwargs, kwvisuals = split_dict(kwargs, Visual.visuals)
         visuals =  list(kwvisuals.keys())
