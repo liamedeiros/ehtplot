@@ -88,13 +88,15 @@ def _node(visuals, args, kwargs):
     return Panel([mk(p, a, k) for p, a, k in B], **K)
 
 
-def ehtplot(*args, **kwargs):
-    args,   visuals = split_tuple(args, Visual.isvisualable)
-    kwargs, kwprops = split_dict(kwargs, Figure._prop_keys)
-
+def panel(*args, **kwargs):
+    args, visuals = split_tuple(args, Visual.isvisualable)
     if not visuals:
-        kwargs, kwvisuals = split_dict(kwargs, Visual.visual_keys)
+        kwargs, kwvisuals = split_dict(kwargs, Visual.visuals)
         visuals =  list(kwvisuals.keys())
         args    = (list(kwvisuals.values()),) + args
+    return _node(visuals, args, kwargs)
 
-    return Figure(_node(visuals, args, kwargs), **kwprops)
+
+def plot(*args, **kwargs):
+    kwargs, kwprops = split_dict(kwargs, Figure._prop_keys)
+    return Figure(panel(*args, **kwargs), **kwprops)
