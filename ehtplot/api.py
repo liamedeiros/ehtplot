@@ -78,19 +78,22 @@ def _broadcast(visuals, args, kwargs):
             kwprops)
 
 
-def _leaf(visuals, args, kwargs):
+def _leaf(visuals, args, kwargs, level=0):
     """End point of recursive Panel constructions"""
     if isinstance(visuals, Panel):
-        return visuals.update(*args, **kwargs)
+        return visuals.update(*args, **kwargs), level
     else:
-        return Visual(visuals, *args, **kwargs)
+        return Visual(visuals, *args, **kwargs), level
 
 
-def _node(visuals, args, kwargs):
+def _node(visuals, args, kwargs, level=0):
     """Recursive part of recursive Panel constructions"""
     B, K = _broadcast(visuals, args, kwargs)
     mk   = _leaf if len(B) == 1 else _node # recursion
-    return Panel([mk(p, a, k) for p, a, k in B], **K)
+    N, L = zip(*(mk(p, a, k, level+1) for p, a, k in B))
+    if level+1 < max(L)-1:
+        K['inrow'] = False
+    return Panel(N, **K), max(L)
 
 
 def panel(*args, **kwargs):
@@ -100,7 +103,8 @@ def panel(*args, **kwargs):
         kwargs, kwvisuals = split_dict(kwargs, Visual.visuals)
         visuals =  list(kwvisuals.keys())
         args    = (list(kwvisuals.values()),) + args
-    return _node(visuals, args, kwargs)
+    p, _ = _node(visuals, args, kwargs)
+    return p
 
 
 def plot(*args, **kwargs):
