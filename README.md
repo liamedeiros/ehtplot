@@ -61,7 +61,7 @@ and all `ehtplot` theme will be registered to `matplotlib`.
 
 We also spent a lot of time to create perceptually uniform colormaps
 based on the CAM02-UCS color appearance model.  For more information,
-see `ehtplot`'s [color submodule documentation](https://github.com/liamedeiros/ehtplot/blob/master/docs/COLORMAP.md).
+see `ehtplot`'s [color submodule documentation](https://github.com/liamedeiros/ehtplot/blob/docs/docs/COLORMAPS.ipynb).
 
 It is also straightforward to enable `ehtplot`'s colormaps even
 without using `ehtplot` for plotting.  One simply loads the color
