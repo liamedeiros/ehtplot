@@ -45,7 +45,7 @@ def _broadcast(visuals, args, kwargs):
     `(visuals, args, kwargs)` tuples.
 
     Args:
-        visuals (Panel, callable, or valid visual key): Panel,
+        visuals (Panel, callable, valid visual key, or list): Panel,
             callable, or valid visual key, or a list of them.
         *args (tuple): Variable length argument list that contains
             objects or list of objects.
@@ -79,6 +79,7 @@ def _broadcast(visuals, args, kwargs):
 
 
 def _leaf(visuals, args, kwargs):
+    """End point of recursive Panel constructions"""
     if isinstance(visuals, Panel):
         return visuals.update(*args, **kwargs)
     else:
@@ -86,12 +87,14 @@ def _leaf(visuals, args, kwargs):
 
 
 def _node(visuals, args, kwargs):
+    """Recursive part of recursive Panel constructions"""
     B, K = _broadcast(visuals, args, kwargs)
     mk   = _leaf if len(B) == 1 else _node # recursion
     return Panel([mk(p, a, k) for p, a, k in B], **K)
 
 
 def panel(*args, **kwargs):
+    """Starting point of recursive Panel constructions"""
     args, visuals = split_tuple(args, Panel.ispanelable, Visual.isvisualable)
     if not visuals:
         kwargs, kwvisuals = split_dict(kwargs, Visual.visuals)
@@ -101,5 +104,6 @@ def panel(*args, **kwargs):
 
 
 def plot(*args, **kwargs):
+    """Smart plot generation "frontend" of `ehtplot`"""
     kwargs, kwprops = split_dict(kwargs, Figure._prop_keys)
     return Figure(panel(*args, **kwargs), **kwprops)
