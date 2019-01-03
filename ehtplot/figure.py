@@ -41,9 +41,9 @@ class Figure:
             Figure to create a figure.
 
     """
-    _prop_keys = ['style',
-                  'figsize', 'dpi', 'facecolor', 'edgecolor', 'frameon']
-
+    _default_kwprops = {'style': 'ehtplot'}
+    _prop_keys = (list(_default_kwprops.keys()) +
+                  ['figsize', 'dpi', 'facecolor', 'edgecolor', 'frameon'])
 
     def __init__(self, panel, **kwargs):
         """Figure initializer
@@ -67,7 +67,7 @@ class Figure:
 
         """
         self.panel   = panel
-        self.kwprops = merge_dict({'style': 'ehtplot'}, kwargs)
+        self.kwprops = merge_dict(self._default_kwprops, kwargs)
 
 
     def update(self, **kwargs):
