@@ -20,7 +20,11 @@ from __future__ import absolute_import
 
 from os.path import basename, dirname, join, splitext
 from glob import glob
-import importlib.util as iu
+
+try:
+    import importlib.util as iu
+except ImportError:
+    import importlib as il
 
 import numpy as np
 
@@ -48,7 +52,7 @@ class Visual(object):
                for p in paths for f in glob(join(p, "*.py"))]
 
     @classmethod
-    def _load(cls, visual, prefix="visualize_", ext=".py"):
+    def _load_from_file(cls, visual, prefix="visualize_", ext=".py"):
         """Load a visualizing function from directories in `Visual.paths`."""
         func_name = prefix+visual
         for path in cls.paths:
@@ -61,6 +65,26 @@ class Visual(object):
             spec.loader.exec_module(module)
             return module.__dict__[func_name]
         raise ImportError("failed to load \"{}\"".format(visual))
+
+
+    @classmethod
+    def _load_from_pkg(cls, visual, prefix="visualize_", pkg="visuals"):
+        """Load a visualizing function from `ehtplot.visuals`"""
+        func_name = prefix+visual
+        parent    = ".".join(__name__.split(".")[:-1])
+        pkg_name  = ".".join([parent, pkg])
+        return il.import_module(pkg_name).__dict__[func_name]
+
+
+    @classmethod
+    def _load(cls, visual):
+        """Load a visualizing function."""
+        try:
+            iu # exists if we are using python3
+        except NameError:
+            return cls._load_from_pkg(visual)  # python2 fallback
+        else:
+            return cls._load_from_file(visual) # python3
 
 
     @classmethod
@@ -145,6 +169,7 @@ class Visual(object):
         props   = args if args else self.props
         kwprops = merge_dict(self.kwprops, kwargs)
         return self.visual(ax, *props, **kwprops)
+
 
     def draw(self, ax, *args, **kwargs):
         """Visual drawer/renderer
