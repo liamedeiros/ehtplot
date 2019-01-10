@@ -30,7 +30,31 @@ except NameError:
     basestring = str # so that we can always test strings as in python2
 
 
-def visualize_cmap(ax1, cmap):
+def pyramid(N=513):
+    """Create a pyramid function"""
+    s    = np.linspace(-1.0, 1.0, N)
+    x, y = np.meshgrid(s, s)
+    return 1.0 - np.maximum(abs(x), abs(y))
+
+
+def _pyramid(ax, cmap):
+    """Plot the pyramid image with the colormap `cmap`
+
+    Args:
+        ax (matplotlib.axes.Axes): The matplotlib Axes to be plot on.
+        cmap (string or matplotlib.colors.Colormap): The colormap to
+            be used in plotting the pyramid.
+
+    """
+    ax.imshow(pyramid(), cmap=cmap, vmin=0.0, vmax=1.0)
+    ax.set_xticks([])
+    ax.set_xticklabels([])
+    ax.set_yticks([])
+    ax.set_yticklabels([])
+    ax.set_title(cmap if isinstance(cmap, basestring) else cmap.name)
+
+
+def _JChp(ax1, cmap):
     """Plot J', C', and h' of a colormap as function of the mapped value
 
     Args:
@@ -62,3 +86,8 @@ def visualize_cmap(ax1, cmap):
     ax1.scatter(v, Jp, color=ctab)
     ax1.plot   (v, Cp, c='k', linestyle='--')
     ax2.scatter(v[::15], hp[::15], s=12, c='k')
+
+
+def visualize_cmap(ax, cmap, type='JChp'):
+    """Plot a colormap in different ways"""
+    globals()["_"+type](ax, cmap)
