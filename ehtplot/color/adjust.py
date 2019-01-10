@@ -18,6 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import division
+from __future__ import absolute_import
+
 import numpy as np
 
 try:
@@ -59,7 +62,7 @@ def classify(Jabp):
     x = extrema(Jabp[:,0])
     if len(x) == 0:
         return 'sequential'
-    elif len(x) == 1 and x[0] in {(N+1)//2-1, N//2}:
+    elif len(x) == 1 and x[0] in set([(N+1)//2-1, N//2]):
         return 'divergent'
     else:
         return 'unknown'

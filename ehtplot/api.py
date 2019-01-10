@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+
 from .visual  import Visual
 from .panel   import Panel
 from .figure  import Figure
@@ -70,11 +72,11 @@ def _broadcast(visuals, args, kwargs):
     elif len(ns) == 1:
         n = ns.pop()
     else:
-        raise ValueError('The parameters have inconsistent vector lengths')
+        raise ValueError("The parameters have inconsistent vector lengths")
 
     return ([(_getbce(visuals, i),
-        tuple(_getbce(a, i) for a    in args),
-          {k: _getbce(v, i) for k, v in kwargs.items()}) for i in range(n)],
+        tuple(_getbce(a, i)  for a    in args),
+     dict((k, _getbce(v, i)) for k, v in kwargs.items())) for i in range(n)],
             kwprops)
 
 

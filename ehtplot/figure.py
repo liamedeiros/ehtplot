@@ -16,6 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import with_statement
+from __future__ import absolute_import
+
 from contextlib import contextmanager
 
 import matplotlib        as mpl
@@ -26,7 +29,7 @@ from .helpers import ensure_list, split_dict, merge_dict
 from .layouts import newaxes
 
 
-class Figure:
+class Figure(object):
     """The "head" class for hierarchically organizing panels in ehtplot
 
     The Figure class is the "outermost container" in ehtplot.  An

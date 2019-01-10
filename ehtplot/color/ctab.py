@@ -16,6 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import division
+from __future__ import absolute_import
+
 from os.path import dirname, join, splitext, basename
 from glob    import glob
 
@@ -37,7 +40,7 @@ def get_ctab(cmap):
 
 
 def list_ctab():
-    return [splitext(basename(f))[0] for f in glob(join(path, '*'+ext))]
+    return [splitext(basename(f))[0] for f in glob(join(path, "*"+ext))]
 
 
 def save_ctab(ctab, name):

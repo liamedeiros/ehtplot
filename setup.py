@@ -16,9 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import with_statement
+from __future__ import absolute_import
+
 from setuptools import setup, find_packages
 from codecs     import open
 from os         import path
+from io         import open
 
 here = path.abspath(path.dirname(__file__))
 with open(path.join(here, "README.md"), encoding='utf-8') as f:

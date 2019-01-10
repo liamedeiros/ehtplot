@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+
 from os.path import basename, dirname, join, splitext
 from glob import glob
 import importlib.util as iu
@@ -25,7 +27,7 @@ import numpy as np
 from .helpers import merge_dict
 
 
-class Visual:
+class Visual(object):
     """The Visual class has similar behavior compare to a function closure
 
     The Visual class saves the visualizing function, arguments, and

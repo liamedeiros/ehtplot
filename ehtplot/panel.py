@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+
 import numpy as np
 
 from .visual  import Visual
@@ -23,7 +25,7 @@ from .helpers import split_dict, merge_dict
 from .layouts import divide, newaxes, getaxes
 
 
-class Panel:
+class Panel(object):
     """The "node" class for hierarchically organizing visuals in ehtplot
 
     The Panel class is the "container" that allows ehtplot to

@@ -16,9 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+
 from os.path import dirname
 
 import matplotlib as mpl
+
 
 def register(path=dirname(__file__)):
     from matplotlib.style.core import USER_LIBRARY_PATHS

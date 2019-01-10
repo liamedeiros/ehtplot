@@ -18,7 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import with_statement
+from __future__ import absolute_import
+
 import re
+from io import open
 
 from matplotlib.cm import get_cmap
 
