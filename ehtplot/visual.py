@@ -72,7 +72,7 @@ class Visual(object):
         """Load a visualizing function from `ehtplot.visuals`"""
         func_name = prefix+visual
         parent    = ".".join(__name__.split(".")[:-1])
-        pkg_name  = ".".join([parent, pkg])
+        pkg_name  = ".".join([parent, pkg, visual])
         return il.import_module(pkg_name).__dict__[func_name]
 
 
