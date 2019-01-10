@@ -28,6 +28,7 @@ def ensure_list(obj, valid=lambda x: True):
 
 
 def split_tuple(inp, *checks):
+    """Split an input tuple into two tuple"""
     l, c = [], 0
     for a in inp:
         a = ensure_list(a, lambda x: any(ck(x) for ck in checks))
