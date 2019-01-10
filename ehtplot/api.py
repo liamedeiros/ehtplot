@@ -103,8 +103,9 @@ def panel(*args, **kwargs):
     args, visuals = split_tuple(args, Panel.ispanelable, Visual.isvisualable)
     if not visuals:
         kwargs, kwvisuals = split_dict(kwargs, Visual.visuals)
-        visuals =  list(kwvisuals.keys())
-        args    = (list(kwvisuals.values()),) + args
+        if kwvisuals:
+            visuals =  list(kwvisuals.keys())
+            args    = (list(kwvisuals.values()),) + args
     p, _ = _node(visuals, args, kwargs)
     return p
 
