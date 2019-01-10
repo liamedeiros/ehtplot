@@ -21,7 +21,7 @@ from __future__ import absolute_import
 from .visual  import Visual
 from .panel   import Panel
 from .figure  import Figure
-from .helpers import split_tuple, split_dict
+from .helpers import ensure_list, split_tuple, split_dict
 
 
 def _getbce(obj, i):
@@ -91,7 +91,7 @@ def _leaf(visuals, args, kwargs, level=0):
 def _node(visuals, args, kwargs, level=0):
     """Recursive part of recursive Panel constructions"""
     B, K = _broadcast(visuals, args, kwargs)
-    mk   = _leaf if len(B) == 1 else _node # recursion
+    mk   = _leaf if len(B) == 1 and Visual.isvisualable(B[0][0]) else _node # recursion
     N, L = zip(*(mk(p, a, k, level+1) for p, a, k in B))
     if level+1 < max(L)-1:
         K['inrow'] = False
@@ -104,7 +104,7 @@ def panel(*args, **kwargs):
     if not visuals:
         kwargs, kwvisuals = split_dict(kwargs, Visual.visuals)
         if kwvisuals:
-            visuals =  list(kwvisuals.keys())
+            visuals =  list(ensure_list(k) for k in kwvisuals.keys())
             args    = (list(kwvisuals.values()),) + args
     p, _ = _node(visuals, args, kwargs)
     return p

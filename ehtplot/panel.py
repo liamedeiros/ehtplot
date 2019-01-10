@@ -45,13 +45,15 @@ class Panel(object):
     @classmethod
     def ispanelable(cls, p):
         """Check if the argument can be used in a Panel"""
+        if isinstance(p, list):
+            return all(map(cls.ispanelable, p)) # Check elements with recursion
+
         # Numpy wants to do everything pointwisely so we take it out
         # as a special case---numpy arrays are not panelable.
         if isinstance(p, np.ndarray):
             return False
         else:
-            return (isinstance(p, list) and
-                    all(map(lambda q: isinstance(q, (cls, Visual)), p)))
+            return isinstance(p, cls) or Visual.isvisualable(p)
 
 
     def __init__(self, panelable, **kwargs):
