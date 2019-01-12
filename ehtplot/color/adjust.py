@@ -24,6 +24,7 @@ from __future__ import absolute_import
 import numpy as np
 
 try:
+    import colorspacious as cs
     from colorspacious import cspace_convert
 except ImportError:
     missing = ("`colorspacious` not found; "+
@@ -55,6 +56,15 @@ def transform(ctab, src='sRGB1', dst='CAM02-UCS', inverse=False):
     else:
         out[:,:3] = cspace_convert(out[:,:3], dst, src)
     return out
+
+
+def deltaE(ctab, src='sRGB1', uniform_space='CAM02-UCS'):
+    """Compute color difference deltaE"""
+    if missing:
+        raise ImportError(missing)
+    return [cs.deltaE(ctab[i,:3], ctab[i+1,:3],
+                      input_space=src, uniform_space=uniform_space)
+            for i in range(len(ctab)-1)]
 
 
 def classify(Jabp):
