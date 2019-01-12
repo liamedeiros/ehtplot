@@ -22,7 +22,7 @@ from __future__ import absolute_import
 import numpy as np
 
 from ehtplot.color.ctab   import get_ctab
-from ehtplot.color.adjust import transform
+from ehtplot.color.adjust import transform, deltaE
 
 try:
     basestring
