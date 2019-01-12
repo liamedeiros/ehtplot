@@ -88,6 +88,19 @@ def _JChp(ax1, cmap):
     ax2.scatter(v[::15], hp[::15], s=12, c='k')
 
 
+def _deltaE(ax, cmap):
+    ctab = get_ctab(cmap)  # get the colormap as a color table in sRGB
+    v    = np.linspace(0.0, 1.0, len(ctab))
+
+    mv   = 0.5*(v[1:]+v[:-1])
+    dE   = deltaE(ctab) # compute color difference
+
+    ax.set_title(cmap if isinstance(cmap, basestring) else cmap.name)
+    ax.set_xlabel("Value")
+    ax.set_ylabel("deltaE")
+    ax.plot(mv, dE)
+
+
 def visualize_cmap(ax, cmap, type='JChp'):
     """Plot a colormap in different ways"""
     globals()["_"+type](ax, cmap)
