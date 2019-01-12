@@ -40,12 +40,12 @@ def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=1.0e-9):
         Cp   = 0.5 * (CpU+CpL)
         Jabp = np.stack([Jp, Cp*c, Cp*s], axis=-1)
         sRGB = transform(Jabp, inverse=True)
+        edge = 2.0 * np.amax(abs(sRGB - 0.5), -1)
 
-        if 1.0-eps <= np.max(sRGB) <= 1.0:
+        if 1.0-eps <= np.max(edge) <= 1.0+eps:
             break
 
-        I = np.logical_or(np.amax(sRGB, -1) > 1.0,
-                          np.amin(sRGB, -1) < 0.0)
+        I = edge >= 1.0
         CpU[ I] = Cp[ I]
         CpL[~I] = Cp[~I]
     else:
