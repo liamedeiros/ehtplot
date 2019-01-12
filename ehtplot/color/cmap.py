@@ -136,3 +136,25 @@ def mergecmap(cmplist, **kwargs):
 
     ctab = [crow for ctab in ctabs for crow in ctab] # flattern list of list
     return ListedColormap(np.clip(ctab, 0, 1), name=name)
+
+
+def ehtrainbow(N=Nq,
+               Jp=73.16377, # maximizing minimal Cp for all hue
+               Cp=None,
+               eps=1.0e-6,
+               **kwargs):
+    """Create a perceptually uniform rainbow colormap"""
+    name = kwargs.pop('name', "new eht colormap")
+
+    hp = np.linspace(0, 2*np.pi, Nq, endpoint=False)
+
+    if Cp is None:
+        Cp = min(max_chroma(np.full(len(hp), Jp), hp)) - 0.5 * eps
+
+    ap = Cp * np.sin(hp)
+    bp = Cp * np.cos(hp)
+
+    Jabp = np.array([np.full(len(hp), Jp), ap, bp]).T
+    sRGB = transform(Jabp, inverse=True)
+
+    return ListedColormap(sRGB, name=name)
