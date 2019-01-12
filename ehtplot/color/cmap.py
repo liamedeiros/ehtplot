@@ -77,3 +77,17 @@ def ehtcmap(N=Nq,
     Jabp = symmetrize(Jabp, **kwargs)
     sRGB = transform(Jabp, inverse=True)
     return ListedColormap(np.clip(sRGB, 0, 1), name=name)
+
+
+def linseg(x, sarr):
+    """Compute a discontinues linear segmented array from x and sarr"""
+    y = np.zeros(len(x))
+    for i in range(len(sarr) - 1):
+        xL = sarr[i][0]
+        xR = sarr[i+1][0]
+        yL = sarr[i][2]
+        yR = sarr[i+1][1]
+        iL = np.searchsorted(x, xL, side='left')
+        iR = np.searchsorted(x, xR, side='right')
+        y[iL:iR] = np.linspace(yL, yR, iR-iL)
+    return y
