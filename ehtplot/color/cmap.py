@@ -24,7 +24,7 @@ import numpy as np
 from matplotlib.colors import ListedColormap
 
 from .adjust import transform, symmetrize
-from .ctab   import save_ctab
+from .ctab   import get_ctab, save_ctab
 
 Nq = 256 # number of quantization levels in a colormap
 
@@ -91,3 +91,48 @@ def linseg(x, sarr):
         iR = np.searchsorted(x, xR, side='right')
         y[iL:iR] = np.linspace(yL, yR, iR-iL)
     return y
+
+
+def getCp(ctab):
+    Jabp = transform(ctab)
+    return np.sqrt(Jabp[:,1] * Jabp[:,1] + Jabp[:,2] * Jabp[:,2])
+
+
+def mergecmap(cmplist, **kwargs):
+    """Merge color maps
+
+    An inelegant function to merge a list of existing colormaps into
+    one.
+
+    TODO: design a more elegant interface.
+
+    """
+    name   = kwargs.pop('name', "new eht colormap")
+    matchC = kwargs.pop('matchC', False)
+
+    ctabs = []
+    for cmp in cmplist:
+        ctab = get_ctab(cmp['name'])
+        if cmp.get('revert'):
+            ctab = ctab[::-1]
+        ctabs += [ctab]
+
+    if matchC:
+        n   = len(ctabs[0])
+        mCp = getCp(ctabs[0])
+        for ctab in ctabs[1:]:
+            if len(ctab) != n:
+                raise ValueError("Fail to match chroma; "+
+                                 "colormap seguments have different lengths")
+            mCp = np.minimum(mCp, getCp(ctab))
+
+        for i in range(len(ctabs)):
+            Jabp = transform(ctabs[i])
+            Cp   = np.sqrt(Jabp[:,1] * Jabp[:,1] + Jabp[:,2] * Jabp[:,2])
+            f    = mCp / (Cp + 1.0e-32)
+            Jabp[:,1] *= f
+            Jabp[:,2] *= f
+            ctabs[i] = transform(Jabp, inverse=True)
+
+    ctab = [crow for ctab in ctabs for crow in ctab] # flattern list of list
+    return ListedColormap(np.clip(ctab, 0, 1), name=name)
