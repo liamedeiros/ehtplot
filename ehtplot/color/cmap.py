@@ -151,8 +151,8 @@ def ehtrainbow(N=Nq,
     if Cp is None:
         Cp = min(max_chroma(np.full(len(hp), Jp), hp)) - 0.5 * eps
 
-    ap = Cp * np.sin(hp)
-    bp = Cp * np.cos(hp)
+    ap = Cp * np.cos(hp)
+    bp = Cp * np.sin(hp)
 
     Jabp = np.array([np.full(len(hp), Jp), ap, bp]).T
     sRGB = transform(Jabp, inverse=True)
