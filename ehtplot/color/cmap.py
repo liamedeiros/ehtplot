@@ -147,11 +147,13 @@ def mergecmap(cmplist, **kwargs):
 def ehtrainbow(N=Nq,
                Jp=73.16377142857142, # maximizing minimal Cp for all hue
                Cp=None,
+               hp0=0.0,
                **kwargs):
     """Create a perceptually uniform rainbow colormap"""
     name = kwargs.pop('name', "new eht colormap")
 
-    hp = np.linspace(0, 2*np.pi, Nq, endpoint=False)
+    hp = np.linspace(np.pi / 180 * (hp0),
+                     np.pi / 180 * (hp0+360), Nq, endpoint=False)
 
     if Cp is None:
         Cp = min(max_chroma(np.full(len(hp), Jp), hp))
