@@ -97,8 +97,9 @@ def _deltaE(ax, cmap):
 
     ax.set_title(cmap if isinstance(cmap, basestring) else cmap.name)
     ax.set_xlabel("Value")
-    ax.set_ylabel("deltaE")
-    ax.plot(mv, dE)
+    ax.set_ylabel("$\Delta E/\Delta I$")
+    ax.set_ylim(0, 250)
+    ax.plot(mv, dE / (v[1]-v[0]))
 
 
 def visualize_cmap(ax, cmap, type='JChp'):
