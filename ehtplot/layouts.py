@@ -16,6 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with ehtplot.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import division
+
+
 def divide(pos, n, inrow=True):
     w = pos.x1 - pos.x0
     h = pos.y1 - pos.y0
