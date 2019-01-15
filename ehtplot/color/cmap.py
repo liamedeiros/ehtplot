@@ -29,7 +29,7 @@ from .ctab   import get_ctab, save_ctab
 Nq = 256 # number of quantization levels in a colormap
 
 
-def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=1.0e-9):
+def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=np.finfo(np.float).eps):
     h = 0.5 - 4.0 * np.finfo(np.float).eps # a little bit less than half
     c = np.cos(hp)
     s = np.sin(hp)
