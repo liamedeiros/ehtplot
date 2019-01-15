@@ -18,7 +18,7 @@
 
 from __future__ import absolute_import
 
-from .core import register
+from ehtplot.theme.core import register
 
 
 register()

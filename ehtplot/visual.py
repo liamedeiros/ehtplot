@@ -28,7 +28,7 @@ except ImportError:
 
 import numpy as np
 
-from .helpers import merge_dict
+from ehtplot.helpers import merge_dict
 
 
 class Visual(object):

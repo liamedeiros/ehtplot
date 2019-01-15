@@ -24,9 +24,9 @@ from contextlib import contextmanager
 import matplotlib        as mpl
 import matplotlib.pyplot as plt
 
-from .panel   import Panel
-from .helpers import ensure_list, split_dict, merge_dict
-from .layouts import newaxes
+from ehtplot.panel   import Panel
+from ehtplot.helpers import ensure_list, split_dict, merge_dict
+from ehtplot.layouts import newaxes
 
 
 class Figure(object):

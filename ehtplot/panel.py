@@ -20,9 +20,9 @@ from __future__ import absolute_import
 
 import numpy as np
 
-from .visual  import Visual
-from .helpers import split_dict, merge_dict
-from .layouts import divide, newaxes, getaxes
+from ehtplot.visual  import Visual
+from ehtplot.helpers import split_dict, merge_dict
+from ehtplot.layouts import divide, newaxes, getaxes
 
 
 class Panel(object):

@@ -18,18 +18,18 @@
 
 from __future__ import absolute_import
 
-from .core import register
+from ehtplot.color.core import register
 
 # Note that "adjust.py" requires the optional library "colorspacious"
 # and hence is not imported by default.  We use matplotlib's core-
 # pattern here and only import the necessary symbols in "core.py" to
 # avoid namespace pollution.
 #
-# from .adjust import *
-# from .cmap   import *
-# from .ctab   import *
-# from .modify import *
-# from .view   import *
+# from ehtplot.color.adjust import *
+# from ehtplot.color.cmap   import *
+# from ehtplot.color.ctab   import *
+# from ehtplot.color.modify import *
+# from ehtplot.color.view   import *
 
 
 register()

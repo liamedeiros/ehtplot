@@ -21,7 +21,7 @@ from __future__ import absolute_import
 from matplotlib.colors import ListedColormap
 from matplotlib.cm     import register_cmap
 
-from .ctab import list_ctab, load_ctab
+from ehtplot.color.ctab import list_ctab, load_ctab
 
 
 def unmodified(name):

@@ -19,13 +19,13 @@
 from __future__ import absolute_import
 
 # Register default colormaps and themes in packages
-from .color  import *
-from .theme  import *
+from ehtplot.color  import *
+from ehtplot.theme  import *
 
 # ehtplot Objects
-from .panel  import *
-from .figure import *
-from .visual import *
+from ehtplot.panel  import *
+from ehtplot.figure import *
+from ehtplot.visual import *
 
 # ehtplot API
-from .api    import *
+from ehtplot.api    import *

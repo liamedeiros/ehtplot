@@ -18,10 +18,10 @@
 
 from __future__ import absolute_import
 
-from .visual  import Visual
-from .panel   import Panel
-from .figure  import Figure
-from .helpers import ensure_list, split_tuple, split_dict
+from ehtplot.visual  import Visual
+from ehtplot.panel   import Panel
+from ehtplot.figure  import Figure
+from ehtplot.helpers import ensure_list, split_tuple, split_dict
 
 
 def _getbce(obj, i):
