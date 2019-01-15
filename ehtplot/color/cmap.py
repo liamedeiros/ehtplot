@@ -30,6 +30,7 @@ Nq = 256 # number of quantization levels in a colormap
 
 
 def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=1.0e-9):
+    h = 0.5 - 4.0 * np.finfo(np.float).eps # a little bit less than half
     c = np.cos(hp)
     s = np.sin(hp)
 
@@ -37,19 +38,19 @@ def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=1.0e-9):
     CpL = np.full(len(Jp), Cpmin)
 
     for i in range(64):
-        Cp   = 0.5 * (CpU+CpL)
+        Cp   = (CpU+CpL) * h
         Jabp = np.stack([Jp, Cp*c, Cp*s], axis=-1)
         sRGB = transform(Jabp, inverse=True)
         edge = 2.0 * np.amax(abs(sRGB - 0.5), -1)
 
-        if 1.0-eps <= np.max(edge) <= 1.0+eps:
+        if 1.0-eps <= np.max(edge) <= 1.0:
             break
 
         I = edge >= 1.0
         CpU[ I] = Cp[ I]
         CpL[~I] = Cp[~I]
     else:
-        print("WARNING: max_chroma() has not fully converged")
+        raise ArithmeticError("WARNING: max_chroma() has not fully converged")
 
     return Cp
 
