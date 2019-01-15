@@ -35,21 +35,21 @@ def pre(cname):
     return transform(get_ctab(get_cmap(cname)))
 
 
-def post(Jabp, cls, roundup, fname):
+def post(Jpapbp, cls, roundup, fname):
     adjust = globals()["adjust_"+cls]
 
-    Jabp = adjust(Jabp, roundup)
-    save_ctab(transform(Jabp, inverse=True), fname+ext)
+    Jpapbp = adjust(Jpapbp, roundup)
+    save_ctab(transform(Jpapbp, inverse=True), fname+ext)
     print("    Rounded up to {}; saved to \"{}\"".format(roundup, fname+ext))
 
-    Jabp = symmetrize(Jabp, bitonic=True, diffuse=False)
-    save_ctab(transform(Jabp, inverse=True), fname+"s"+ext)
+    Jpapbp = symmetrize(Jpapbp, bitonic=True, diffuse=False)
+    save_ctab(transform(Jpapbp, inverse=True), fname+"s"+ext)
     print("    Symmetrized; saved to \"{}\"".format(fname+"s"+ext))
 
 
 def modify(cname, roundup, fname):
-    Jabp = pre(cname)
-    cls  = classify(Jabp)
+    Jpapbp = pre(cname)
+    cls  = classify(Jpapbp)
 
     print("----------------")
     print(cls + " colormap " + cname)
@@ -57,10 +57,10 @@ def modify(cname, roundup, fname):
     if cls == 'unknown':
         print("    Do nothing, no modification is made")
     else:
-        print("    Jp in [{:.2f}, {:.2f}]". format(Jabp[0,0], Jabp[-1,0]))
-        post(Jabp, cls, roundup, fname)
+        print("    Jp in [{:.2f}, {:.2f}]". format(Jpapbp[0,0], Jpapbp[-1,0]))
+        post(Jpapbp, cls, roundup, fname)
 
-    return Jabp, cls
+    return Jpapbp, cls
 
 
 def modify_many(category, cnames, roundups, prefix=path, postfix=None):
@@ -73,13 +73,13 @@ def modify_many(category, cnames, roundups, prefix=path, postfix=None):
     print(category)
 
     for cname in cnames:
-        Jabp, cls = modify(cname, None, path+"/"+cname+"_u")
+        Jpapbp, cls = modify(cname, None, path+"/"+cname+"_u")
         for roundup in roundups:
             if postfix is None or len(roundups) > 1:
                 fname = "{}/{}_{:.0f}u".format(path, cname, roundup)
             else:
                 fname = "{}/{}_{}u".format(path, cname, postfix)
-            post(Jabp, cls, roundup, fname)
+            post(Jpapbp, cls, roundup, fname)
 
 
 if __name__ == "__main__":

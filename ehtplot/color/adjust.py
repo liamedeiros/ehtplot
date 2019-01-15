@@ -68,9 +68,9 @@ def deltaE(ctab, src='sRGB1', uniform_space='CAM02-UCS'):
             for i in range(len(ctab)-1)]
 
 
-def classify(Jabp):
-    N = Jabp.shape[0]
-    x = extrema(Jabp[:,0])
+def classify(Jpapbp):
+    N = Jpapbp.shape[0]
+    x = extrema(Jpapbp[:,0])
     if len(x) == 0:
         return 'sequential'
     elif len(x) == 1 and x[0] in set([(N+1)//2-1, N//2]):
@@ -79,17 +79,17 @@ def classify(Jabp):
         return 'unknown'
 
 
-def uniformize(Jabp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
-    if JpL is None: JpL = Jabp[ 0,0]
-    if JpR is None: JpR = Jabp[-1,0]
+def uniformize(Jpapbp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
+    if JpL is None: JpL = Jpapbp[ 0,0]
+    if JpR is None: JpR = Jpapbp[-1,0]
 
     if Jplower is not None: JpL, JpR = max(JpL, Jplower), max(JpR, Jplower)
     if Jpupper is not None: JpL, JpR = min(JpL, Jpupper), min(JpR, Jpupper)
 
-    out = Jabp.copy()
+    out = Jpapbp.copy()
     out[:,0] = np.linspace(JpL, JpR, out.shape[0])
-    out[:,1] = interp(out[:,0], Jabp[:,0], Jabp[:,1])
-    out[:,2] = interp(out[:,0], Jabp[:,0], Jabp[:,2])
+    out[:,1] = interp(out[:,0], Jpapbp[:,0], Jpapbp[:,1])
+    out[:,2] = interp(out[:,0], Jpapbp[:,0], Jpapbp[:,2])
 
     return out
 
@@ -132,8 +132,8 @@ def factor(Cp,
     return s / S
 
 
-def symmetrize(Jabp, **kwargs):
-    out = Jabp.copy()
+def symmetrize(Jpapbp, **kwargs):
+    out = Jpapbp.copy()
     Jp  = out[:,0]
     Cp  = np.sqrt(out[:,1] * out[:,1] + out[:,2] * out[:,2])
 
@@ -143,19 +143,19 @@ def symmetrize(Jabp, **kwargs):
     return out
 
 
-def adjust_sequential(Jabp, roundup=None):
-    Jp = Jabp[:,0]
+def adjust_sequential(Jpapbp, roundup=None):
+    Jp = Jpapbp[:,0]
 
     Jplower = min(Jp[0], Jp[-1])
     if roundup is not None:
         Jplower = np.ceil(Jplower / roundup) * roundup
 
-    return uniformize(Jabp, Jplower=Jplower)
+    return uniformize(Jpapbp, Jplower=Jplower)
 
 
-def adjust_divergent(Jabp, roundup=None):
-    Jp = Jabp[:,0]
-    N  = Jabp.shape[0]
+def adjust_divergent(Jpapbp, roundup=None):
+    Jp = Jpapbp[:,0]
+    N  = Jpapbp.shape[0]
     h  = (N+1)//2-1 # == H-1 if even; == H if odd
     H  = N//2
 
@@ -168,6 +168,6 @@ def adjust_divergent(Jabp, roundup=None):
     if roundup is not None:
         Jplower = np.ceil(Jplower / roundup) * roundup
 
-    L = uniformize(Jabp[:h+1,:], Jplower=Jplower, Jpupper=Jpupper)
-    R = uniformize(Jabp[H:,  :], Jplower=Jplower, Jpupper=Jpupper)
+    L = uniformize(Jpapbp[:h+1,:], Jplower=Jplower, Jpupper=Jpupper)
+    R = uniformize(Jpapbp[H:,  :], Jplower=Jplower, Jpupper=Jpupper)
     return np.append(L, R[N%2:,:], axis=0)

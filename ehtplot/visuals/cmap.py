@@ -63,12 +63,12 @@ def _JChp(ax1, cmap):
             be plotted.
 
     """
-    ctab = get_ctab(cmap)  # get the colormap as a color table in sRGB
-    Jabp = transform(ctab) # transform color table into CAM02-UCS colorspace
+    ctab   = get_ctab(cmap)  # get the colormap as a color table in sRGB
+    Jpapbp = transform(ctab) # transform color table into CAM02-UCS colorspace
 
-    Jp = Jabp[:,0]
-    ap = Jabp[:,1]
-    bp = Jabp[:,2]
+    Jp = Jpapbp[:,0]
+    ap = Jpapbp[:,1]
+    bp = Jpapbp[:,2]
 
     Cp = np.sqrt(ap * ap + bp * bp)
     hp = np.arctan2(bp, ap) * 180 / np.pi

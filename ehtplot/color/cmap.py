@@ -30,9 +30,6 @@ Nq = 256 # number of quantization levels in a colormap
 
 
 def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=np.finfo(np.float).eps):
-    c = np.cos(hp)
-    s = np.sin(hp)
-
     CpU = np.full(len(Jp), Cpmax)
     CpL = np.full(len(Jp), Cpmin)
 
@@ -44,9 +41,9 @@ def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=np.finfo(np.float).eps):
         need_fix = Cp == CpU
         Cp[need_fix] = CpL[need_fix]
 
-        Jabp = np.stack([Jp, Cp*c, Cp*s], axis=-1)
-        sRGB = transform(Jabp, inverse=True)
-        edge = 2.0 * np.amax(abs(sRGB - 0.5), -1)
+        Jpapbp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
+        sRGB   = transform(Jpapbp, inverse=True)
+        edge   = 2.0 * np.amax(abs(sRGB - 0.5), -1)
 
         if 1.0 - eps <= np.max(edge) <= 1.0:
             break
@@ -79,9 +76,9 @@ def ehtcmap(N=Nq,
     hp *= np.pi/180.0
     Cp = max_chroma(Jp, hp, Cpmin=Cpmin, Cpmax=Cpmax)
 
-    Jabp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
-    Jabp = symmetrize(Jabp, **kwargs)
-    sRGB = transform(Jabp, inverse=True)
+    Jpapbp = np.stack([Jp, Cp * np.cos(hp), Cp * np.sin(hp)], axis=-1)
+    Jpapbp = symmetrize(Jpapbp, **kwargs)
+    sRGB   = transform(Jpapbp, inverse=True)
     return ListedColormap(np.clip(sRGB, 0, 1), name=name)
 
 
@@ -100,8 +97,8 @@ def linseg(x, sarr):
 
 
 def getCp(ctab):
-    Jabp = transform(ctab)
-    return np.sqrt(Jabp[:,1] * Jabp[:,1] + Jabp[:,2] * Jabp[:,2])
+    Jpapbp = transform(ctab)
+    return np.sqrt(Jpapbp[:,1] * Jpapbp[:,1] + Jpapbp[:,2] * Jpapbp[:,2])
 
 
 def mergecmap(cmplist, **kwargs):
@@ -133,12 +130,12 @@ def mergecmap(cmplist, **kwargs):
             mCp = np.minimum(mCp, getCp(ctab))
 
         for i in range(len(ctabs)):
-            Jabp = transform(ctabs[i])
-            Cp   = np.sqrt(Jabp[:,1] * Jabp[:,1] + Jabp[:,2] * Jabp[:,2])
+            Jpapbp = transform(ctabs[i])
+            Cp   = np.sqrt(Jpapbp[:,1] * Jpapbp[:,1] + Jpapbp[:,2] * Jpapbp[:,2])
             f    = mCp / (Cp + 1.0e-32)
-            Jabp[:,1] *= f
-            Jabp[:,2] *= f
-            ctabs[i] = transform(Jabp, inverse=True)
+            Jpapbp[:,1] *= f
+            Jpapbp[:,2] *= f
+            ctabs[i] = transform(Jpapbp, inverse=True)
 
     ctab = [crow for ctab in ctabs for crow in ctab] # flattern list of list
     return ListedColormap(np.clip(ctab, 0, 1), name=name)
@@ -161,7 +158,7 @@ def ehtrainbow(N=Nq,
     ap = Cp * np.cos(hp)
     bp = Cp * np.sin(hp)
 
-    Jabp = np.array([np.full(len(hp), Jp), ap, bp]).T
-    sRGB = transform(Jabp, inverse=True)
+    Jpapbp = np.array([np.full(len(hp), Jp), ap, bp]).T
+    sRGB   = transform(Jpapbp, inverse=True)
 
     return ListedColormap(sRGB, name=name)
