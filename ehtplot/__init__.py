@@ -18,8 +18,14 @@
 
 from __future__ import absolute_import
 
+# Register default colormaps and themes in packages
 from .color  import *
 from .theme  import *
+
+# ehtplot Objects
 from .panel  import *
 from .figure import *
+from .visual import *
+
+# ehtplot API
 from .api    import *

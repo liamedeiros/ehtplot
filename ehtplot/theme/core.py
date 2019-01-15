@@ -20,10 +20,10 @@ from __future__ import absolute_import
 
 from os.path import dirname
 
-import matplotlib as mpl
-
 
 def register(path=dirname(__file__)):
+    import matplotlib as mpl
     from matplotlib.style.core import USER_LIBRARY_PATHS
+
     USER_LIBRARY_PATHS += [path]
     mpl.style.reload_library()
