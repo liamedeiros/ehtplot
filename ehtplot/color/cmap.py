@@ -23,7 +23,7 @@ import numpy as np
 
 from matplotlib.colors import ListedColormap, is_color_like, to_rgba
 
-from ehtplot.color.cmath import transform, symmetrize, max_chroma
+from ehtplot.color.cmath import transform, symmetrize, max_chroma, deltaE
 from ehtplot.color.ctab  import get_ctab, save_ctab
 
 Nq = 256 # number of quantization levels in a colormap
@@ -138,7 +138,6 @@ def ehtrainbow(N=Nq,
 
 def gethue(color):
     """Get the hue of a color"""
-    print("!!!", color)
     if isinstance(color, float):
         return color
 
@@ -149,14 +148,15 @@ def gethue(color):
 
     Jp, ap, bp = transform(np.array([RGB]))[0]
     hp = np.arctan2(bp, ap) * 180 / np.pi
-    print("h' =", hp)
+    print("Decode color \"{}\"; h' = {}".format(color, hp))
     return hp
 
 
 def ehtuniform(N=Nq,
-               JpL=6.25, JpR=93.75,
-               CpL=None, CpR=None,
-               hpL='r',  hpR='y',  hpD=+1,
+               JpL=12.5, JpR=87.5,
+               CpL=0.0,  CpR=13.376614421545025,
+               hpL='r',  hpR='gold',  hpD=+1,
+               eps=1024*np.finfo(np.float).eps,
                **kwargs):
     """Create a perceptually uniform colormap"""
     name = kwargs.pop('name', "new eht colormap")
@@ -166,23 +166,47 @@ def ehtuniform(N=Nq,
     if (hpR - hpL) * hpD < 0.0:
         hpR += hpD * 2.0 * np.pi
 
-    if CpL is None:
-        CpL = max_chroma([JpL], [hpL])[0]
-    if CpR is None:
-        CpR = max_chroma([JpR], [hpR])[0]
-
-    Jp = np.linspace(JpL, JpR, N-2)
+    Jp = np.linspace(JpL, JpR, N)
     hp = np.linspace(hpL, hpR, N-2)
-    Cp = max_chroma(Jp, hp)
+    Cp = max_chroma(Jp[1:-1], hp)
 
-    Jp = np.concatenate(([JpL], Jp, [JpR]))
     Cp = np.concatenate(([CpL], Cp, [CpR]))
     hp = np.concatenate(([hpL], hp, [hpR]))
 
-    ap = Cp * np.cos(hp)
-    bp = Cp * np.sin(hp)
-
+    ap     = Cp * np.cos(hp)
+    bp     = Cp * np.sin(hp)
     Jpapbp = np.array([Jp, ap, bp]).T
     sRGB   = transform(Jpapbp, inverse=True)
+    dE     = deltaE(sRGB)
+    cE     = np.concatenate(([0], np.cumsum(dE)))
+
+    for i in range(256):
+        cE_new = np.linspace(0, max(cE), len(cE))
+        hp_new = np.interp(cE_new, cE, hp)
+        Cp_new = np.interp(cE_new, cE, Cp)
+
+        edgeL = hp_new <= hpL
+        edge  = np.logical_and(hpL < hp_new, hp_new < hpR)
+        edgeR = hp_new >= hpR
+
+        Cp_tmp         = max_chroma(Jp[edge], hp_new[edge])
+        Cp_new[edgeL] *= Cp_tmp[ 0] / Cp_new[edge][ 0]
+        Cp_new[edgeR] *= Cp_tmp[-1] / Cp_new[edge][-1]
+        Cp_new[edge]   = Cp_tmp
+
+        if np.max(abs(Cp - Cp_new)) < eps:
+            break
+
+        Cp = Cp_new
+        hp = hp_new
+
+        ap     = Cp * np.cos(hp)
+        bp     = Cp * np.sin(hp)
+        Jpapbp = np.array([Jp, ap, bp]).T
+        sRGB   = transform(Jpapbp, inverse=True)
+        dE     = deltaE(sRGB)
+        cE     = np.concatenate(([0], np.cumsum(dE)))
+    else:
+        print("WARNING: ehtuniform() has not fully converged")
 
     return ListedColormap(np.clip(sRGB, 0, 1), name=name)
