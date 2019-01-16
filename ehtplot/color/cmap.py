@@ -21,7 +21,7 @@ from __future__ import division
 
 import numpy as np
 
-from matplotlib.colors import ListedColormap
+from matplotlib.colors import ListedColormap, is_color_like, to_rgba
 
 from ehtplot.color.cmath import transform, symmetrize, max_chroma
 from ehtplot.color.ctab  import get_ctab, save_ctab
@@ -134,3 +134,55 @@ def ehtrainbow(N=Nq,
     sRGB   = transform(Jpapbp, inverse=True)
 
     return ListedColormap(sRGB, name=name)
+
+
+def gethue(color):
+    """Get the hue of a color"""
+    print("!!!", color)
+    if isinstance(color, float):
+        return color
+
+    if is_color_like(color):
+        RGB = to_rgba(color)[:3]
+    else:
+        raise ValueError("color is not color like")
+
+    Jp, ap, bp = transform(np.array([RGB]))[0]
+    hp = np.arctan2(bp, ap) * 180 / np.pi
+    print("h' =", hp)
+    return hp
+
+
+def ehtuniform(N=Nq,
+               JpL=6.25, JpR=93.75,
+               CpL=None, CpR=None,
+               hpL='r',  hpR='y',  hpD=+1,
+               **kwargs):
+    """Create a perceptually uniform colormap"""
+    name = kwargs.pop('name', "new eht colormap")
+
+    hpL = gethue(hpL) * np.pi / 180.0
+    hpR = gethue(hpR) * np.pi / 180.0
+    if (hpR - hpL) * hpD < 0.0:
+        hpR += hpD * 2.0 * np.pi
+
+    if CpL is None:
+        CpL = max_chroma([JpL], [hpL])[0]
+    if CpR is None:
+        CpR = max_chroma([JpR], [hpR])[0]
+
+    Jp = np.linspace(JpL, JpR, N-2)
+    hp = np.linspace(hpL, hpR, N-2)
+    Cp = max_chroma(Jp, hp)
+
+    Jp = np.concatenate(([JpL], Jp, [JpR]))
+    Cp = np.concatenate(([CpL], Cp, [CpR]))
+    hp = np.concatenate(([hpL], hp, [hpR]))
+
+    ap = Cp * np.cos(hp)
+    bp = Cp * np.sin(hp)
+
+    Jpapbp = np.array([Jp, ap, bp]).T
+    sRGB   = transform(Jpapbp, inverse=True)
+
+    return ListedColormap(np.clip(sRGB, 0, 1), name=name)
