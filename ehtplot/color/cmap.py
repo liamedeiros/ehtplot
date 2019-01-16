@@ -114,7 +114,7 @@ def mergecmap(cmplist, **kwargs):
 
 
 def ehtrainbow(N=Nq,
-               Jp=73.16377142857142, # maximizing minimal Cp for all hue
+               Jp=73.16384, # maximizing minimal Cp for all hue
                Cp=None,
                hp0=32.1526953043875, # offset the hue so that value==0 is red
                **kwargs):

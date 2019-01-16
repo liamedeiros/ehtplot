@@ -178,8 +178,8 @@ def max_chroma(Jp, hp,
                eps=1024*np.finfo(np.float).eps,
                clip=True):
     Jpmin  = 5.54015251457561e-22
-    Jpminv = 3.797300335885588 # obtained by using 4096 h' values
-    Jpmaxv = 98.98016717524226 # obtained by using 4096 h' values
+    Jpminv = 3.797301
+    Jpmaxv = 98.98016
     Jpmax  = 99.99871678107648
 
     if clip:
