@@ -21,8 +21,8 @@ from __future__ import division
 
 import numpy as np
 
-from ehtplot.color.ctab   import get_ctab
-from ehtplot.color.adjust import transform, deltaE
+from ehtplot.color.ctab import get_ctab
+from ehtplot.color.math import transform, deltaE
 
 try:
     basestring

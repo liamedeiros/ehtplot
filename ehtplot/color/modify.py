@@ -27,8 +27,8 @@ from io import open
 
 from matplotlib.cm import get_cmap
 
-from ctab   import get_ctab, save_ctab, path, ext
-from adjust import transform, classify, symmetrize, adjust_sequential, adjust_divergent
+from ctab import get_ctab, save_ctab, path, ext
+from math import transform, classify, symmetrize, adjust_sequential, adjust_divergent
 
 
 def pre(cname):
