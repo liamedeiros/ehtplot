@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-#
 # Copyright (C) 2018--2019 Chi-kwan Chan
 # Copyright (C) 2018--2019 Steward Observatory
 #
