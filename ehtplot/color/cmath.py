@@ -33,6 +33,7 @@ else:
 
 
 def interp(x, xp, yp):
+    """Improve numpy's interp() function to allow decreasing `xp`"""
     if xp[0] < xp[-1]:
         return np.interp(x, xp, yp)
     else:
@@ -40,12 +41,14 @@ def interp(x, xp, yp):
 
 
 def extrema(a):
+    """Find extrema in an array"""
     da =  a[1:] -  a[:-1]
     xa = da[1:] * da[:-1]
     return np.argwhere(xa <= 0.0)[:,0]+1
 
 
 def transform(ctab, src='sRGB1', dst='CAM02-UCS', inverse=False):
+    """Transform a colortable between color spaces"""
     if missing:
         raise ImportError(missing)
 
@@ -67,6 +70,7 @@ def deltaE(ctab, src='sRGB1', uniform_space='CAM02-UCS'):
 
 
 def classify(Jpapbp):
+    """Classify a colormap as sequential or divergent"""
     N = Jpapbp.shape[0]
     x = extrema(Jpapbp[:,0])
     if len(x) == 0:
@@ -78,6 +82,7 @@ def classify(Jpapbp):
 
 
 def uniformize(Jpapbp, JpL=None, JpR=None, Jplower=None, Jpupper=None):
+    """Make a sequential colormap uniform in lightness J'"""
     if JpL is None: JpL = Jpapbp[ 0,0]
     if JpR is None: JpR = Jpapbp[-1,0]
 
@@ -97,6 +102,7 @@ def factor(Cp,
            bitonic=True,
            diffuse=True,  CpL=None, CpR=None,
            verbose=False):
+    """Comput the factor required to perform several chroma operations"""
     S = Cp + softening
     s = S.copy()
 
@@ -131,6 +137,7 @@ def factor(Cp,
 
 
 def symmetrize(Jpapbp, **kwargs):
+    """Make a sequential colormap symmetric in chroma C'"""
     out = Jpapbp.copy()
     Jp  = out[:,0]
     Cp  = np.sqrt(out[:,1] * out[:,1] + out[:,2] * out[:,2])
@@ -142,6 +149,7 @@ def symmetrize(Jpapbp, **kwargs):
 
 
 def adjust_sequential(Jpapbp, roundup=None):
+    """API for uniformizing a sequential colormap"""
     Jp = Jpapbp[:,0]
 
     Jplower = min(Jp[0], Jp[-1])
@@ -152,6 +160,7 @@ def adjust_sequential(Jpapbp, roundup=None):
 
 
 def adjust_divergent(Jpapbp, roundup=None):
+    """API for uniformizing a divergent colormap"""
     Jp = Jpapbp[:,0]
     N  = Jpapbp.shape[0]
     h  = (N+1)//2-1 # == H-1 if even; == H if odd
@@ -175,6 +184,7 @@ def max_chroma(Jp, hp,
                Cpmin=0.0, Cpmax='auto',
                eps=1024*np.finfo(np.float).eps,
                clip=True):
+    """Compute the maximum allowed chroma given lightness J' and hue h'"""
     Jpmin  = 5.54015251457561e-22
     Jpmaxv = 98.98016
     Jpmax  = 99.99871678107648
