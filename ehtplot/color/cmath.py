@@ -174,27 +174,29 @@ def adjust_divergent(Jpapbp, roundup=None):
 
 
 def max_chroma(Jp, hp,
-               Cpmin=0.0, Cpmax=64.0,
+               Cpmin=0.0, Cpmax='auto',
                eps=1024*np.finfo(np.float).eps,
                clip=True):
     Jpmin  = 5.54015251457561e-22
-    Jpminv = 3.797301
     Jpmaxv = 98.98016
     Jpmax  = 99.99871678107648
 
     if clip:
-        Jp = np.clip(Jp, Jpminv, Jpmaxv)
+        Jp = np.clip(Jp, Jpmin, min(Jpmaxv, Jpmax))
 
     if np.any(Jp < Jpmin)  or np.any(Jp > Jpmax):
         raise ValueError("J' out of range.")
 
-    if np.any(Jp < Jpminv) or np.any(Jp > Jpmaxv):
+    if np.any(Jp > Jpmaxv):
         raise ValueError(
             "J' is out of range such that the corresponding sRGB colorspace "+
             "is offset and C' == 0 is no longer a valid assumption.")
 
-    CpU = np.full(len(Jp), Cpmax)
-    CpL = np.full(len(Jp), Cpmin)
+    if Cpmax == 'auto':
+        Cpmax = np.sqrt(100 * Jp)
+
+    CpU = np.full(len(Jp), Cpmax) # np.full() works for both scalar and array
+    CpL = np.full(len(Jp), Cpmin) # np.full() works for both scalar and array
 
     for i in range(64):
         Cp = 0.5 * (CpU + CpL)
