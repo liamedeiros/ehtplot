@@ -29,7 +29,7 @@ from ehtplot.color.ctab   import get_ctab, save_ctab
 Nq = 256 # number of quantization levels in a colormap
 
 
-def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=np.finfo(np.float).eps):
+def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=1024*np.finfo(np.float).eps):
     CpU = np.full(len(Jp), Cpmax)
     CpL = np.full(len(Jp), Cpmin)
 
@@ -45,7 +45,7 @@ def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=np.finfo(np.float).eps):
         sRGB   = transform(Jpapbp, inverse=True)
         edge   = 2.0 * np.amax(abs(sRGB - 0.5), -1)
 
-        if 1.0 - eps <= np.max(edge) <= 1.0:
+        if 1.0 - eps <= np.min(edge) and np.max(edge) <= 1.0:
             break
 
         I = edge >= 1.0
