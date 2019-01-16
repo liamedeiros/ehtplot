@@ -34,7 +34,7 @@ def max_chroma(Jp, hp, Cpmin=0.0, Cpmax=64.0, eps=1024*np.finfo(np.float).eps):
     CpL = np.full(len(Jp), Cpmin)
 
     Cp  = 0.0
-    for i in range(256):
+    for i in range(64):
         Cp = 0.5 * (CpU + CpL)
 
         # Fix when we hit machine precision
