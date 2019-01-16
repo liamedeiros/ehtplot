@@ -193,7 +193,7 @@ def max_chroma(Jp, hp,
             "is offset and C' == 0 is no longer a valid assumption.")
 
     if Cpmax == 'auto':
-        Cpmax = np.sqrt(100 * Jp)
+        Cpmax = np.clip(np.sqrt(100 * Jp), 0, 64)
 
     CpU = np.full(len(Jp), Cpmax) # np.full() works for both scalar and array
     CpL = np.full(len(Jp), Cpmin) # np.full() works for both scalar and array
