@@ -183,15 +183,15 @@ def max_chroma(Jp, hp,
     Jpmax  = 99.99871678107648
 
     if clip:
-       Jp = np.clip(Jp, Jpminv, Jpmaxv)
+        Jp = np.clip(Jp, Jpminv, Jpmaxv)
 
     if np.any(Jp < Jpmin)  or np.any(Jp > Jpmax):
-       raise ValueError("J' out of range.")
+        raise ValueError("J' out of range.")
 
     if np.any(Jp < Jpminv) or np.any(Jp > Jpmaxv):
-       raise ValueError(
-           "J' is out of range such that the corresponding sRGB colorspace "+
-           "is offset and C' == 0 is no longer a valid assumption.")
+        raise ValueError(
+            "J' is out of range such that the corresponding sRGB colorspace "+
+            "is offset and C' == 0 is no longer a valid assumption.")
 
     CpU = np.full(len(Jp), Cpmax)
     CpL = np.full(len(Jp), Cpmin)
