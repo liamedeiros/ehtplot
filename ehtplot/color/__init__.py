@@ -20,14 +20,14 @@ from __future__ import absolute_import
 
 from ehtplot.color.core import register
 
-# Note that "math.py" requires the optional library "colorspacious"
+# Note that "cmath.py" requires the optional library "colorspacious"
 # and hence is not imported by default.  We use matplotlib's core-
 # pattern here and only import the necessary symbols in "core.py" to
 # avoid namespace pollution.
 #
 # from ehtplot.color.cmap   import *
 # from ehtplot.color.ctab   import *
-# from ehtplot.color.math   import *
+# from ehtplot.color.cmath  import *
 # from ehtplot.color.modify import *
 # from ehtplot.color.view   import *
 

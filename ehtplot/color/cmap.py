@@ -23,8 +23,8 @@ import numpy as np
 
 from matplotlib.colors import ListedColormap
 
-from ehtplot.color.math import transform, symmetrize, max_chroma
-from ehtplot.color.ctab import get_ctab, save_ctab
+from ehtplot.color.cmath import transform, symmetrize, max_chroma
+from ehtplot.color.ctab  import get_ctab, save_ctab
 
 Nq = 256 # number of quantization levels in a colormap
 

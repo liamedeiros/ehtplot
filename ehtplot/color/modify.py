@@ -27,8 +27,9 @@ from io import open
 
 from matplotlib.cm import get_cmap
 
-from ctab import get_ctab, save_ctab, path, ext
-from math import transform, classify, symmetrize, adjust_sequential, adjust_divergent
+from ehtplot.color.ctab  import get_ctab, save_ctab, path, ext
+from ehtplot.color.cmath import transform, classify, symmetrize
+from ehtplot.color.cmath import adjust_sequential, adjust_divergent
 
 
 def pre(cname):
