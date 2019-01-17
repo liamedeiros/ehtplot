@@ -188,7 +188,7 @@ def gethue(color):
 
 
 def ehtuniform(N=Nq,
-               JpL=12.5,    JpR=87.5,
+               JpL=6.25,    JpR=93.75, # consistent with 17 quantize levels
                CpL=0.0,     CpR=64.0,
                hpL='coral', hpR='gold', hpD=None,
                eps=1024*np.finfo(np.float).eps,
