@@ -20,10 +20,13 @@
 
 from __future__ import absolute_import
 
-from ehtplot.color.cmap import ehtrainbow
+from ehtplot.color.cmap import ehtrainbow, ehtuniform
 from ehtplot.color.ctab import path, ext, get_ctab, save_ctab
 
 save_ctab(get_ctab(ehtrainbow()),      path+"/ehtrainbow"+ext)
 save_ctab(get_ctab(ehtrainbow(Jp=25)), path+"/ehtrainbow_25"+ext)
 save_ctab(get_ctab(ehtrainbow(Jp=50)), path+"/ehtrainbow_50"+ext)
 save_ctab(get_ctab(ehtrainbow(Jp=75)), path+"/ehtrainbow_75"+ext)
+
+save_ctab(get_ctab(ehtuniform()),                          path+"/ehthot"+ext)
+save_ctab(get_ctab(ehtuniform(hpL='blue', hpR='skyblue')), path+"/ehtcold"+ext)
