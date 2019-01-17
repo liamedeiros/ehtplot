@@ -31,5 +31,6 @@ save_cmap(ehtrainbow(Jp=25), "ehtrainbow_25")
 save_cmap(ehtrainbow(Jp=50), "ehtrainbow_50")
 save_cmap(ehtrainbow(Jp=75), "ehtrainbow_75")
 
-save_cmap(ehtuniform(),                          "ehthot")
-save_cmap(ehtuniform(hpL='blue', hpR='skyblue'), "ehtcold")
+save_cmap(ehtuniform(),                            "ehtorange")
+save_cmap(ehtuniform(hpL='blue',   hpR='skyblue'), "ehtblue")
+save_cmap(ehtuniform(hpL='indigo', hpR='violet'),  "ehtviolet")
