@@ -173,12 +173,12 @@ def ehtuniform(N=Nq,
     Cp = np.concatenate(([CpL], Cp, [CpR]))
     hp = np.concatenate(([hpL], hp, [hpR]))
 
-    ap     = Cp * np.cos(hp)
-    bp     = Cp * np.sin(hp)
-    Jpapbp = np.array([Jp, ap, bp]).T
-    sRGB   = transform(Jpapbp, inverse=True)
-    dE     = deltaE(sRGB)
-    cE     = np.concatenate(([0], np.cumsum(dE)))
+    ap = Cp * np.cos(hp)
+    bp = Cp * np.sin(hp)
+    dE = np.sqrt((Jp[1:]-Jp[:-1])**2 +
+                 (ap[1:]-ap[:-1])**2 +
+                 (bp[1:]-bp[:-1])**2)
+    cE = np.concatenate(([0], np.cumsum(dE)))
 
     for i in range(256):
         cE_new = np.linspace(0, max(cE), len(cE))
@@ -200,13 +200,15 @@ def ehtuniform(N=Nq,
         Cp = Cp_new
         hp = hp_new
 
-        ap     = Cp * np.cos(hp)
-        bp     = Cp * np.sin(hp)
-        Jpapbp = np.array([Jp, ap, bp]).T
-        sRGB   = transform(Jpapbp, inverse=True)
-        dE     = deltaE(sRGB)
-        cE     = np.concatenate(([0], np.cumsum(dE)))
+        ap = Cp * np.cos(hp)
+        bp = Cp * np.sin(hp)
+        dE = np.sqrt((Jp[1:]-Jp[:-1])**2 +
+                     (ap[1:]-ap[:-1])**2 +
+                     (bp[1:]-bp[:-1])**2)
+        cE = np.concatenate(([0], np.cumsum(dE)))
     else:
         print("WARNING: ehtuniform() has not fully converged")
 
+    Jpapbp = np.array([Jp, ap, bp]).T
+    sRGB   = transform(Jpapbp, inverse=True)
     return ListedColormap(np.clip(sRGB, 0, 1), name=name)
