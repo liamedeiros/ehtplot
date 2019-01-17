@@ -25,7 +25,7 @@ from ehtplot.color.ctab import list_ctab, load_ctab
 
 
 def unmodified(name):
-    chars = set("0123456789lus")
+    chars = set("0123456789flus")
     return "_" not in name or not set(name.rsplit("_", 1)[1]) <= chars
 
 
