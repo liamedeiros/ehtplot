@@ -117,23 +117,58 @@ def ehtrainbow(N=Nq,
                Jp=73.16384, # maximizing minimal Cp for all hue
                Cp=None,
                hp0=32.1526953043875, # offset the hue so that value==0 is red
+               eps=1024*np.finfo(np.float).eps,
                **kwargs):
     """Create a perceptually uniform rainbow colormap"""
     name = kwargs.pop('name', "new eht colormap")
 
     hp = np.linspace(np.pi / 180 * (hp0),
-                     np.pi / 180 * (hp0+360), Nq, endpoint=False)
+                     np.pi / 180 * (hp0+360), Nq+1)
+    Jp = np.full(len(hp), Jp)
 
-    if Cp is None:
-        Cp = min(max_chroma(np.full(len(hp), Jp), hp))
+    if Cp is not None:
+        if Cp == 'minmax':
+            Cp = min(max_chroma(Jp, hp))
 
+        ap = Cp * np.cos(hp)
+        bp = Cp * np.sin(hp)
+
+        Jpapbp = np.array([np.full(len(hp), Jp), ap, bp]).T
+        sRGB   = transform(Jpapbp[:-1,:], inverse=True)
+
+        return ListedColormap(sRGB, name=name)
+
+    Cp = max_chroma(Jp, hp)
     ap = Cp * np.cos(hp)
     bp = Cp * np.sin(hp)
+    dE = np.sqrt((Jp[1:]-Jp[:-1])**2 +
+                 (ap[1:]-ap[:-1])**2 +
+                 (bp[1:]-bp[:-1])**2)
+    cE = np.concatenate(([0], np.cumsum(dE)))
 
-    Jpapbp = np.array([np.full(len(hp), Jp), ap, bp]).T
-    sRGB   = transform(Jpapbp, inverse=True)
+    for i in range(256):
+        cE_new = np.linspace(0, max(cE), len(cE))
+        hp_new = np.interp(cE_new, cE, hp)
+        Cp_new = max_chroma(Jp, hp_new)
 
-    return ListedColormap(sRGB, name=name)
+        if np.max(abs(Cp - Cp_new)) < eps:
+            break
+
+        Cp = Cp_new
+        hp = hp_new
+
+        ap = Cp * np.cos(hp)
+        bp = Cp * np.sin(hp)
+        dE = np.sqrt((Jp[1:]-Jp[:-1])**2 +
+                     (ap[1:]-ap[:-1])**2 +
+                     (bp[1:]-bp[:-1])**2)
+        cE = np.concatenate(([0], np.cumsum(dE)))
+    else:
+        print("WARNING: ehtuniform() has not fully converged")
+
+    Jpapbp = np.array([Jp, ap, bp]).T
+    sRGB   = transform(Jpapbp[:-1,:], inverse=True)
+    return ListedColormap(np.clip(sRGB, 0, 1), name=name)
 
 
 def gethue(color):
