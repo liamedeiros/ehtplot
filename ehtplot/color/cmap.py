@@ -155,7 +155,7 @@ def gethue(color):
 def ehtuniform(N=Nq,
                JpL=12.5,    JpR=87.5,
                CpL=0.0,     CpR=64.0,
-               hpL='coral', hpR='gold', hpD=+1,
+               hpL='coral', hpR='gold', hpD=None,
                eps=1024*np.finfo(np.float).eps,
                **kwargs):
     """Create a perceptually uniform colormap"""
@@ -163,6 +163,13 @@ def ehtuniform(N=Nq,
 
     hpL = gethue(hpL) * np.pi / 180.0
     hpR = gethue(hpR) * np.pi / 180.0
+    if hpD is None:
+        dhp = hpR - hpL
+        while dhp < 0:
+            dhp += 2 * np.pi
+        while dhp > 2 * np.pi:
+            dhp -= 2 * np.pi
+        hpD = +1 if dhp < np.pi else -1
     if (hpR - hpL) * hpD < 0.0:
         hpR += hpD * 2.0 * np.pi
 
