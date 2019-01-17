@@ -185,9 +185,14 @@ def ehtuniform(N=Nq,
         hp_new = np.interp(cE_new, cE, hp)
         Cp_new = np.interp(cE_new, cE, Cp)
 
-        edgeL = hp_new <= hpL
-        edge  = np.logical_and(hpL < hp_new, hp_new < hpR)
-        edgeR = hp_new >= hpR
+        if hpD > 0:
+            edgeL = hp_new <= hpL
+            edge  = np.logical_and(hpL < hp_new, hp_new < hpR)
+            edgeR = hpR <= hp_new
+        else:
+            edgeL = hp_new >= hpL
+            edge  = np.logical_and(hpL > hp_new, hp_new > hpR)
+            edgeR = hpR >= hp_new
 
         Cp_tmp         = max_chroma(Jp[edge], hp_new[edge])
         Cp_new[edgeL] *= Cp_tmp[ 0] / Cp_new[edge][ 0]
