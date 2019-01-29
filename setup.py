@@ -53,6 +53,7 @@ setup(
     keywords="astronomy plotting",
 
     packages=find_packages(exclude=["doc*", "test*"]),
+    package_data={'ehtplot.color': ['ctabs/*.ctab']},
 
     install_requires=[
       # "colorspacious",
