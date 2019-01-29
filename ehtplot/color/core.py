@@ -29,14 +29,14 @@ def unmodified(name):
     return "_" not in name or not set(name.rsplit("_", 1)[1]) <= chars
 
 
-def register(name=None, cmap=None):
+def register(name=None, cmap=None, path=None):
     if name is None:
         # Self-call to register all colormaps in "ehtplot/color/"
-        for name in list_ctab():
-            register(name=name, cmap=cmap)
+        for name in list_ctab(path=path):
+            register(name=name, cmap=cmap, path=path)
     else:
         if cmap is None:
-            cmap = ListedColormap(load_ctab(name))
+            cmap = ListedColormap(load_ctab(name, path=path))
 
         # Register the colormap
         register_cmap(name=name, cmap=cmap)

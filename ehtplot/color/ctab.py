@@ -29,7 +29,7 @@ from matplotlib.cm     import get_cmap
 Nc  = 1024 # nubber of quantization levels in a channel (10bit default)
 ext = ".ctab"
 
-path   = dirname(__file__) + "/ctabs"
+_path  = dirname(__file__) + "/ctabs"
 cscale = Nc - 1.0
 
 
@@ -39,7 +39,10 @@ def get_ctab(cmap):
     return np.array([cmap(i) for i in range(cmap.N)])
 
 
-def list_ctab():
+def list_ctab(path=None):
+    if path is None:
+        path = _path
+
     return [splitext(basename(f))[0] for f in glob(join(path, "*"+ext))]
 
 
@@ -49,7 +52,10 @@ def save_ctab(ctab, name):
     np.savetxt(name, np.rint(ctab * cscale).astype(int), fmt="%i")
 
 
-def load_ctab(name):
+def load_ctab(name, path=None):
+    if path is None:
+        path = _path
+
     ctab = np.loadtxt(join(path, name+ext))
     ctab = np.clip(ctab / cscale, 0, 1.0)
     if ctab.shape[1] == 3:
