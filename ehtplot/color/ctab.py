@@ -30,13 +30,12 @@ Nc  = 1024 # nubber of quantization levels in a channel (10bit default)
 ext = ".ctab"
 
 _path  = dirname(__file__) + "/ctabs"
-cscale = Nc - 1.0
 
 
 def get_ctab(cmap):
     if not isinstance(cmap, Colormap):
         cmap = get_cmap(cmap)
-    return np.array([cmap(i) for i in range(cmap.N)])
+    return np.array([cmap(v) for v in np.linspace(0, 1, cmap.N)])
 
 
 def list_ctab(path=None):
@@ -49,7 +48,7 @@ def list_ctab(path=None):
 def save_ctab(ctab, name):
     if ctab.shape[1] == 4 and np.all(ctab[:,3] == 1.0):
         ctab = ctab[:,:3]
-    np.savetxt(name, np.rint(ctab * cscale).astype(int), fmt="%i")
+    np.savetxt(name, ctab, fmt="%.6f")
 
 
 def load_ctab(name, path=None):
@@ -57,7 +56,7 @@ def load_ctab(name, path=None):
         path = _path
 
     ctab = np.loadtxt(join(path, name+ext))
-    ctab = np.clip(ctab / cscale, 0, 1.0)
+    ctab = np.clip(ctab, 0.0, 1.0)
     if ctab.shape[1] == 3:
         alpha = np.full((ctab.shape[0], 1), 1.0)
         ctab  = np.append(ctab, alpha, axis=1)
