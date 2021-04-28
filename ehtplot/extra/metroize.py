@@ -43,11 +43,10 @@ def metroize(img, mgrid=32, threshold=0.5):
 def plot_metroized(ax, img, **kwargs):
     img = metroize(img, **kwargs)
 
-    sh = img.shape
-    s0 = sh[0]
-    s1 = sh[1]
-    for i in range(sh[0]):
-        for j in range(sh[1]):
+    s0 = img.shape[0]
+    s1 = img.shape[1]
+    for i in range(s0):
+        for j in range(s1):
             if img[i,j] == 0.0: continue
 
             c = 0
@@ -63,14 +62,26 @@ def plot_metroized(ax, img, **kwargs):
                         if ii != i and jj != j:
                             if img[ii,j] > 0.0 or img[i,jj] > 0.0:
                                 continue
-                        ax.plot([j,(jj-j)/2+j], s1-np.array([i,(ii-i)/2+i]),
+                        ax.plot([j+0.5,(jj-j)/2+j+0.5],
+                                [i+0.5,(ii-i)/2+i+0.5],
                                 color='k')
                         c += 1
             if c == 0:
-                ax.plot([j], [s1-i], marker='.', color='k')
+                ax.plot([j+0.5], [i+0.5], marker='.', color='k')
 
-    ax.set_xlim([0, sh[1]])
-    ax.set_ylim([0, sh[0]])
+    ax.set_aspect('equal')
+
+    ax.set_xlim([0, s1])
+    ax.set_ylim([0, s0])
+
+    ax.set_xticks(np.arange(0, s1+1, 4))
+    ax.set_xticks(np.arange(0, s1+1, 1), minor=True)
+    ax.set_yticks(np.arange(0, s0+1, 4))
+    ax.set_yticks(np.arange(0, s0+1, 1), minor=True)
+    ax.grid('both')
+    ax.grid(which='minor', alpha=0.2)
+    ax.grid(which='major', alpha=0.5)
+
     ax.tick_params(axis='both', which='both',
                    top=False, bottom=False, labelbottom=False,
                    left=False, right=False, labelleft=False)
