@@ -117,7 +117,7 @@ def ehtrainbow(N=Nq,
                Jp=73.16384, # maximizing minimal Cp for all hue
                Cp=None,
                hp0=32.1526953043875, # offset the hue so that value==0 is red
-               eps=1024*np.finfo(np.float).eps,
+               eps=1024*np.finfo(float).eps,
                **kwargs):
     """Create a perceptually uniform rainbow colormap"""
     name = kwargs.pop('name', "new eht colormap")
@@ -191,7 +191,7 @@ def ehtuniform(N=Nq,
                JpL=6.25,    JpR=93.75, # consistent with 17 quantize levels
                CpL=0.0,     CpR=64.0,
                hpL='coral', hpR='gold', hpD=None,
-               eps=1024*np.finfo(np.float).eps,
+               eps=1024*np.finfo(float).eps,
                **kwargs):
     """Create a perceptually uniform colormap"""
     name = kwargs.pop('name', "new eht colormap")

@@ -182,7 +182,7 @@ def adjust_divergent(Jpapbp, roundup=None):
 
 def max_chroma(Jp, hp,
                Cpmin=0.0, Cpmax='auto',
-               eps=1024*np.finfo(np.float).eps,
+               eps=1024*np.finfo(float).eps,
                clip=True):
     """Compute the maximum allowed chroma given lightness J' and hue h'"""
     Jpmin  = 5.54015251457561e-22
