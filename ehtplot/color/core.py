@@ -43,9 +43,9 @@ def register(name=None, cmap=None, path=None):
         if cmap is None:
             cmap = ListedColormap(load_ctab(name, path=path))
 
-        # Register the colormap
-        register_cmap(name=name, cmap=cmap)
+        # Register the colormap, overwriting if it already exists
+        register_cmap(name=name, cmap=cmap, override_builtin=True)
 
         # Register the reversed colormap
         register_cmap(name=name + ("_r" if unmodified(name) else "r"),
-                      cmap=cmap.reversed())
+                      cmap=cmap.reversed(), override_builtin=True)
