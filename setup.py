@@ -29,15 +29,16 @@ with open(path.join(here, "README.md"), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name="ehtplot",
+    name="pyehtplot",
     version="0.9.0",
 
     description="Plotting functions for EHT",
     long_description=long_description,
+    long_description_content_type="text/markdown", 
 
     url="https://github.com/liamedeiros/ehtplot",
     author="Lia Medeiros",
-    author_email="lia00@email.arizona.edu",
+    author_email="lia2@uwm.edu",
     license="GPLv3+",
 
     classifiers=[
